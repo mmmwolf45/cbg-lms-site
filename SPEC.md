@@ -63,7 +63,8 @@ This stays as one spec, as the brief asks; the modules are sections of it, not s
 
 ```
 npm install                 # once
-npm run dev                 # Vite dev server: preview/home.html and preview/course.html (mock course.link layout)
+npm run dev                 # build, then serve the mock course.link at http://localhost:4173/ and /course/preview-101
+npm run serve               # serve the last build (scripts/serve.ts) without rebuilding
 npm run content:check       # validate content/*.yaml against the schema
 npm run images              # build AVIF/WebP/JPEG variants into public/img/
 npm run build               # vite build + render blocks + write manifest.json + loader-snippet.html + size check

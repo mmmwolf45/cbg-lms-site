@@ -1,0 +1,2 @@
+/* Layout-affecting native restyles (marked with a star in SPEC section 6), inlined in the loader
+   so there is no layout shift while the main CSS loads. Filled in T13 and T20. Keep it tiny. */

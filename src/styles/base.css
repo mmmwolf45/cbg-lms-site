@@ -1,0 +1,4 @@
+/* Base styles for our own block roots. Nothing here may match course.link's elements. */
+[data-cbg] {
+  box-sizing: border-box;
+}

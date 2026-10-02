@@ -4,9 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "dev": "npm run build && npm run serve",
+    "build": "npm run content:check && tsc --noEmit && vite build && tsx scripts/build-loader.ts && tsx scripts/build-preview.ts",
+    "serve": "tsx scripts/serve.ts",
     "test": "vitest run",
+    "content:check": "tsx scripts/content-check.ts",
     "test:e2e": "playwright test"
   },
   "devDependencies": {

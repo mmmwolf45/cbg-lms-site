@@ -3,6 +3,7 @@ import { defineConfig } from 'vitest/config';
 // The bundle is one JS entry (plus the CSS it imports). Hashed names are listed in
 // dist/manifest.json by scripts/build-loader.ts, not Vite's own .vite/manifest.json.
 export default defineConfig({
+  base: '/cbg-lms-site/',
   build: {
     outDir: 'dist',
     emptyOutDir: true,
