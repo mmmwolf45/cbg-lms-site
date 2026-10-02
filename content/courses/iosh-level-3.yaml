@@ -1,0 +1,297 @@
+# IOSH Level 3 course page copy. The original copy deck is docs/copy-deck/courses/iosh-level-3.md.
+# Edit the wording here; the site is built from this file.
+# Rules: plain English, no em-dashes, nothing invented, no testimonials. Section ids are stable.
+# Run `npm run content:check` after editing.
+#
+# Left out on purpose (editorial notes, not shown to students):
+#   - the document title line, "Audience", "Rules" and "Sources"
+#   - the paragraphs about the native course.link header and Course Content accordion
+#     (restyle, don't rebuild; don't repeat the title)
+#   - the hero heading note "(first custom section in the main column)" and "(closing band)"
+#   - "Key facts (counter or chips)" and the "Start here" behaviour note (it lives in the spec)
+#   - "Visual idea" in units, assessment and field-guides (only its "Coming soon"
+#     cover label is kept, as field-guides.comingSoonLabel)
+#   - "The recommended order (show as a path)"
+#   - the "Photos", "Logos" and "Small logos" notes (the files are listed instead)
+#   - "plus two more" (stored as unnamedUpcoming: 2)
+#   - section names from the copy deck where the section has its own heading:
+#     "Course at a glance", "What's included", "The four units", "Your trainers",
+#     "Your four bonus certificates", "CBG Field Guides", "Help and contacts"
+
+slug: iosh-level-3
+uniqueId: "101"
+path: /course/101-iosh-level3-certificate
+
+# The card for this course on the home page ("Your courses").
+card:
+  title: IOSH Level 3 Certificate
+  status: live now
+  tag: IOSH · Ofqual-regulated · Level 3
+  line: The IOSH Level 3 Certificate in Occupational Safety and Health Principles and Practice, taught live online by CBG trainers.
+  meta:
+    - Live online
+    - About 2 months
+    - 4 bonus certificates
+    - 8 Field Guides
+  cta:
+    label: Open course
+    href: /course/101-iosh-level3-certificate
+
+hero:
+  eyebrow: IOSH Approved Study Centre 1003 · Live online
+  heading: IOSH Level 3 Certificate in Occupational Safety and Health Principles and Practice
+  subhead: The Ofqual-regulated qualification that meets the academic requirement for Tech IOSH, taught live online by CBG trainers, with four career certificates included.
+  # Key facts. `count` is the number that counts up (optional); `prefix` is the text before it.
+  facts:
+    - value: Level 3
+      label: (RQF)
+    - value: "80"
+      label: guided learning hours
+      count: 80
+    - value: About 2
+      label: months
+      count: 2
+      prefix: About
+    - value: "4"
+      label: units
+      count: 4
+    - value: "2"
+      label: IOSH assessments
+      count: 2
+    - value: Ofqual no. 610/3188/4
+  # Scrolls to Course Content and opens its first item (Start Here).
+  cta:
+    label: Start here
+    action: start-here
+    href: "#course_content"
+  # Hazard Scan labels for the hero photo. Drafted in task T22; they are new copy,
+  # so a CBG trainer must sign them off before launch.
+  hazards: []
+
+included:
+  heading: One course, five certificates and a toolkit
+  intro: Your course fee covers everything below. Nothing more to pay for registration, assessments or materials.
+  cards:
+    - title: IOSH Level 3 Certificate.
+      body: The regulated qualification employers recognise. Awarded by IOSH, regulated by Ofqual, and your academic route to Technical Member (Tech IOSH).
+      featured: true
+    - title: Four bonus certificates.
+      body: IBM SkillsBuild Project Management Fundamentals, Six Sigma Yellow Belt, Scrum Fundamentals Certified and HP LIFE AI for Business Professionals. Studied online at your own pace, with a CBG guide for each.
+    - title: Eight CBG Field Guides.
+      body: Practical workbooks for daily HSE work, yours from day 1.
+    - title: Study materials for every session.
+      body: Slides for each live class, with study notes, practice questions and mock exams added as the course goes on.
+    - title: IOSH registration and both assessments.
+      body: CBG registers you with IOSH as a learner, and both externally set assessments are covered.
+
+units:
+  heading: "Your learning path: 4 units, 16 sessions"
+  intro: Each unit is taught in live sessions. Every session has its own class link and slides on this page, in teaching order.
+  units:
+    - code: L3C01
+      title: Fundamentals of OSH principles and management systems
+      glh: 21
+      outcomes:
+        - Understand OSH principles, the elements of a safety management system and the role they play in OSH performance
+        - Understand management systems in relation to OSH
+        - Understand the specialist services needed to support good OSH practice
+      sessions:
+        - { id: "1.1", title: Fundamentals of OSH Principles }
+        - { id: "1.2", title: OSH Management Systems }
+        - { id: "1.3", title: Consultation and Communication }
+    - code: L3C02
+      title: Principles and application of OSH risk management
+      glh: 27
+      outcomes:
+        - Understand the application of risk assessment and risk management
+        - Be able to carry out and review risk assessments in the workplace
+        - Understand the role and process of workplace inspection and audit
+        - Be able to undertake a workplace inspection
+      sessions:
+        - { id: "2.1", title: OSH Risk Management }
+        - { id: "2.2", title: Safe Systems of Work }
+        - { id: "2.3", title: Inspection and Auditing }
+        - { id: "2.4", title: Risk Assessment Workshop }
+        - { id: "2.5", title: Workplace Inspection Workshop }
+    - code: L3C03
+      title: Principles and application of OSH incident management
+      glh: 12
+      outcomes:
+        - Understand the definitions of incidents and their causation
+        - Understand the process of the investigation of incidents
+        - Be able to investigate incidents
+      sessions:
+        - { id: "3.1", title: Incident Management and Terminology }
+        - { id: "3.2", title: Causation Theories of Accidents }
+        - { id: "3.3", title: Incident Investigation }
+        - { id: "3.4", title: Investigation Process and Report }
+        - { id: "3.5", title: Incident Investigation Workshop }
+    - code: L3C04
+      title: Improving organisational OSH performance and culture
+      glh: 20
+      outcomes:
+        - Understand the effective application of an organisation's safety management systems
+        - Understand how your own professional conduct and capabilities influence OSH performance
+        - Be able to deliver improvements to OSH controls through effective communication
+      sessions:
+        - { id: "4.1", title: Improving OSH Performance }
+        - { id: "4.2", title: Continuous Improvement and Performance }
+        - { id: "4.3", title: Toolbox Talk Workshop }
+
+how-classes-run:
+  heading: How your classes run
+  items:
+    - title: Live online classes on Google Meet.
+      body: Each session's Meet link is on this page, just before that session's slides.
+    - title: About two months.
+      body: >-
+        All four units are covered in about two months: 36 hours of live online tuition, with guided self-study making up the rest of the 80 guided learning hours.
+    - title: Independent study.
+      body: On top of the 80 guided hours, IOSH expects about 42 hours of your own study (122 hours in total). Use it to review slides, read study notes, try practice questions and work on your bonus certificates.
+    - title: Trainer support.
+      body: Your trainers answer questions between classes and give revision guidance before each assessment.
+    - title: What you need.
+      body: A laptop or PC with a webcam and a stable internet connection.
+  timetable:
+    label: Timetable
+    text: class days and times are confirmed for each batch and shared in the "How the Course Works" lesson and at the introduction session.
+
+assessment:
+  heading: How you're assessed
+  intro: IOSH sets and marks two external assessments. Both are online and remotely invigilated, so you take them from home with a webcam. You must pass both. The result is Pass or Refer, and if you're referred in one, you only retake that one.
+  assessments:
+    - label: Assessment 1
+      title: OSH Principles Examination
+      points:
+        - 2 hours, 80 multiple-choice questions, auto-marked
+        - Pass mark 70%
+        - Covers all four units
+    - label: Assessment 2
+      title: OSH in Practice Assessment
+      points:
+        - 2 hours, based on a realistic workplace scenario, marked by an IOSH examiner
+        - Pass mark 50%
+      tasksIntro: Four tasks, 25 marks each
+      tasks:
+        - { name: workplace inspection, marks: 25 }
+        - { name: incident investigation, marks: 25 }
+        - { name: risk assessment, marks: 25 }
+        - { name: toolbox talk, marks: 25 }
+      tasksNote: Each task has its own workshop session in the units
+  techIoshNote: Passing the Level 3 Certificate meets the academic requirement for Technical Member of IOSH (Tech IOSH). To apply you also need at least one year's relevant experience and IOSH's mandatory CPD. A natural next step is the IOSH Level 6 Diploma.
+
+trainers:
+  heading: Learn from people who have done the job
+  # Photos are files in brand/assets/trainers/.
+  trainers:
+    - name: Elman Aloysius
+      role: HSE Trainer · NEBOSH Approved Tutor
+      photo: elman-aloysius.jpg
+      bio: HSE training professional with more than 18 years across oil and gas, LNG, petrochemical, refinery and EPC construction in Oman, Qatar, Kuwait and India.
+      credentials:
+        - NEBOSH Approved Tutor and PDO approved Level-1 trainer; City & Guilds Assured Master Trainer
+        - Over 170,000 training man-hours delivered
+    - name: Ali Orkkatteri
+      role: HSE Manager · ISO 45001 Lead Auditor (Lead Trainer)
+      photo: ali-orkkatteri.jpg
+      bio: Fire, life and safety leader with more than 22 years of HSE management, including 14 years as HSE Executive at UAE University's College of Medicine and Health Sciences.
+      credentials:
+        - NEBOSH International General Certificate and International Diploma; ISO 45001:2018 Lead Auditor
+        - Aramco-licensed permit-to-work trainer
+    - name: Ramshad K K
+      role: HSE Engineer · CSP · CertIOSH · ISO 45001 Lead Auditor
+      photo: ramshad-kk.jpg
+      bio: HSE engineer with more than ten years across construction, energy and integrated facilities management in Qatar and the UAE.
+      credentials:
+        - Certified Safety Professional (CSP), CertIOSH and ISO 45001 Lead Auditor
+        - Experience across ADNOC, ADOSH-SF and ISO 45001 compliance regimes
+
+bonus:
+  heading: Four extra certificates, at your own pace
+  intro: Studied online on each issuer's website, alongside the IOSH course. You create your own account and take the issuer's assessment; the certificate comes from the issuer. Full setup steps and a CBG guide for each are in the "Bonus Certificates" section of this course.
+  # The recommended order.
+  steps:
+    - title: "IBM SkillsBuild: Project Management Fundamentals."
+      body: The project lifecycle, so your HSE plans are run like real projects. Earns an IBM digital badge (Credly).
+    - title: Six Sigma Yellow Belt (6sigmastudy).
+      body: >-
+        DMAIC, a step-by-step way to find root causes and reduce incidents. Free online exam: 40 questions, 60 minutes, pass at 28/40.
+    - title: Scrum Fundamentals Certified (SCRUMstudy).
+      body: >-
+        How modern project teams work in short sprints. Free online exam: 40 questions, 60 minutes, pass at 30/40.
+    - title: "HP LIFE: AI for Business Professionals."
+      body: Using AI tools safely and well for reports and documents. Certificate of completion.
+  smallPrint: CBG is not affiliated with IBM, HP, 6sigmastudy or SCRUMstudy. Course names belong to their owners.
+
+field-guides:
+  heading: Your Field Guide library
+  body: >-
+    Eight practical CBG Field Guides, yours from day 1: checklists, examples and ready-to-use templates you can take straight to site.
+    Download them from the "Day 1 Resources" section.
+  releasedLabel: Released now
+  released:
+    - label: Field Guide 01
+      title: Spot It Before It Hurts
+      subtitle: Hazard Spotter
+  upcomingLabel: Coming in the series
+  upcoming:
+    - HSE Officer's Field Toolkit
+    - Toolbox Talk Kit
+    - Heat Stress Field Guide
+    - Safety KPI and Monthly Report Pack
+    - AI Prompt Pack for HSE
+  # "plus two more": upcoming guides not named yet.
+  unnamedUpcoming: 2
+  # Shown on the covers of guides that are not out yet.
+  comingSoonLabel: Coming soon
+
+payments:
+  heading: A gentle note on your certificate
+  body: >-
+    Your IOSH certificate is released once the course fee has been paid in full.
+    Keeping to your instalment dates means nothing stands between you and your certificate once you pass.
+    If a payment date ever becomes difficult, just let us know early and we will be glad to talk it through with you.
+
+faq:
+  heading: Student FAQ
+  items:
+    - q: Where do I find the link for my live class?
+      a: In the unit sections of this course, each session has a "Live Class" lesson with the Google Meet link, just before that session's slides.
+    - q: What do I need for the classes?
+      a: A laptop or PC with a webcam and a stable internet connection. Join a few minutes early.
+    - q: I missed a class. What should I do?
+      a: Download that session's slides from this page, go through them, and message your trainer or CBG with any questions.
+    - q: How much self-study is expected?
+      a: Besides the live classes and guided study (80 guided hours), IOSH expects about 42 hours of your own study across the course.
+    - q: When do I take the IOSH assessments?
+      a: When your trainers confirm you are ready, CBG registers you and tells you the date and time.
+    - q: What happens if I'm referred in an assessment?
+      a: You only retake the assessment you were referred in. IOSH charges a fee for a retake. Talk to us and we'll help you prepare.
+    - q: What are the rules for the online assessments?
+      a: >-
+        They're remotely invigilated: one screen, a quiet room, photo ID, no phones or notes. The full IOSH rules are in "Final Steps".
+    - q: Is my name on the certificate correct?
+      a: Your name is registered with IOSH exactly as on your photo ID. Tell us straight away if anything needs changing.
+    - q: Do the bonus certificates cost anything?
+      a: No. They're included, and the exams are free. If any website asks for card details, stop and contact us.
+    - q: Which bonus certificate should I start with?
+      a: IBM SkillsBuild Project Management Fundamentals, then Six Sigma Yellow Belt, Scrum Fundamentals Certified and HP LIFE.
+    - q: Does this make me Tech IOSH?
+      a: It meets the academic requirement. IOSH also asks for at least one year's relevant experience and mandatory CPD when you apply.
+    - q: Who do I contact for help?
+      a: WhatsApp +974 7048 5638 or email safety.training@carbonblueglobal.com.
+
+help:
+  heading: Stuck on anything? Message us.
+  whatsapp:
+    label: WhatsApp
+    number: "+974 7048 5638"
+    href: https://wa.me/97470485638
+  email:
+    label: Email
+    address: safety.training@carbonblueglobal.com
+    href: mailto:safety.training@carbonblueglobal.com
+  # Logo files in brand/assets/, used as supplied.
+  logos:
+    - cbg-mark-512.png
+    - iosh-1003-white.png

@@ -1,0 +1,87 @@
+# Home page copy. The original copy deck is docs/copy-deck/home.md.
+# Edit the wording here; the site is built from this file.
+# Rules: plain English, no em-dashes, no new claims. Section ids (top-level keys) are stable.
+# Run `npm run content:check` after editing.
+#
+# Left out on purpose (editorial notes, not shown to students):
+#   - the document title line, "Audience" and "Rules"
+#   - hero "Visual idea"
+#   - the CTA destinations written as notes ("the course.link login", "the user's courses")
+#   - courses "Template note"; the course cards live in content/courses/*.yaml under `card:`
+#   - instructions "Three steps, numbered" and "A short checklist, with ticks that animate in"
+#   - "(button opens WhatsApp)" and the about "Logos" note (the logos are listed as files)
+#   - section names from the copy deck where the section has its own heading:
+#     "Welcome", "We're here to help", "Small print"
+
+hero:
+  eyebrow: CBG Training Institute · IOSH Approved Study Centre 1003
+  heading: Welcome to your CBG classroom
+  subhead: Your courses, live class links and study materials, all in one place.
+  primaryCta:
+    label: Log in
+    action: login
+    loggedInLabel: Go to my courses # only used once a reliable logged-in signal exists
+  secondaryCta:
+    label: Need help?
+    number: "+974 7048 5638"
+    href: https://wa.me/97470485638
+
+how-it-works:
+  heading: How this site works
+  steps:
+    - title: We set up your access.
+      body: Once your enrolment is confirmed, CBG gives you access to your course. Your login details are shared about one week before your batch starts.
+    - title: Log in and open your course.
+      body: >-
+        Everything for your course sits on its course page: welcome guide, class links, slides, bonus certificate guides and more.
+    - title: Join your live classes and keep going.
+      body: Classes run live on Google Meet. After each class, the slides and new study materials are waiting for you here.
+
+courses:
+  heading: Your courses
+  intro: Pick your course to see the class links, materials and next steps.
+  # The cards come from content/courses/*.yaml (the `card:` key in each file).
+
+first-steps:
+  heading: Before your first class
+  items:
+    - A laptop or PC with a webcam and a stable internet connection
+    - Log in here and open your course
+    - Read the "Start Here" lessons on your course page
+    - Join the introduction session
+    - Download your CBG Field Guides
+    - Set up your bonus certificate accounts (start with IBM SkillsBuild)
+
+support:
+  heading: Questions? Talk to us
+  body: If you can't log in, can't find a class link or have any question about your course, message us. We're happy to help.
+  whatsapp:
+    label: WhatsApp
+    number: "+974 7048 5638"
+    href: https://wa.me/97470485638
+  emails:
+    - label: Email
+      address: safety.training@carbonblueglobal.com
+      href: mailto:safety.training@carbonblueglobal.com
+    - label: General enquiries
+      address: info@carbonblueglobal.com
+      href: mailto:info@carbonblueglobal.com
+
+about:
+  heading: About CBG Training Institute
+  body: >-
+    CBG Training Institute is the training arm of Carbon Blue Global, a Doha-based engineering services company.
+    It works with contractors, consultants and project teams across Qatar and the GCC on BIM, quantity surveying, shop drawings, design and corporate training.
+    As an IOSH Approved Study Centre (Centre 1003), CBG brings live-project experience into professional qualifications, taught by practitioners who have run safety on real sites.
+  # Words from the body shown in bold (as in the copy deck).
+  highlight: IOSH Approved Study Centre (Centre 1003)
+  # Logo files in brand/assets/, used as supplied.
+  logos:
+    - cbg-mark-512.png
+    - iosh-1003-white.png
+  link:
+    label: www.carbonblueglobal.com
+    href: https://www.carbonblueglobal.com
+
+footer-note:
+  text: © Carbon Blue Global. This site is for enrolled CBG students. Course names and certificates belong to their awarding bodies.
