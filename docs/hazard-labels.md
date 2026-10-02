@@ -1,4 +1,4 @@
-# Hazard Scan labels: draft for trainer sign-off
+# Hazard Scan labels (trainer approved)
 
 **Status:** APPROVED. A CBG trainer signed off all six labels and explanations as written (relayed by Maasoom, 2 Oct 2026). No changes; no need to match IOSH terminology. They go into `content/courses/iosh-level-3.yaml` (`hero.hazards`) in T22.
 **Photo:** `brand/assets/photos/hazard-worksite.png` (AI-generated for CBG, staged on purpose).
