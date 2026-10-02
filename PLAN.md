@@ -5,7 +5,7 @@
 
 ## Progress
 - [x] T1 scaffold · [x] T2 content YAML · [x] T3 routing · [x] T4 loader + mock · [x] T5 Pages · [x] T6 live probe (`docs/platform-findings.md`) · [x] T8 art direction (`docs/art-direction.md`)
-- [ ] Foundation checkpoint (Maasoom) · [ ] T7 directions · [ ] T9 tokens · [ ] T10 images
+- [x] Foundation checkpoint: loader pasted into All Pages and verified live (2 Oct) · [ ] T7 directions · [ ] T9 tokens · [ ] T10 images
 
 ## Overview
 The work runs in this order:
