@@ -26,7 +26,7 @@
   --cbg-btn-text: #081226;
 
   /* type */
-  --cbg-font-display: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cbg-font-display: "Plus Jakarta Sans", cbg-pjs-fb, system-ui, -apple-system, "Segoe UI", sans-serif; /* cbg-pjs-fb: critical.css */
   --cbg-font-body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
   --cbg-fs-display: clamp(2.5rem, 5vw, 4rem);     /* 40 to 64px */
   --cbg-fs-h2: clamp(1.75rem, 3.4vw, 2.5rem);     /* 28 to 40px */
