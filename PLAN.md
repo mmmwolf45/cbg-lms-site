@@ -5,7 +5,9 @@
 
 ## Progress
 - [x] T1 scaffold · [x] T2 content YAML · [x] T3 routing · [x] T4 loader + mock · [x] T5 Pages · [x] T6 live probe (`docs/platform-findings.md`) · [x] T8 art direction (`docs/art-direction.md`)
-- [x] Foundation checkpoint: loader pasted into All Pages and verified live (2 Oct) · [ ] T7 directions · [ ] T9 tokens · [ ] T10 images
+- [x] Foundation checkpoint: loader pasted into All Pages and verified live (2 Oct) · [x] T7 directions (B + A touches, navy-black canvas) · [x] T9 tokens + gallery · [x] T10 images
+- [x] T11-T12 home block · [x] T13 native home · [x] T14 motion · [ ] T15 hero · [ ] T16 interactions · [ ] T17 e2e · [ ] T18-T19 course blocks · [ ] T20 native course
+- Hazard labels drafted for trainer sign-off: `docs/hazard-labels.md`
 
 ## Overview
 The work runs in this order:
