@@ -27,7 +27,15 @@
 }
 .cbg-hero__media, .cbg-hero__media img, .cbg-hero__lines { width: 100%; height: 100%; }
 .cbg-hero__media img { object-fit: cover; }
-.cbg-hero__lines { position: absolute; inset: 0; overflow: visible; }
+/* Blueprint lines (src/motion/blueprint.ts fills the svg; its viewBox matches the photo's crop, and
+   xMidYMid slice matches object-fit: cover, so they sit on the steel). Clipped like the photo. */
+.cbg-hero__lines { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.cbg-hero__lines line { fill: none; stroke: var(--cbg-gold); }
+/* Until the lines have drawn, the photo waits in the dark: a filter, never opacity (it is the LCP image).
+   Full motion with JS only; reduced motion, no JS and cbg-off show it lit. Mirrors DARK in blueprint.ts. */
+@media (prefers-reduced-motion: no-preference) {
+  html.cbg-js .cbg-hero__visual:not(.cbg-done) .cbg-hero__media { filter: brightness(0.35) saturate(0.7); }
+}
 @media (min-width: 640px) and (max-width: 1023px) { .cbg-hero__visual { aspect-ratio: 3 / 2; } }
 
 @media (min-width: 1024px) {

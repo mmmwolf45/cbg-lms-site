@@ -11,13 +11,6 @@ import './styles/native-overrides.css';
 import { detectPage, routeOf, type Page } from './pages';
 import { watchRoutes } from './router';
 import { failOpen, setupMotion, type Enhancer } from './motion/setup';
-import { blueprint } from './motion/blueprint';
-import { ticks } from './motion/ticks';
-import { loginAction } from './actions';
-import { hazardScan } from './motion/hazard-scan';
-import { build80 } from './motion/build80';
-import { courseExtras } from './motion/course-extras';
-import { startHere } from './motion/start-here';
 
 export type Teardown = () => void;
 export type Setups = Record<Page['kind'], (page: Page) => Teardown>;
@@ -33,9 +26,34 @@ const motion = (enhancers: Enhancer[]) => () => {
     return () => {};
   }
 };
+// Page-specific enhancers live in their own chunk (one extra request, cached after the first page),
+// so each page stays inside the 60 KB budget. A teardown before the chunk arrives cancels it.
+const later = (load: () => Promise<{ enhancers: Enhancer[] }>): Enhancer => (roots) => {
+  let undo: (() => void)[] = [];
+  let dead = false;
+  load()
+    .then(({ enhancers }) => {
+      if (dead) return;
+      for (const enhance of enhancers) {
+        try {
+          const u = enhance(roots);
+          if (u) undo.push(u);
+        } catch (err) {
+          console.warn('[cbg]', err);
+        }
+      }
+    })
+    .catch((err) => console.warn('[cbg]', err));
+  return () => {
+    dead = true;
+    undo.forEach((f) => f());
+    undo = [];
+  };
+};
+
 const setups: Setups = {
-  home: motion([blueprint, ticks, loginAction]),
-  course: motion([hazardScan, build80, courseExtras, startHere]),
+  home: motion([later(() => import('./page-enhancers/home'))]),
+  course: motion([later(() => import('./page-enhancers/course'))]),
   none: noop,
 };
 
