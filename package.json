@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "npm run build && npm run serve",
-    "build": "npm run content:check && tsc --noEmit && vite build && tsx scripts/build-loader.ts && tsx scripts/build-preview.ts",
+    "build": "npm run content:check && tsc --noEmit && vite build && tsx scripts/build-blocks.ts && tsx scripts/build-loader.ts && tsx scripts/build-preview.ts && tsx scripts/check-size.ts",
     "serve": "tsx scripts/serve.ts",
     "test": "vitest run",
     "content:check": "tsx scripts/content-check.ts",
     "images": "tsx scripts/images.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "check:size": "tsx scripts/check-size.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

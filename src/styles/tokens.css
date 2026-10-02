@@ -1,12 +1,12 @@
-/* CBG design tokens: direction B (Night editorial) with two touches from A (Blueprint):
+/* CBG design tokens: direction B (Night editorial) on a navy-black canvas, with two touches from A (Blueprint):
    the gold thread joining steps, and gold corner marks on framed media. Chosen 2 Oct 2026.
    Custom properties only (all prefixed --cbg-), so nothing here can style course.link's elements.
    Motion durations and eases are mirrored in src/motion/tokens.ts because GSAP can't read CSS vars. */
 :root {
   /* colour: canvas and surfaces */
-  --cbg-bg: #07090F;
-  --cbg-bg-2: #0B0F19;
-  --cbg-surface: #11141C;
+  --cbg-bg: #081226;                              /* navy-black: photo skies fade into it (chosen 2 Oct) */
+  --cbg-bg-2: #0A162D;
+  --cbg-surface: #0F1B33;
   --cbg-glass: rgba(255, 255, 255, 0.035);
   --cbg-line: rgba(255, 255, 255, 0.09);
   --cbg-line-strong: rgba(255, 255, 255, 0.16);
@@ -23,7 +23,7 @@
 
   /* colour: actions */
   --cbg-btn: #F3F5F9;
-  --cbg-btn-text: #07090F;
+  --cbg-btn-text: #081226;
 
   /* type */
   --cbg-font-display: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;

@@ -1,6 +1,9 @@
 import './styles/tokens.css';
 import './styles/base.css';
 import './styles/components.css';
+import './styles/home.css';
+import './styles/motion.css';
+import './styles/native-overrides.css';
 import { detectPage, routeOf, type Page } from './pages';
 import { watchRoutes } from './router';
 

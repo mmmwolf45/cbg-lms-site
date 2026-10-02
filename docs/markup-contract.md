@@ -1,0 +1,33 @@
+# Markup contract (templates ↔ styles ↔ motion)
+
+Templates (T11, T12, T18+) produce static HTML. Styles and motion (T13, T14+) only find things through the hooks below. Change a hook here first, then in code.
+
+## Block roots
+- Each Custom Block is one root: `<div data-cbg="<block>" class="cbg-block">`. Block names: `home`, `iosh-level-3-top`, `iosh-level-3-main` (course blocks: `<slug>-top`, `<slug>-main`).
+- Nothing we style or animate lives outside a `[data-cbg]` root, except the native selectors in SPEC section 6.
+- Ids are prefixed `cbg-`. Never rely on ids for motion; use the data hooks.
+
+## Sections
+- `<section id="cbg-<section-id>" class="cbg-section" data-cbg-section="<section-id>">`, using the section ids from `content/*.yaml`.
+- Headings: the home hero headline is the page's only `h1`; section headings are `h2`; cards and steps are `h3`.
+- A two-tone heading wraps the dimmed part in `<span class="cbg-dim">`.
+
+## Motion hooks (all optional; content must read fully without them)
+| Hook | On | Behaviour (T14 and later) |
+|---|---|---|
+| `data-cbg-reveal` | any element | Rises 16px and fades in once when it enters the viewport. |
+| `data-cbg-reveal="stagger"` | a parent | Its direct children reveal one after another (70 ms apart). |
+| `data-cbg-thread` | `.cbg-steps` list (or any element with `.cbg-node` children) | The gold thread draws with scroll; each `.cbg-node` gets `is-lit` when the thread reaches it. |
+| `data-cbg-count="<number>"` | an element whose text is the final number (e.g. `<b data-cbg-count="80">80</b>`) | Counts up from 0 when in view. Prefix/suffix text sits outside the element. Screen readers get the final value (the element keeps `aria-label` with it while counting). |
+| `data-cbg-ticks` | the `first-steps` list | Each item's `.cbg-tick` SVG path draws in sequence (T16). |
+| `data-cbg-hero` | the home hero section | Holds `.cbg-hero__media` (the `<picture>`) and an empty `<svg class="cbg-hero__lines">` for the blueprint lines (T15). |
+| `data-cbg-action="login"` | the hero Log in link (`href="#navbar"`) | Clicks course.link's own navbar Login button (T16). |
+
+## Pre-animation states
+- Hidden starting states are CSS under `html.cbg-js` only (in `src/styles/motion.css`) and never under `prefers-reduced-motion: reduce`.
+- If page setup throws, the bundle removes `cbg-js`, so hidden content can't stay hidden.
+
+## Images
+- Built by `npm run images` into `public/img/`; `src/images.json` lists every variant with width, height and bytes.
+- Templates render `<picture>` with AVIF and WebP `<source>`s plus a JPEG `<img>` carrying `width`/`height` (no layout shift) and absolute URLs on the Pages base (`https://mmmwolf45.github.io/cbg-lms-site/img/...`), because blocks are pasted into course.link.
+- Above-the-fold hero images: `fetchpriority="high"`, no lazy loading. Everything else: `loading="lazy" decoding="async"`.

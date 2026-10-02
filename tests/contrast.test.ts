@@ -19,6 +19,17 @@ const PAIRS = [
   ['btn-text', 'btn'],
 ];
 
+describe('final tokens (T9) pass AA contrast', () => {
+  const css = readFileSync('src/styles/tokens.css', 'utf8');
+  const t = Object.fromEntries([...css.matchAll(/--cbg-([\w-]+):\s*(#[0-9A-Fa-f]{6})\b/g)].map((m) => [m[1], m[2]]));
+  it.each([
+    ['text-1', 'bg'], ['text-2', 'bg'], ['text-3', 'bg'], ['gold', 'bg'],
+    ['text-1', 'bg-2'], ['text-2', 'bg-2'], ['text-3', 'bg-2'], ['gold', 'bg-2'],
+    ['text-1', 'surface'], ['text-2', 'surface'], ['text-3', 'surface'], ['gold', 'surface'],
+    ['btn-text', 'btn'],
+  ])('%s on %s', (fg, bg) => expect(contrast(t[fg], t[bg])).toBeGreaterThanOrEqual(4.5));
+});
+
 describe('visual directions (T7) pass AA contrast', () => {
   const html = readFileSync('public/directions/index.html', 'utf8');
   const blocks = [...html.matchAll(/\[data-dir="(\w)"\] \{([^}]+)\}/g)];
