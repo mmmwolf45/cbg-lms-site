@@ -6,7 +6,10 @@
 ## Progress
 - [x] T1 scaffold · [x] T2 content YAML · [x] T3 routing · [x] T4 loader + mock · [x] T5 Pages · [x] T6 live probe (`docs/platform-findings.md`) · [x] T8 art direction (`docs/art-direction.md`)
 - [x] Foundation checkpoint: loader pasted into All Pages and verified live (2 Oct) · [x] T7 directions (B + A touches, navy-black canvas) · [x] T9 tokens + gallery · [x] T10 images
-- [x] T11-T12 home block · [x] T13 native home · [x] T14 motion · [ ] T15 hero · [ ] T16 interactions · [ ] T17 e2e · [ ] T18-T19 course blocks · [ ] T20 native course
+- [x] T11-T12 home block · [x] T13 native home · [x] T14 motion · [x] T15 hero · [x] T16 interactions · [x] T17 e2e · [x] T18-T19 course blocks · [x] T20 native course
+- [x] T21 Start here + FAQ · [x] T22 Hazard Scan · [x] T23 hand · [x] T24 80-hour build · [x] T25 small motions · [x] T26 course suite (in quality/e2e specs, live checks)
+- [x] Pre-launch code review + over-engineering review, all must/should-fix items done
+- [ ] Go-live (docs/go-live.md): Maasoom's go · [ ] Logged-in check (test student account) · [ ] T27-T28 template generalisation
 - Hazard labels drafted for trainer sign-off: `docs/hazard-labels.md`
 
 ## Overview
