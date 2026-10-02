@@ -1,1 +1,53 @@
-/* Filled in by its task (see src/motion/*). Course motion styles, scoped to .cbg-course-page. */
+/* T23 + T25 course motion (src/motion/course-extras.ts). Hidden starting states only while JS runs
+   (html.cbg-js) with motion allowed, and never once an element is .cbg-done. Without JS or under
+   reduced motion everything shows its final designed state. */
+
+/* Quadrant pies: the ring is drawn from 12 o'clock (circumference 2 x pi x 8 = 50.3). */
+.cbg-course-page .cbg-quads .cbg-pie circle { stroke-dasharray: 51; transform: rotate(-90deg); transform-origin: 12px 12px; }
+.cbg-course-page .cbg-quads .cbg-pie path { transform-origin: 12px 12px; }
+.cbg-course-page .cbg-quads li:nth-child(2) { --cbg-d: 0.22s; }
+.cbg-course-page .cbg-quads li:nth-child(3) { --cbg-d: 0.44s; }
+.cbg-course-page .cbg-quads li:nth-child(4) { --cbg-d: 0.66s; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* What you leave with: the hand (laptop) or the slide-ins (phone) start hidden; JS shows the hand. */
+  html.cbg-js .cbg-course-page [data-cbg-hand]:not(.cbg-done) > :not(.cbg-done),
+  html.cbg-js .cbg-course-page [data-cbg-shelf]:not(.cbg-done) .cbg-cover { opacity: 0; }
+  /* The glass cards are almost transparent, so while they overlap in the hand they get the opaque colour
+     they composite to anyway (3.5% white over the page): no see-through text, no change when they land. */
+  html.cbg-js .cbg-course-page [data-cbg-hand]:not(.cbg-done) > * { background-color: color-mix(in srgb, var(--cbg-bg), #fff 3.5%); }
+
+  /* Assessment cards slide in from opposite sides (GSAP x, beside reveal.ts). overflow-x: clip keeps the
+     sliding card from widening the page; unlike hidden, it doesn't make a scroll container. */
+  html.cbg-js .cbg-course-page .cbg-exams:not(.cbg-done) { overflow-x: clip; }
+
+  /* Quadrants fill one after another: the ring draws, the quarter grows, then the name and count rise. */
+  html.cbg-js .cbg-course-page .cbg-quads:not(.cbg-done) li > :not(svg) { opacity: 0; transform: translateY(12px); }
+  html.cbg-js .cbg-course-page .cbg-quads:not(.cbg-done) .cbg-pie circle { stroke-dashoffset: 51; }
+  html.cbg-js .cbg-course-page .cbg-quads:not(.cbg-done) .cbg-pie path { transform: scale(0); }
+  .cbg-course-page .cbg-quads.cbg-done .cbg-pie circle { transition: stroke-dashoffset 0.7s var(--cbg-ease) var(--cbg-d, 0s); }
+  .cbg-course-page .cbg-quads.cbg-done .cbg-pie path { transition: transform 0.5s var(--cbg-ease) calc(var(--cbg-d, 0s) + 0.4s); }
+  .cbg-course-page .cbg-quads.cbg-done li > :not(svg) {
+    transition: opacity var(--cbg-dur) var(--cbg-ease) calc(var(--cbg-d, 0s) + 0.15s),
+      transform var(--cbg-dur) var(--cbg-ease) calc(var(--cbg-d, 0s) + 0.15s);
+  }
+
+  /* Phones: the cards slide in from beyond the column's edges, clipped so the page never widens. */
+  @container cbgc (max-width: 539.98px) {
+    html.cbg-js .cbg-course-page [data-cbg-hand]:not(.cbg-done) { overflow-x: clip; }
+  }
+}
+
+/* Field guides on laptop: Guide 01 lifts on hover or when the shelf has keyboard focus. `translate`
+   composes with the cover's designed rotate transform (course.css) and with GSAP's. */
+@media (prefers-reduced-motion: no-preference) {
+  @container cbgc (min-width: 788px) {
+    .cbg-course-page .cbg-cover--out { transition: translate var(--cbg-dur-fast) var(--cbg-ease), box-shadow var(--cbg-dur-fast) var(--cbg-ease); }
+    .cbg-course-page .cbg-shelf:focus-visible .cbg-cover--out { translate: 0 -8px; }
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  @container cbgc (min-width: 788px) {
+    .cbg-course-page .cbg-cover--out:hover { translate: 0 -8px; box-shadow: 0 26px 44px -18px rgba(0, 0, 0, 0.9); }
+  }
+}
