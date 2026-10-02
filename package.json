@@ -9,6 +9,7 @@
     "serve": "tsx scripts/serve.ts",
     "test": "vitest run",
     "content:check": "tsx scripts/content-check.ts",
+    "images": "tsx scripts/images.ts",
     "test:e2e": "playwright test"
   },
   "devDependencies": {

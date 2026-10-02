@@ -136,7 +136,7 @@ Lock the chosen direction into `src/styles/tokens.css` and `src/motion/tokens.ts
 - **Depends on:** T7 + Maasoom's pick
 
 ### T10. Image pipeline · S
-`scripts/images.ts` (sharp) turns `brand/assets/photos/*` and trainer photos into AVIF/WebP/JPEG at the needed widths, plus the navy duotone for trainers, written to `public/img/`. Credits rows go into `CREDITS.md`.
+`scripts/images.ts` (sharp) turns `brand/assets/photos/*` and trainer photos into AVIF/WebP/JPEG at the needed widths, written to `public/img/` with a manifest at `src/images.json`. (Trainer duotone is done in CSS instead, so the hover can fade back to colour without a second image.). Credits rows go into `CREDITS.md`.
 - **Acceptance:** hero images are within budget (250 KB laptop / 120 KB phone); trainer duotones look right at 112px.
 - **Verify:** `npm run images`, check the file sizes, view them in the gallery.
 - **Files:** `scripts/images.ts`, `brand/assets/CREDITS.md`

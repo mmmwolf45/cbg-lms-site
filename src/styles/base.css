@@ -1,4 +1,22 @@
-/* Base styles for our own block roots. Nothing here may match course.link's elements. */
+/* Base styles for our own block roots. Every selector starts at [data-cbg], so nothing here can
+   match course.link's elements. course.link's Tailwind preflight already resets margins and lists. */
 [data-cbg] {
   box-sizing: border-box;
+  background: var(--cbg-bg);
+  color: var(--cbg-text-2);
+  font: 400 var(--cbg-fs-body) / 1.6 var(--cbg-font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+[data-cbg] *, [data-cbg] *::before, [data-cbg] *::after { box-sizing: inherit; }
+[data-cbg] :where(h1, h2, h3, h4) { margin: 0; color: var(--cbg-text-1); font-family: var(--cbg-font-display); text-wrap: balance; }
+[data-cbg] :where(p, ul, ol, figure, blockquote) { margin: 0; }
+[data-cbg] :where(img, svg, picture) { display: block; max-width: 100%; height: auto; }
+[data-cbg] :where(a) { color: inherit; }
+[data-cbg] :where(a, button, summary):focus-visible { outline: 2px solid var(--cbg-gold); outline-offset: 3px; border-radius: 4px; }
+[data-cbg] ::selection { background: var(--cbg-gold); color: var(--cbg-bg); }
+
+.cbg-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }

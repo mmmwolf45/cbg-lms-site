@@ -1,0 +1,317 @@
+{
+  "hero-structure": {
+    "width": 1536,
+    "height": 1024,
+    "variants": {
+      "avif": [
+        {
+          "w": 1536,
+          "file": "img/hero-structure-1536.avif",
+          "bytes": 54502
+        },
+        {
+          "w": 1024,
+          "file": "img/hero-structure-1024.avif",
+          "bytes": 28939
+        }
+      ],
+      "webp": [
+        {
+          "w": 1536,
+          "file": "img/hero-structure-1536.webp",
+          "bytes": 97594
+        },
+        {
+          "w": 1024,
+          "file": "img/hero-structure-1024.webp",
+          "bytes": 50764
+        }
+      ],
+      "jpg": [
+        {
+          "w": 1536,
+          "file": "img/hero-structure-1536.jpg",
+          "bytes": 124855
+        },
+        {
+          "w": 1024,
+          "file": "img/hero-structure-1024.jpg",
+          "bytes": 61635
+        }
+      ]
+    }
+  },
+  "hero-structure-phone": {
+    "width": 900,
+    "height": 675,
+    "crop": {
+      "left": 171,
+      "top": 0,
+      "width": 1365,
+      "height": 1024
+    },
+    "variants": {
+      "avif": [
+        {
+          "w": 900,
+          "file": "img/hero-structure-phone-900.avif",
+          "bytes": 28633
+        },
+        {
+          "w": 600,
+          "file": "img/hero-structure-phone-600.avif",
+          "bytes": 15138
+        }
+      ],
+      "webp": [
+        {
+          "w": 900,
+          "file": "img/hero-structure-phone-900.webp",
+          "bytes": 49450
+        },
+        {
+          "w": 600,
+          "file": "img/hero-structure-phone-600.webp",
+          "bytes": 24730
+        }
+      ],
+      "jpg": [
+        {
+          "w": 900,
+          "file": "img/hero-structure-phone-900.jpg",
+          "bytes": 59287
+        },
+        {
+          "w": 600,
+          "file": "img/hero-structure-phone-600.jpg",
+          "bytes": 29026
+        }
+      ]
+    }
+  },
+  "hazard-worksite": {
+    "width": 1536,
+    "height": 1024,
+    "variants": {
+      "avif": [
+        {
+          "w": 1536,
+          "file": "img/hazard-worksite-1536.avif",
+          "bytes": 118942
+        },
+        {
+          "w": 1024,
+          "file": "img/hazard-worksite-1024.avif",
+          "bytes": 65337
+        },
+        {
+          "w": 768,
+          "file": "img/hazard-worksite-768.avif",
+          "bytes": 39276
+        }
+      ],
+      "webp": [
+        {
+          "w": 1536,
+          "file": "img/hazard-worksite-1536.webp",
+          "bytes": 209322
+        },
+        {
+          "w": 1024,
+          "file": "img/hazard-worksite-1024.webp",
+          "bytes": 117540
+        },
+        {
+          "w": 768,
+          "file": "img/hazard-worksite-768.webp",
+          "bytes": 72634
+        }
+      ],
+      "jpg": [
+        {
+          "w": 1536,
+          "file": "img/hazard-worksite-1536.jpg",
+          "bytes": 247039
+        },
+        {
+          "w": 1024,
+          "file": "img/hazard-worksite-1024.jpg",
+          "bytes": 124644
+        },
+        {
+          "w": 768,
+          "file": "img/hazard-worksite-768.jpg",
+          "bytes": 73614
+        }
+      ]
+    }
+  },
+  "closing-plate": {
+    "width": 1536,
+    "height": 1024,
+    "variants": {
+      "avif": [
+        {
+          "w": 1536,
+          "file": "img/closing-plate-1536.avif",
+          "bytes": 37358
+        },
+        {
+          "w": 800,
+          "file": "img/closing-plate-800.avif",
+          "bytes": 13854
+        }
+      ],
+      "webp": [
+        {
+          "w": 1536,
+          "file": "img/closing-plate-1536.webp",
+          "bytes": 46354
+        },
+        {
+          "w": 800,
+          "file": "img/closing-plate-800.webp",
+          "bytes": 15472
+        }
+      ],
+      "jpg": [
+        {
+          "w": 1536,
+          "file": "img/closing-plate-1536.jpg",
+          "bytes": 54275
+        },
+        {
+          "w": 800,
+          "file": "img/closing-plate-800.jpg",
+          "bytes": 16748
+        }
+      ]
+    }
+  },
+  "trainer-ali-orkkatteri": {
+    "width": 224,
+    "height": 224,
+    "variants": {
+      "avif": [
+        {
+          "w": 224,
+          "file": "img/trainer-ali-orkkatteri-224.avif",
+          "bytes": 3004
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-ali-orkkatteri-112.avif",
+          "bytes": 1299
+        }
+      ],
+      "webp": [
+        {
+          "w": 224,
+          "file": "img/trainer-ali-orkkatteri-224.webp",
+          "bytes": 3558
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-ali-orkkatteri-112.webp",
+          "bytes": 1438
+        }
+      ],
+      "jpg": [
+        {
+          "w": 224,
+          "file": "img/trainer-ali-orkkatteri-224.jpg",
+          "bytes": 5102
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-ali-orkkatteri-112.jpg",
+          "bytes": 2045
+        }
+      ]
+    }
+  },
+  "trainer-elman-aloysius": {
+    "width": 224,
+    "height": 224,
+    "variants": {
+      "avif": [
+        {
+          "w": 224,
+          "file": "img/trainer-elman-aloysius-224.avif",
+          "bytes": 3281
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-elman-aloysius-112.avif",
+          "bytes": 1384
+        }
+      ],
+      "webp": [
+        {
+          "w": 224,
+          "file": "img/trainer-elman-aloysius-224.webp",
+          "bytes": 4398
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-elman-aloysius-112.webp",
+          "bytes": 1732
+        }
+      ],
+      "jpg": [
+        {
+          "w": 224,
+          "file": "img/trainer-elman-aloysius-224.jpg",
+          "bytes": 6052
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-elman-aloysius-112.jpg",
+          "bytes": 2401
+        }
+      ]
+    }
+  },
+  "trainer-ramshad-kk": {
+    "width": 224,
+    "height": 224,
+    "variants": {
+      "avif": [
+        {
+          "w": 224,
+          "file": "img/trainer-ramshad-kk-224.avif",
+          "bytes": 3060
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-ramshad-kk-112.avif",
+          "bytes": 1334
+        }
+      ],
+      "webp": [
+        {
+          "w": 224,
+          "file": "img/trainer-ramshad-kk-224.webp",
+          "bytes": 3578
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-ramshad-kk-112.webp",
+          "bytes": 1486
+        }
+      ],
+      "jpg": [
+        {
+          "w": 224,
+          "file": "img/trainer-ramshad-kk-224.jpg",
+          "bytes": 5250
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-ramshad-kk-112.jpg",
+          "bytes": 2172
+        }
+      ]
+    }
+  }
+}

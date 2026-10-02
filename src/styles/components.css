@@ -1,0 +1,108 @@
+/* Shared components. All classes are cbg- prefixed and only used inside [data-cbg] roots. */
+
+/* Layout */
+.cbg-wrap { max-width: var(--cbg-col-site); margin: 0 auto; padding: 0 var(--cbg-gutter); }
+.cbg-section { padding-top: var(--cbg-section); }
+.cbg-section-head { margin-bottom: var(--cbg-s6); max-width: 46rem; }
+.cbg-section-head > p { margin-top: var(--cbg-s4); max-width: 62ch; }
+
+/* Type */
+.cbg-display { font-size: var(--cbg-fs-display); font-weight: 800; line-height: 1.04; letter-spacing: -0.035em; }
+.cbg-h2 { font-size: var(--cbg-fs-h2); font-weight: 800; line-height: 1.1; letter-spacing: -0.025em; }
+.cbg-h3 { font-size: var(--cbg-fs-h3); font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; }
+.cbg-dim { color: var(--cbg-text-3); }
+.cbg-gold { color: var(--cbg-gold); }
+.cbg-lead { font-size: var(--cbg-fs-lead); line-height: 1.5; max-width: 34ch; }
+.cbg-tag { font: 600 var(--cbg-fs-label) / 1.4 var(--cbg-font-display); color: var(--cbg-gold); }
+.cbg-small { font-size: var(--cbg-fs-small); color: var(--cbg-text-3); }
+
+/* Chip: a quiet outlined pill for facts and labels */
+.cbg-chip {
+  display: inline-flex; align-items: center; min-height: 32px; padding: 4px 12px;
+  border: 1px solid var(--cbg-line-strong); border-radius: var(--cbg-r-pill);
+  font: 600 var(--cbg-fs-label) / 1.3 var(--cbg-font-display); color: var(--cbg-text-2);
+}
+.cbg-chips { display: flex; flex-wrap: wrap; gap: var(--cbg-s2); }
+
+/* Buttons: one primary (light pill) and one ghost per group */
+.cbg-btns { display: flex; flex-wrap: wrap; gap: var(--cbg-s3); }
+.cbg-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 48px; padding: 0 var(--cbg-s5); border: 1px solid transparent; border-radius: var(--cbg-r-pill);
+  font: 700 1rem / 1 var(--cbg-font-display); text-decoration: none; white-space: nowrap; cursor: pointer;
+  transition: transform var(--cbg-dur-fast) var(--cbg-ease), background-color var(--cbg-dur-fast), border-color var(--cbg-dur-fast);
+}
+.cbg-btn:active { transform: translateY(1px) scale(0.98); }
+.cbg-btn svg { width: 18px; height: 18px; transition: transform var(--cbg-dur-fast) var(--cbg-ease); }
+.cbg-btn:hover svg { transform: translateX(3px); }
+.cbg-btn--primary { background: var(--cbg-btn); color: var(--cbg-btn-text); }
+.cbg-btn--primary:hover { background: #ffffff; }
+.cbg-btn--ghost { border-color: var(--cbg-line-strong); color: var(--cbg-text-1); background: transparent; }
+.cbg-btn--ghost:hover { border-color: var(--cbg-gold-line); }
+@media (max-width: 479px) { .cbg-btns .cbg-btn { flex: 1 1 100%; } }
+
+/* Cards: frosted glass on the dark canvas; the featured card gets a gold edge */
+.cbg-card {
+  position: relative; padding: var(--cbg-s5); border: 1px solid var(--cbg-line); border-radius: var(--cbg-r-card);
+  background: var(--cbg-glass);
+}
+@supports (backdrop-filter: blur(1px)) { .cbg-card { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); } }
+@media (min-width: 768px) { .cbg-card { padding: var(--cbg-s6); } }
+.cbg-card--feat { border-color: var(--cbg-gold-line); }
+.cbg-card > * + * { margin-top: var(--cbg-s3); }
+
+/* Framed media (touch from A): rounded media with two gold corner marks */
+.cbg-frame { position: relative; border-radius: var(--cbg-r-media); }
+.cbg-frame > :first-child { border-radius: inherit; overflow: hidden; }
+.cbg-frame::before, .cbg-frame::after {
+  content: ""; position: absolute; width: var(--cbg-mark); height: var(--cbg-mark);
+  border: 2px solid var(--cbg-gold); pointer-events: none;
+}
+.cbg-frame::before { top: -6px; left: -6px; border-right: 0; border-bottom: 0; border-top-left-radius: 6px; }
+.cbg-frame::after { bottom: -6px; right: -6px; border-left: 0; border-top: 0; border-bottom-right-radius: 6px; }
+
+/* Steps joined by the gold thread (touch from A). Vertical on phones, horizontal from 1024px. */
+.cbg-steps { position: relative; display: grid; gap: var(--cbg-s6); list-style: none; padding: 0; }
+.cbg-steps::before {
+  content: ""; position: absolute; left: 19px; top: 20px; bottom: 20px; width: 1px;
+  background: linear-gradient(var(--cbg-gold), rgba(214, 177, 96, 0));
+}
+.cbg-step { position: relative; padding-left: 60px; }
+.cbg-step > p { margin-top: var(--cbg-s2); max-width: 40ch; }
+.cbg-node {
+  position: absolute; left: 0; top: 0; z-index: 1; display: grid; place-items: center; width: 40px; height: 40px;
+  border: 1px solid var(--cbg-gold); border-radius: 50%; background: var(--cbg-bg);
+  font: 700 0.9375rem / 1 var(--cbg-font-display); color: var(--cbg-gold);
+}
+@media (min-width: 1024px) {
+  .cbg-steps { grid-template-columns: repeat(3, 1fr); gap: var(--cbg-s7); }
+  .cbg-steps::before { left: 20px; right: 20px; top: 20px; bottom: auto; width: auto; height: 1px;
+    background: linear-gradient(90deg, var(--cbg-gold), rgba(214, 177, 96, 0)); }
+  .cbg-step { padding: 64px 0 0; }
+}
+
+/* Facts: a hairline grid of big numbers */
+.cbg-facts {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; overflow: hidden;
+  border: 1px solid var(--cbg-line); border-radius: var(--cbg-r-card); background: var(--cbg-line);
+}
+@media (min-width: 640px) { .cbg-facts { grid-template-columns: repeat(3, 1fr); } }
+.cbg-fact { padding: var(--cbg-s4) var(--cbg-s5); background: var(--cbg-bg); }
+.cbg-fact b { display: block; font: 800 2rem / 1.1 var(--cbg-font-display); letter-spacing: -0.02em; color: var(--cbg-text-1); }
+.cbg-fact span { font-size: var(--cbg-fs-small); color: var(--cbg-text-3); }
+.cbg-fact--text b { font-size: 1.0625rem; padding-top: 10px; }
+
+/* FAQ: native <details>, hairline dividers, gold plus that turns into a cross */
+.cbg-faq { border-top: 1px solid var(--cbg-line); }
+.cbg-faq details { border-bottom: 1px solid var(--cbg-line); }
+.cbg-faq summary {
+  display: flex; justify-content: space-between; gap: var(--cbg-s4); padding: 20px 0; cursor: pointer; list-style: none;
+  font: 700 1.0625rem / 1.4 var(--cbg-font-display); color: var(--cbg-text-1);
+}
+.cbg-faq summary::-webkit-details-marker { display: none; }
+.cbg-faq summary::after {
+  content: "+"; flex: none; font-size: 1.5rem; line-height: 1; color: var(--cbg-gold);
+  transition: transform var(--cbg-dur-fast) var(--cbg-ease);
+}
+.cbg-faq details[open] summary::after { transform: rotate(45deg); }
+.cbg-faq details > p { padding-bottom: 20px; max-width: 62ch; }

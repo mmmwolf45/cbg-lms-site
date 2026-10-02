@@ -1,4 +1,6 @@
+import './styles/tokens.css';
 import './styles/base.css';
+import './styles/components.css';
 import { detectPage, routeOf, type Page } from './pages';
 import { watchRoutes } from './router';
 

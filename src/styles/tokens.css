@@ -1,0 +1,66 @@
+/* CBG design tokens: direction B (Night editorial) with two touches from A (Blueprint):
+   the gold thread joining steps, and gold corner marks on framed media. Chosen 2 Oct 2026.
+   Custom properties only (all prefixed --cbg-), so nothing here can style course.link's elements.
+   Motion durations and eases are mirrored in src/motion/tokens.ts because GSAP can't read CSS vars. */
+:root {
+  /* colour: canvas and surfaces */
+  --cbg-bg: #07090F;
+  --cbg-bg-2: #0B0F19;
+  --cbg-surface: #11141C;
+  --cbg-glass: rgba(255, 255, 255, 0.035);
+  --cbg-line: rgba(255, 255, 255, 0.09);
+  --cbg-line-strong: rgba(255, 255, 255, 0.16);
+  --cbg-glow: rgba(32, 55, 105, 0.45);           /* brand navy #203769 as light, never as a flat fill */
+
+  /* colour: text at three strengths */
+  --cbg-text-1: #F3F5F9;                          /* headlines */
+  --cbg-text-2: #C0C6D2;                          /* body */
+  --cbg-text-3: #8F96A5;                          /* labels, dimmed headline lines */
+
+  /* colour: the one accent, used rarely */
+  --cbg-gold: #D6B160;
+  --cbg-gold-line: rgba(214, 177, 96, 0.55);
+
+  /* colour: actions */
+  --cbg-btn: #F3F5F9;
+  --cbg-btn-text: #07090F;
+
+  /* type */
+  --cbg-font-display: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cbg-font-body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cbg-fs-display: clamp(2.5rem, 5vw, 4rem);     /* 40 to 64px */
+  --cbg-fs-h2: clamp(1.75rem, 3.4vw, 2.5rem);     /* 28 to 40px */
+  --cbg-fs-h3: 1.25rem;
+  --cbg-fs-lead: clamp(1.125rem, 1.6vw, 1.25rem);
+  --cbg-fs-body: 1.0625rem;                       /* 17px: Source Sans 3 runs small */
+  --cbg-fs-small: 0.9375rem;
+  --cbg-fs-label: 0.875rem;
+
+  /* space (4px base) */
+  --cbg-s1: 4px; --cbg-s2: 8px; --cbg-s3: 12px; --cbg-s4: 16px; --cbg-s5: 24px;
+  --cbg-s6: 32px; --cbg-s7: 48px; --cbg-s8: 64px; --cbg-s9: 96px;
+  --cbg-gutter: 16px;
+  --cbg-section: 64px;
+  --cbg-col-course: 792px;
+  --cbg-col-site: 1240px;
+
+  /* shape: one documented system. Pills for anything you press, 18px cards, 24px media. */
+  --cbg-r-pill: 999px;
+  --cbg-r-card: 18px;
+  --cbg-r-media: 24px;
+  --cbg-mark: 14px;                               /* gold corner marks on framed media */
+
+  /* motion */
+  --cbg-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --cbg-dur-fast: 200ms;
+  --cbg-dur: 600ms;
+  --cbg-dur-slow: 1200ms;
+}
+
+@media (min-width: 768px) {
+  :root { --cbg-gutter: 40px; --cbg-section: 96px; --cbg-fs-body: 1.125rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --cbg-dur-fast: 0ms; --cbg-dur: 0ms; --cbg-dur-slow: 0ms; }
+}
