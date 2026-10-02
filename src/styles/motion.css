@@ -12,3 +12,30 @@
 
 /* Counters keep their width while the digits change. */
 [data-cbg-count] { font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------------------------------------------
+   T16: home interactions
+   --------------------------------------------------------------------------------------------- */
+
+/* First-steps ticks (src/motion/ticks.ts): each path has pathLength="1", so a dash of 1 offset by 1
+   is undrawn. Hidden only while JS runs with motion allowed and the list isn't done yet. */
+[data-cbg-ticks] .cbg-tick path { stroke-dasharray: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  html.cbg-js [data-cbg-ticks]:not(.cbg-done) .cbg-tick path { stroke-dashoffset: 1; }
+  html.cbg-js [data-cbg-ticks]:not(.cbg-done) > li > :not(.cbg-tick) { opacity: 0.6; }
+}
+
+/* Course cards: on hover or keyboard focus the short gold top rule (home.css .cbg-course::before)
+   runs the width of the card between its side paddings, and the card lifts 4px. The lift uses the
+   `translate` property, not `transform`, so it composes with the stagger reveal GSAP runs on the
+   card's transform. Under reduced motion --cbg-dur-fast is 0ms (tokens.css): no lift, the rule
+   still extends, instantly. */
+.cbg-course::before { transition: width var(--cbg-dur-fast) var(--cbg-ease); }
+.cbg-course:is(:hover, :focus-within)::before { width: calc(100% - 2 * var(--cbg-s5)); }
+@media (min-width: 768px) {
+  .cbg-course:is(:hover, :focus-within)::before { width: calc(100% - 2 * var(--cbg-s6)); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cbg-course { transition: translate var(--cbg-dur-fast) var(--cbg-ease), box-shadow var(--cbg-dur-fast) var(--cbg-ease); }
+  .cbg-course:is(:hover, :focus-within) { translate: 0 -4px; box-shadow: 0 16px 32px -16px rgba(0, 0, 0, 0.55); }
+}
