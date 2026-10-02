@@ -203,3 +203,29 @@ describe('pageSwitcher', () => {
     warn.mockRestore();
   });
 });
+
+describe('watchRoutes: busy pages', () => {
+  it('reports the new path at once (onPath) on every history change', () => {
+    const t = makeEnv();
+    const onPath = vi.fn();
+    watchRoutes(() => {}, t.env, onPath);
+    t.history.pushState(null, '', '/course/101-x/lesson/1');
+    expect(onPath).toHaveBeenCalledWith('/course/101-x/lesson/1');
+    t.location.pathname = '/';
+    t.win.dispatchEvent(new Event('popstate'));
+    expect(onPath).toHaveBeenLastCalledWith('/');
+  });
+
+  it('runs setup within 500 ms even if the DOM never goes quiet', () => {
+    const t = makeEnv();
+    const onChange = vi.fn();
+    watchRoutes(onChange, t.env);
+    t.history.pushState(null, '', '/course/101-x');
+    for (let i = 0; i < 12; i++) {
+      vi.advanceTimersByTime(50);
+      FakeObserver.last.trigger();
+    }
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledWith('/course/101-x');
+  });
+});

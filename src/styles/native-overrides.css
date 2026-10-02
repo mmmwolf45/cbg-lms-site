@@ -141,6 +141,14 @@ html:is(.cbg-route-home, .cbg-route-course) #navbar {
   backdrop-filter: blur(14px) saturate(140%);
   border-bottom-color: var(--cbg-line);
   color: var(--cbg-text-1);
+  /* course.link's own colour variables, redefined inside the navbar only, so anything it renders there
+     that we haven't seen (logged-in links, a user menu) is light-on-dark rather than dark-on-dark. */
+  --foreground: var(--cbg-text-1);
+  --muted-foreground: var(--cbg-text-3);
+  --border: var(--cbg-line);
+  --input: var(--cbg-line);
+  --accent: var(--cbg-surface);
+  --accent-foreground: var(--cbg-text-1);
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {

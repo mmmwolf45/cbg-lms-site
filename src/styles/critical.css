@@ -6,7 +6,7 @@
    course.link colour variables (so its text is never dark on dark); and every course rule that
    changes size (title weight and tracking, stats chips, the Course Content heading). */
 html:is(.cbg-route-home,.cbg-route-course) body{background:#081226}
-html:is(.cbg-route-home,.cbg-route-course) #navbar{background:rgba(8,18,38,.72);border-bottom-color:rgba(255,255,255,.09);color:#F3F5F9}
+html:is(.cbg-route-home,.cbg-route-course) #navbar{background:rgba(8,18,38,.72);border-bottom-color:rgba(255,255,255,.09);color:#F3F5F9;--foreground:#F3F5F9;--muted-foreground:#8F96A5;--border:rgba(255,255,255,.09);--input:rgba(255,255,255,.09);--accent:#0F1B33;--accent-foreground:#F3F5F9}
 html:is(.cbg-route-home,.cbg-route-course) #navbar .navbar-title-container img{padding:2px;background:#fff;border-radius:50%}
 html:is(.cbg-route-home,.cbg-route-course) #navbar .navbar-title-container+div button{background:transparent;color:#F3F5F9;border:1px solid rgba(255,255,255,.16);border-radius:999px}
 html:is(.cbg-route-home,.cbg-route-course) #navbar .navbar-title-container+div button.bg-primary{background:#F3F5F9;color:#081226;border-color:#F3F5F9}

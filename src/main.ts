@@ -8,26 +8,18 @@ import './styles/hazard.css';
 import './styles/build80.css';
 import './styles/course-motion.css';
 import './styles/native-overrides.css';
-import { detectPage, routeOf, type Page } from './pages';
+import { routeOf, type Route } from './pages';
 import { watchRoutes } from './router';
-import { failOpen, setupMotion, type Enhancer } from './motion/setup';
+import { failOpen, failed, setupMotion, type Enhancer } from './motion/setup';
 
 export type Teardown = () => void;
-export type Setups = Record<Page['kind'], (page: Page) => Teardown>;
+export type Setups = Record<Route, () => Teardown>;
 
-const noop = () => () => {};
+const warn = (err: unknown) => console.warn('[cbg]', err);
 
-// Home and course pages share the motion layer; each adds its own enhancers.
-const motion = (enhancers: Enhancer[]) => () => {
-  try {
-    return setupMotion(document, enhancers);
-  } catch (err) {
-    failOpen(err);
-    return () => {};
-  }
-};
 // Page-specific enhancers live in their own chunk (one extra request, cached after the first page),
 // so each page stays inside the 60 KB budget. A teardown before the chunk arrives cancels it.
+// If the chunk can't load (e.g. an old hash after a deploy) or an enhancer throws, fail open.
 const later = (load: () => Promise<{ enhancers: Enhancer[] }>): Enhancer => (roots) => {
   let undo: (() => void)[] = [];
   let dead = false;
@@ -39,11 +31,11 @@ const later = (load: () => Promise<{ enhancers: Enhancer[] }>): Enhancer => (roo
           const u = enhance(roots);
           if (u) undo.push(u);
         } catch (err) {
-          console.warn('[cbg]', err);
+          failOpen(err);
         }
       }
     })
-    .catch((err) => console.warn('[cbg]', err));
+    .catch((err) => dead || failOpen(err));
   return () => {
     dead = true;
     undo.forEach((f) => f());
@@ -51,17 +43,26 @@ const later = (load: () => Promise<{ enhancers: Enhancer[] }>): Enhancer => (roo
   };
 };
 
-const setups: Setups = {
-  home: motion([later(() => import('./page-enhancers/home'))]),
-  course: motion([later(() => import('./page-enhancers/course'))]),
-  none: noop,
+// Home and course pages share the motion layer; each adds its own enhancers.
+const motion = (load: () => Promise<{ enhancers: Enhancer[] }>) => () => {
+  try {
+    return setupMotion(document, [later(load)]);
+  } catch (err) {
+    failOpen(err);
+    return () => {};
+  }
 };
 
-const warn = (err: unknown) => console.warn('[cbg]', err);
+const setups: Setups = {
+  home: motion(() => import('./page-enhancers/home')),
+  course: motion(() => import('./page-enhancers/course')),
+  none: () => () => {},
+};
 
 export function setRouteClass(root: HTMLElement, pathname: string) {
   root.classList.remove('cbg-route-home', 'cbg-route-course', 'cbg-route-none');
-  root.classList.add('cbg-js', `cbg-route-${routeOf(pathname)}`);
+  root.classList.add(`cbg-route-${routeOf(pathname)}`);
+  if (!failed) root.classList.add('cbg-js');
 }
 
 export function pageSwitcher(setups: Setups, root: HTMLElement) {
@@ -74,9 +75,8 @@ export function pageSwitcher(setups: Setups, root: HTMLElement) {
     }
     teardown = undefined;
     try {
-      const page = detectPage(pathname);
       setRouteClass(root, pathname);
-      teardown = setups[page.kind](page);
+      teardown = setups[routeOf(pathname)]();
     } catch (err) {
       warn(err);
     }
@@ -86,9 +86,10 @@ export function pageSwitcher(setups: Setups, root: HTMLElement) {
 function start() {
   const run = () => {
     try {
-      const go = pageSwitcher(setups, document.documentElement);
+      const root = document.documentElement;
+      const go = pageSwitcher(setups, root);
       go(location.pathname);
-      watchRoutes(go);
+      watchRoutes(go, undefined, (path) => setRouteClass(root, path));
     } catch (err) {
       warn(err);
     }

@@ -9,8 +9,12 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ROOT = '[data-cbg]';
 
-// If motion setup breaks, drop cbg-js so nothing stays in its hidden starting state.
+// If motion setup breaks (an enhancer throws, a lazy chunk fails to load), drop cbg-js so nothing stays
+// in its hidden starting state, and keep it off for the rest of the visit: `failed` stops later page
+// changes from putting it back.
+export let failed = false;
 export function failOpen(err: unknown, doc: Document = document) {
+  failed = true;
   doc.documentElement.classList.remove('cbg-js');
   console.warn('[cbg]', err);
 }
@@ -53,7 +57,7 @@ export function setupMotion(doc: Document = document, enhancers: Enhancer[] = []
         const undo = enhance(roots);
         if (undo) cleanups.push(undo);
       } catch (err) {
-        console.warn('[cbg]', err); // one broken enhancer must not take down the rest
+        failOpen(err, doc); // show everything in its final state; the other enhancers still run
       }
     }
     mm = gsap.matchMedia();

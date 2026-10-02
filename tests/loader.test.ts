@@ -33,11 +33,18 @@ describe('loader boot script', () => {
     },
   );
 
-  it('injects the hashed CSS and JS from the manifest', async () => {
+  it('adds the font stylesheet from script, then the hashed CSS and JS from the manifest', async () => {
     const { appended } = boot('/', ok);
+    await vi.waitFor(() => expect(appended).toHaveLength(3));
+    expect(appended[0]).toMatchObject({ tag: 'link', rel: 'stylesheet', href: expect.stringContaining('Source+Sans+3') });
+    expect(appended[1]).toMatchObject({ tag: 'link', rel: 'stylesheet', href: 'https://cdn.test/cbg.b.css' });
+    expect(appended[2]).toMatchObject({ tag: 'script', type: 'module', src: 'https://cdn.test/cbg.a.js' });
+  });
+
+  it('adds no font stylesheet on pages that are not ours (lessons, dashboard)', async () => {
+    const { appended } = boot('/course/101-x/lesson/2', ok);
     await vi.waitFor(() => expect(appended).toHaveLength(2));
-    expect(appended[0]).toMatchObject({ tag: 'link', rel: 'stylesheet', href: 'https://cdn.test/cbg.b.css' });
-    expect(appended[1]).toMatchObject({ tag: 'script', type: 'module', src: 'https://cdn.test/cbg.a.js' });
+    expect(appended.some((e) => String(e.href).includes('fonts.googleapis'))).toBe(false);
   });
 
   it('fails safe when the manifest cannot be fetched', async () => {

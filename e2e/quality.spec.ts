@@ -74,6 +74,18 @@ for (const p of PAGES) {
       expect(await page.locator('.pin-spacer').count()).toBe(0);
     });
 
+    test('page chunk fails to load: fails open, nothing stays hidden', async ({ page }) => {
+      await page.route('**/cbg-lms-site/cbg-*.js', (r) => r.abort());
+      await page.goto(p.path, { waitUntil: 'networkidle' });
+      await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains('cbg-js'))).toBe(false);
+      await scrollThrough(page);
+      const hidden = await page.$$eval('[data-cbg] *', (els) =>
+        els.filter((e) => e.textContent?.trim() && !e.closest('[hidden]') && getComputedStyle(e).opacity === '0').length);
+      expect(hidden).toBe(0);
+      const dim = await page.$$eval('[data-cbg] img', (imgs) => imgs.filter((i) => getComputedStyle(i).filter.includes('brightness')).length);
+      expect(dim, 'no photo left in its dark starting state').toBe(0);
+    });
+
     test('bundle blocked: the block still reads in its final state', async ({ page }) => {
       await page.route('**/cbg-lms-site/cbg.*.js', (r) => r.abort());
       await page.goto(p.path, { waitUntil: 'networkidle' });

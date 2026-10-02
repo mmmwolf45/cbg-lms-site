@@ -6,6 +6,7 @@ Follows the handover pack's DEPLOY_RUNBOOK.md. Steps marked **LIVE** change what
 - [ ] `npm test`, `npm run build` (size gate) and `npx playwright test` (mock + live) all green.
 - [ ] Code review and over-engineering review done; findings fixed or listed.
 - [ ] Screenshots at 1440 / 1024 / 768 / 390 and a screen recording of each page reviewed by Maasoom.
+- [ ] Logged-in check (needs the test student account): log in, then look at the navbar on `/` and on the course page (no dark-on-dark text, menu readable), and open one lesson. Its URL must NOT match `/course/<one-segment>` (`routeOf()` in src/pages.ts): if it does, lessons would get the course restyle, so stop and tell Claude Code. If the account isn't ready, go live anyway and do this check first thing after.
 - [ ] Maasoom says go.
 
 ## 1. Publish the code (Claude Code) **LIVE within ~10 minutes**
