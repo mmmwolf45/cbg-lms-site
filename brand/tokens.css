@@ -1,0 +1,47 @@
+/* CBG LMS design tokens (starting point; refine in the spec phase).
+   All custom properties are prefixed --cbg- so they never clash with course.link's own CSS. */
+:root {
+  /* colour */
+  --cbg-navy: #203769;
+  --cbg-navy-900: #16264a;
+  --cbg-navy-700: #2a4685;
+  --cbg-blue-glow: #2f5fb3;
+  --cbg-gold: #c9a24b;
+  --cbg-brown: #544140;
+  --cbg-slate: #5a6275;
+  --cbg-ink: #111827;
+  --cbg-tint: #c9d6f0;
+  --cbg-surface: #f5f7fb;
+  --cbg-white: #ffffff;
+  --cbg-success: #2e7d4f;
+  --cbg-warning: #c98a1b;
+  --cbg-danger: #b3261e;
+
+  /* type */
+  --cbg-font: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cbg-fs-xs: 0.8125rem;
+  --cbg-fs-sm: 0.9375rem;
+  --cbg-fs-base: 1rem;
+  --cbg-fs-lg: 1.25rem;
+  --cbg-fs-xl: 1.75rem;
+  --cbg-fs-2xl: 2.5rem;
+  --cbg-fs-3xl: 3.5rem;
+
+  /* space and shape */
+  --cbg-radius-sm: 8px;
+  --cbg-radius: 14px;
+  --cbg-radius-lg: 24px;
+  --cbg-shadow: 0 12px 32px -16px rgba(15, 23, 42, 0.25);
+  --cbg-col-course: 792px;   /* course page main column at desktop */
+  --cbg-col-site: 1280px;    /* course header container */
+
+  /* motion */
+  --cbg-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --cbg-dur-fast: 200ms;
+  --cbg-dur: 600ms;
+  --cbg-dur-slow: 1200ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --cbg-dur-fast: 0ms; --cbg-dur: 0ms; --cbg-dur-slow: 0ms; }
+}
