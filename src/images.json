@@ -188,6 +188,174 @@
       ]
     }
   },
+  "course-iosh": {
+    "width": 800,
+    "height": 533,
+    "variants": {
+      "avif": [
+        {
+          "w": 800,
+          "file": "img/course-iosh-800.avif",
+          "bytes": 17247
+        },
+        {
+          "w": 480,
+          "file": "img/course-iosh-480.avif",
+          "bytes": 8552
+        }
+      ],
+      "webp": [
+        {
+          "w": 800,
+          "file": "img/course-iosh-800.webp",
+          "bytes": 26366
+        },
+        {
+          "w": 480,
+          "file": "img/course-iosh-480.webp",
+          "bytes": 12714
+        }
+      ],
+      "jpg": [
+        {
+          "w": 800,
+          "file": "img/course-iosh-800.jpg",
+          "bytes": 36136
+        },
+        {
+          "w": 480,
+          "file": "img/course-iosh-480.jpg",
+          "bytes": 16676
+        }
+      ]
+    }
+  },
+  "course-qs": {
+    "width": 800,
+    "height": 533,
+    "variants": {
+      "avif": [
+        {
+          "w": 800,
+          "file": "img/course-qs-800.avif",
+          "bytes": 28218
+        },
+        {
+          "w": 480,
+          "file": "img/course-qs-480.avif",
+          "bytes": 12636
+        }
+      ],
+      "webp": [
+        {
+          "w": 800,
+          "file": "img/course-qs-800.webp",
+          "bytes": 48696
+        },
+        {
+          "w": 480,
+          "file": "img/course-qs-480.webp",
+          "bytes": 22970
+        }
+      ],
+      "jpg": [
+        {
+          "w": 800,
+          "file": "img/course-qs-800.jpg",
+          "bytes": 58225
+        },
+        {
+          "w": 480,
+          "file": "img/course-qs-480.jpg",
+          "bytes": 25370
+        }
+      ]
+    }
+  },
+  "course-mep": {
+    "width": 800,
+    "height": 533,
+    "variants": {
+      "avif": [
+        {
+          "w": 800,
+          "file": "img/course-mep-800.avif",
+          "bytes": 39925
+        },
+        {
+          "w": 480,
+          "file": "img/course-mep-480.avif",
+          "bytes": 16103
+        }
+      ],
+      "webp": [
+        {
+          "w": 800,
+          "file": "img/course-mep-800.webp",
+          "bytes": 72874
+        },
+        {
+          "w": 480,
+          "file": "img/course-mep-480.webp",
+          "bytes": 29382
+        }
+      ],
+      "jpg": [
+        {
+          "w": 800,
+          "file": "img/course-mep-800.jpg",
+          "bytes": 77164
+        },
+        {
+          "w": 480,
+          "file": "img/course-mep-480.jpg",
+          "bytes": 30511
+        }
+      ]
+    }
+  },
+  "course-structural": {
+    "width": 800,
+    "height": 533,
+    "variants": {
+      "avif": [
+        {
+          "w": 800,
+          "file": "img/course-structural-800.avif",
+          "bytes": 17265
+        },
+        {
+          "w": 480,
+          "file": "img/course-structural-480.avif",
+          "bytes": 7222
+        }
+      ],
+      "webp": [
+        {
+          "w": 800,
+          "file": "img/course-structural-800.webp",
+          "bytes": 25860
+        },
+        {
+          "w": 480,
+          "file": "img/course-structural-480.webp",
+          "bytes": 11246
+        }
+      ],
+      "jpg": [
+        {
+          "w": 800,
+          "file": "img/course-structural-800.jpg",
+          "bytes": 36543
+        },
+        {
+          "w": 480,
+          "file": "img/course-structural-480.jpg",
+          "bytes": 16279
+        }
+      ]
+    }
+  },
   "trainer-ali-orkkatteri": {
     "width": 224,
     "height": 224,
