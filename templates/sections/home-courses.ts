@@ -4,12 +4,13 @@ import type { Card, Home } from '../../content/schema';
 
 type ImageName = keyof typeof images;
 
-// The card's photo, or (until `npm run images` has built it) a navy blueprint placeholder from home.css.
+// The card's photo; until `npm run images` has built it, the media box shows its plain background (home.css).
 const media = (c: Card) => (c.image && c.image in images
   ? picture(c.image as ImageName, { alt: '', sizes: '(min-width: 1024px) 400px, (min-width: 768px) 50vw, 86vw' })
-  : '<span class="cbg-course__ph"></span>');
+  : '');
 
-// A live card is a link (its button stretches over the whole card); a coming-soon card is not.
+// A live card is a link (its button stretches over the whole card); a coming-soon card is not. The link's
+// name carries the course title for screen readers ("Open course: IOSH Level 3 Certificate").
 function card(c: Card) {
   const cta = c.status === 'live now' ? c.cta : undefined;
   return `<li><article class="cbg-card cbg-course cbg-course--${cta ? 'live' : 'soon'}">
@@ -19,7 +20,7 @@ function card(c: Card) {
 <h3 class="cbg-h3">${esc(c.title)}</h3>
 ${c.line ? `<p>${esc(c.line)}</p>` : ''}
 ${c.meta?.length ? `<ul class="cbg-chips">${c.meta.map((m) => `<li class="cbg-chip">${esc(m)}</li>`).join('')}</ul>` : ''}
-${cta ? `<a class="cbg-btn cbg-btn--primary cbg-course__link" href="${esc(cta.href)}">${esc(cta.label)}${arrow}</a>` : ''}
+${cta ? `<a class="cbg-btn cbg-btn--primary cbg-course__link" href="${esc(cta.href)}">${esc(cta.label)}<span class="cbg-sr-only">: ${esc(c.title)}</span>${arrow}</a>` : ''}
 </div></article></li>`;
 }
 

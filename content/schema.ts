@@ -43,11 +43,11 @@ const homeShape = {
 
 // A home page course card. `status` is "live now" or "coming soon" (checkCard): a live card needs `cta`
 // and becomes a link; a coming-soon card has none. `line` is the course description, `meta` the chips,
-// `languages` and `duration` the course facts (the languages feed the home page count). `image` is a
-// name from src/images.json (a navy placeholder shows until it is built). Cards sort by `order`.
+// `languages` the teaching languages (they feed the home page count). `image` is a name from
+// src/images.json (the photo box stays plain until it is built). Cards sort by `order`.
 const cardShape = {
   title: s, status: s, 'tag?': s, 'line?': s, 'meta?': [s],
-  'languages?': [s], 'duration?': s, 'image?': s, order: 'number', 'cta?': link,
+  'languages?': [s], 'image?': s, order: 'number', 'cta?': link,
 } as const;
 
 // Every section except `hero` is optional: a course shows only the sections its YAML has, in this order.

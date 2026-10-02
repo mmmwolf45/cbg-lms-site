@@ -19,16 +19,19 @@ Templates (T11, T12, T18+) produce static HTML. Styles and motion (T13, T14+) on
 | `data-cbg-reveal="stagger"` | a parent | Its direct children reveal one after another (70 ms apart). |
 | `data-cbg-thread` | `.cbg-steps` list (or any element with `.cbg-node` children) | The gold thread draws with scroll; each `.cbg-node` gets `is-lit` when the thread reaches it. |
 | `data-cbg-count="<number>"` | an `aria-hidden="true"` element whose text is the final number, next to a `.cbg-sr-only` copy of the same value (e.g. `<b><span aria-hidden="true" data-cbg-count="80">80</span><span class="cbg-sr-only">80</span></b>`) | Counts up from 0 when in view. Prefix/suffix text sits outside the element. Screen readers only ever read the hidden final value (`aria-label` on a plain span is ignored by several screen readers). |
-| `data-cbg-gallery` | the home `courses` section | Laptop (1024px+, mouse, full motion): the section pins at the top and vertical scroll pans `.cbg-gallery__track` sideways, with the gold `.cbg-gallery__bar` showing progress (src/motion/gallery.ts). Phones: a scroll-snap row in the focusable `.cbg-gallery` region. Tablets and reduced motion: a grid. |
+| `data-cbg-gallery` | the home `courses` section | Laptop (1024px+ wide, 800px+ tall, mouse, full motion): the section pins at the top and vertical scroll pans `.cbg-gallery__track` sideways, with the gold `.cbg-gallery__bar` showing progress (src/motion/gallery.ts). It pins once the browser is idle and the section is wholly below the screen, and only if the panel fits the screen; until then it is the grid. Phones: a scroll-snap row in the focusable `.cbg-gallery` region. Tablets and reduced motion: a grid. |
 | `data-cbg-parallax` | the home `band` section | Its `.cbg-band__media` drifts with scroll, full motion only (src/motion/parallax.ts). |
 | `data-cbg-hero` | the home hero section | Holds `.cbg-hero__media` (the `<picture>`) and an empty `<svg class="cbg-hero__lines">` for the blueprint lines (T15). |
 | `data-cbg-action="login"` | the hero Log in link (`href="#navbar"`) | Clicks course.link's own navbar Login button (T16). |
 
-Home course cards (`.cbg-course`) need no hook: src/motion/card-tilt.ts tilts every card toward the mouse (4deg at most), and the photo zoom, gold rule and edge light are CSS (motion.css). The `disciplines` strip (`.cbg-marquee`) is CSS only and `aria-hidden`.
+Home course cards (`.cbg-course`) need no hook. Live cards (`.cbg-course--live`, links) respond to hover and focus: src/motion/card-tilt.ts tilts them toward the mouse (4deg at most), and the photo zoom, lift, gold rule and edge light are CSS (motion.css). Coming-soon cards (`.cbg-course--soon`, not links) stay still. A live card's link names its course for screen readers: `Open course<span class="cbg-sr-only">: <card title></span>`.
+
+The `disciplines` strip (`.cbg-marquee`) is CSS only, decorative and `aria-hidden`. Where the browser supports scroll-driven animations (`animation-timeline: view()`) and motion is allowed, its two title sets sit in one row that drifts left by a quarter of the screen as the strip crosses the screen, moving only while the page scrolls. Otherwise it shows the first set, still and wrapped. Nothing on the page animates on a time-based loop.
 
 ## States set by motion
 - `cbg-done`: an element has finished revealing; CSS never hides it again (survives re-setup after client-side navigation).
 - `is-lit`: a `.cbg-node` the thread has reached. Lit is also the default look without JS or with reduced motion.
+- `is-pan`: on the home `courses` section while src/motion/gallery.ts pins it; home.css lays the cards out in one row only then.
 
 ## Placement rules for reveals
 - Not on elements with their own transform transition (e.g. `.cbg-btn`): put `data-cbg-reveal` on a wrapper.
@@ -41,5 +44,5 @@ Home course cards (`.cbg-course`) need no hook: src/motion/card-tilt.ts tilts ev
 
 ## Images
 - Built by `npm run images` into `public/img/`; `src/images.json` lists every variant with width, height and bytes.
-- Templates render `<picture>` with AVIF and WebP `<source>`s plus a JPEG `<img>` carrying `width`/`height` (no layout shift) and absolute URLs on the Pages base (`https://mmmwolf45.github.io/cbg-lms-site/img/...`), because blocks are pasted into course.link.
+- Templates render `<picture>` with AVIF and WebP `<source>`s plus a JPEG `<img>` carrying `width`/`height` (no layout shift; src/motion/setup.ts re-measures scroll triggers only when an `<img>` without both loads) and absolute URLs on the Pages base (`https://mmmwolf45.github.io/cbg-lms-site/img/...`), because blocks are pasted into course.link.
 - Above-the-fold hero images: `fetchpriority="high"`, no lazy loading. Everything else: `loading="lazy" decoding="async"`.

@@ -15,6 +15,5 @@ card:
     - Tamil
     - Online
   languages: [Malayalam, Telugu, Tamil]
-  duration: 8 months
   image: course-qs
   order: 2

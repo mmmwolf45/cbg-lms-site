@@ -67,16 +67,19 @@
   .cbg-stat + .cbg-stat { padding-left: var(--cbg-s6); }
 }
 
-/* Disciplines: the course titles on one slow strip, edge to edge (motion in motion.css) */
+/* Disciplines: the course titles on one strip, edge to edge. Still: the first set, wrapped and centred.
+   Moving (motion.css): both sets in one row that drifts with the scroll. */
 .cbg-disciplines.cbg-section { padding-top: var(--cbg-s7); }
 .cbg-disciplines > .cbg-wrap { max-width: none; padding: 0; }
+/* overflow: clip, not hidden: a scroll container would become the strip's view() timeline (motion.css) */
 .cbg-marquee {
-  overflow: hidden; padding: 20px 0; border-block: 1px solid var(--cbg-line);
+  overflow: clip; padding: 20px 0; border-block: 1px solid var(--cbg-line);
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
 }
-.cbg-marquee__track, .cbg-marquee__set { display: flex; }
-.cbg-marquee__track { width: max-content; }
+.cbg-marquee__track, .cbg-marquee__set { display: flex; justify-content: center; }
+.cbg-marquee__set { flex-wrap: wrap; row-gap: var(--cbg-s2); }
+.cbg-marquee__set ~ .cbg-marquee__set { display: none; }
 .cbg-marquee__set > span {
   display: flex; align-items: center; white-space: nowrap; color: var(--cbg-text-3);
   font: 700 clamp(1.25rem, 2.2vw, 1.875rem) / 1.2 var(--cbg-font-display); letter-spacing: -0.02em;
@@ -98,7 +101,7 @@
 .cbg-band__media img { width: 100%; height: 100%; object-fit: cover; }
 
 /* Courses: a photo card per course file. Phones: one swipeable row. 768px: two columns. 1024px: three
-   columns, or (laptop with a mouse, full motion, JS running) one row that src/motion/gallery.ts pans. */
+   columns, or (.is-pan below) one row that src/motion/gallery.ts pans. */
 .cbg-gallery__track { display: grid; gap: var(--cbg-s5); }
 .cbg-gallery__track > li { min-width: 0; }
 .cbg-gallery__bar { display: none; }
@@ -115,21 +118,21 @@
 }
 @media (min-width: 768px) { .cbg-gallery__track { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .cbg-gallery__track { grid-template-columns: repeat(3, 1fr); } }
-/* Mirrors PAN in src/motion/gallery.ts. Pinned at the top of the screen while it pans, so it fills the
-   screen below course.link's sticky 56px navbar, content centred. */
-@media (prefers-reduced-motion: no-preference) and (min-width: 1024px) and (min-height: 700px) and (pointer: fine) {
-  html.cbg-js .cbg-courses.cbg-section { padding: 0; }
-  html.cbg-js .cbg-courses > .cbg-wrap {
-    display: flex; flex-direction: column; justify-content: center; min-height: 100vh;
-    padding-block: calc(56px + var(--cbg-s5)) var(--cbg-s5);
-  }
-  html.cbg-js .cbg-courses .cbg-section-head { margin-bottom: var(--cbg-s5); }
-  html.cbg-js .cbg-gallery__track { position: relative; display: flex; }
-  html.cbg-js .cbg-gallery__track > li { flex: none; width: clamp(300px, 27vw, 360px); }
-  html.cbg-js .cbg-course__media { max-height: max(140px, calc(100vh - 660px)); }
-  html.cbg-js .cbg-gallery__bar { display: block; height: 2px; margin-top: var(--cbg-s5); background: var(--cbg-line); }
-  html.cbg-js .cbg-gallery__bar i { display: block; height: 100%; background: var(--cbg-gold); transform-origin: 0 50%; transform: scaleX(0); }
+/* .is-pan: set by src/motion/gallery.ts only while it pins the section (laptop with a mouse, full motion,
+   and the panel fits the screen), so before its chunk runs, or if it never does, the cards stay in the grid.
+   Pinned at the top of the screen while it pans, so it fills the screen below course.link's sticky 56px
+   navbar, content centred. */
+.cbg-courses.is-pan { padding: 0; }
+.cbg-courses.is-pan > .cbg-wrap {
+  display: flex; flex-direction: column; justify-content: center; min-height: 100vh;
+  padding-block: calc(56px + var(--cbg-s5)) var(--cbg-s5);
 }
+.is-pan .cbg-section-head { margin-bottom: var(--cbg-s5); }
+.is-pan .cbg-gallery__track { position: relative; display: flex; }
+.is-pan .cbg-gallery__track > li { flex: none; width: clamp(300px, 27vw, 360px); }
+.is-pan .cbg-course__media { max-height: max(140px, calc(100vh - 660px)); }
+.is-pan .cbg-gallery__bar { display: block; height: 2px; margin-top: var(--cbg-s5); background: var(--cbg-line); }
+.is-pan .cbg-gallery__bar i { display: block; height: 100%; background: var(--cbg-gold); transform-origin: 0 50%; transform: scaleX(0); }
 
 /* The card: photo on top, then status, title, line, chips and (live courses) the button */
 .cbg-course.cbg-card { display: flex; flex-direction: column; height: 100%; padding: 0; overflow: hidden; }
@@ -141,26 +144,6 @@
 .cbg-course__media::after {
   content: ""; position: absolute; left: var(--cbg-s5); right: var(--cbg-s5); bottom: 0; height: 2px;
   background: var(--cbg-gold); transform-origin: 0 50%; transform: scaleX(0.16);
-}
-/* No photo yet: navy blueprint paper with a gold line drawing of a three-storey frame on a datum line */
-.cbg-course__ph {
-  position: relative; display: block; width: 100%; height: 100%;
-  background:
-    radial-gradient(80% 70% at 78% 12%, rgba(32, 55, 105, 0.6), transparent 70%),
-    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px) 0 0 / 24px 24px,
-    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px) 0 0 / 24px 24px,
-    linear-gradient(160deg, var(--cbg-surface), var(--cbg-bg));
-}
-.cbg-course__ph::before, .cbg-course__ph::after { content: ""; position: absolute; bottom: 28%; }
-.cbg-course__ph::before {
-  left: 12%; right: 12%; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--cbg-gold-line) 25%, var(--cbg-gold-line) 75%, transparent);
-}
-.cbg-course__ph::after {
-  left: 36%; right: 36%; height: 36%; border: 1px solid var(--cbg-gold-line); border-bottom: 0;
-  background:
-    linear-gradient(90deg, transparent calc(50% - 0.5px), var(--cbg-gold-line) 0 calc(50% + 0.5px), transparent 0),
-    repeating-linear-gradient(transparent 0 calc(33.33% - 1px), var(--cbg-gold-line) 0 33.33%);
 }
 .cbg-course__body { display: flex; flex: 1; flex-direction: column; align-items: flex-start; gap: var(--cbg-s3); padding: var(--cbg-s5); }
 .cbg-course__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--cbg-s2) var(--cbg-s4); width: 100%; }

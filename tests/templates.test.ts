@@ -128,9 +128,9 @@ describe('home disciplines strip', () => {
     expect(strip).not.toMatch(/<(a|button)\b|tabindex/);
   });
 
-  it('shows every course title, in four identical sets', () => {
-    for (const c of courses) expect(count(strip, new RegExp(`<span>${c.card.title.replace(/[()]/g, '\\$&')}</span>`, 'g'))).toBe(4);
-    expect(count(strip, /class="cbg-marquee__set"/g)).toBe(4);
+  it('shows every course title, in two identical sets', () => {
+    for (const c of courses) expect(count(strip, new RegExp(`<span>${c.card.title.replace(/[()]/g, '\\$&')}</span>`, 'g'))).toBe(2);
+    expect(count(strip, /class="cbg-marquee__set"/g)).toBe(2);
   });
 });
 
@@ -159,12 +159,16 @@ describe('home course cards', () => {
     expect(card.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()).toBe('coming soon Interior Design');
   });
 
-  it('shows a placeholder until a card photo is built, then the photo', () => {
-    const missing = courses.filter((c) => !(c.card.image && c.card.image in images)).length;
-    expect(count(cards, /class="cbg-course__ph"/g)).toBe(missing);
-    const out = sectionHtml(home(h, [soon('With photo', 1, { image: 'closing-plate' })]), 'courses');
-    expect(out).toContain('closing-plate-800.avif');
-    expect(out).not.toContain('cbg-course__ph');
+  it('shows the card photo once built; until then the media box is empty', () => {
+    expect(count(cards, /<div class="cbg-course__media" aria-hidden="true"><picture/g)).toBe(courses.length);
+    expect(sectionHtml(home(h, [soon('With photo', 1, { image: 'closing-plate' })]), 'courses')).toContain('closing-plate-800.avif');
+    expect(sectionHtml(home(h, [soon('No photo', 1, { image: 'not-built-yet' })]), 'courses'))
+      .toContain('<div class="cbg-course__media" aria-hidden="true"></div>');
+  });
+
+  it("the live card's link names its course for screen readers (copy from the YAML)", () => {
+    const live = courses.find((c) => c.card.status === 'live now')!.card;
+    expect(cards).toContain(`>${live.cta!.label}<span class="cbg-sr-only">: ${live.title}</span>`);
   });
 
   it('a card becomes a link when its course goes live, with no template change', () => {

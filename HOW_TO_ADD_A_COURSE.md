@@ -17,14 +17,13 @@ card:
   line: Online BIM training in Revit and Navisworks covering 3D modelling, clash detection and project coordination, with live Middle East projects.
   meta: [6 months, Malayalam, Telugu, Online]
   languages: [Malayalam, Telugu]
-  duration: 6 months
   image: course-bim
   order: 5
 ```
 
 - `slug` is the file name without `.yaml`. `title`, `status` and `order` are required; everything else is optional (`content/courses/interior-design.yaml` has only the title, so the card shows just the title and "Coming soon").
 - `status` must be `coming soon`, and a card-only file has no `cta`.
-- `line` is the course description, `meta` the small chips, `languages` the teaching languages (the home page counts the different languages across all cards), `duration` the course length.
+- `line` is the course description, `meta` the small chips, `languages` the teaching languages (the home page counts the different languages across all cards). Put the course length in a `meta` chip (for example "6 months").
 - `order` sets the card's place on the home page (lowest first). Every course file counts in the home page "courses" number.
 - `image` is the card photo's name. Put the photo (3:2, for example 1536 x 1024) in `brand/assets/photos/<image>.png` and run `npm run images`. Until then the card shows a navy blueprint placeholder; `npm run content:check` lists the photos still missing. The names already set up are `course-iosh`, `course-qs`, `course-mep`, `course-structural`, `course-bim` and `course-interior`; for a new name, ask Claude Code to add it to `scripts/images.ts`.
 - Then run `npm run build` and re-paste the home page block (step 6). No course page blocks are made for a card-only course.
@@ -38,7 +37,7 @@ At the top, set:
 - `slug`: the file name without `.yaml` (for example `nebosh-igc`). The build stops if they differ.
 - `uniqueId`: the course number course.link uses in the page address (`101` in `/course/101-iosh-level3-certificate`).
 - `path`: the course page address on course.link, starting with `/course/`.
-- `card`: the course card on the home page (title, status, tag, line, chips, languages, duration, image, order and button). A course with a page is `status: live now` and needs a `cta` (the "Open course" button); see "Card-only course" above for the other fields.
+- `card`: the course card on the home page (title, status, tag, line, chips, languages, image, order and button). A course with a page is `status: live now` and needs a `cta` (the "Open course" button); see "Card-only course" above for the other fields.
 
 ## 2. Fill in the sections
 - `hero` is the only section you must keep. Every other section (`included`, `units`, `how-classes-run`, `assessment`, `trainers`, `bonus`, `field-guides`, `payments`, `faq`, `help`) is optional: delete the whole section and the page simply leaves it out. The rest keep their order.

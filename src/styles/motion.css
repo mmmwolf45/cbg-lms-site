@@ -17,37 +17,37 @@
    T16: home interactions
    --------------------------------------------------------------------------------------------- */
 
-/* Course cards (home.css). On hover (mouse) or keyboard focus: the photo zooms slowly, the gold rule under
-   it runs the card's width, a soft gold edge light fades in and the card lifts 4px; src/motion/card-tilt.ts
-   adds the tilt. Transform and opacity only. The lift uses `translate`, which composes with the tilt
-   and the reveal GSAP runs on transforms. Under reduced motion: no zoom, lift or tilt; the rule and the
-   edge light change at once (--cbg-dur-fast is 0ms, tokens.css). */
-.cbg-course__media::after, .cbg-course::after { transition: transform var(--cbg-dur) var(--cbg-ease), opacity var(--cbg-dur) var(--cbg-ease); }
-.cbg-course:focus-within::after, .cbg-course:focus-within .cbg-course__media::after { opacity: 1; transform: none; }
+/* Course cards (home.css). Live cards only (they are links): on hover (mouse) or keyboard focus the photo
+   zooms slowly, the gold rule under it runs the card's width, a soft gold edge light fades in and the card
+   lifts 4px; src/motion/card-tilt.ts adds the tilt. Coming-soon cards are not links, so they stay still.
+   Transform and opacity only. The lift uses `translate`, which composes with the tilt and the reveal GSAP
+   runs on transforms. Under reduced motion: no zoom, lift or tilt; the rule and the edge light change at
+   once (--cbg-dur-fast is 0ms, tokens.css). */
+.cbg-course--live .cbg-course__media::after, .cbg-course--live::after { transition: transform var(--cbg-dur) var(--cbg-ease), opacity var(--cbg-dur) var(--cbg-ease); }
+.cbg-course--live:focus-within::after, .cbg-course--live:focus-within .cbg-course__media::after { opacity: 1; transform: none; }
 @media (hover: hover) {
-  .cbg-course:hover::after, .cbg-course:hover .cbg-course__media::after { opacity: 1; transform: none; }
+  .cbg-course--live:hover::after, .cbg-course--live:hover .cbg-course__media::after { opacity: 1; transform: none; }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .cbg-course { transition: translate var(--cbg-dur-fast) var(--cbg-ease); }
-  .cbg-course__media :is(img, .cbg-course__ph) { transition: transform 0.8s var(--cbg-ease); }
-  .cbg-course:focus-within { translate: 0 -4px; }
-  .cbg-course:focus-within .cbg-course__media :is(img, .cbg-course__ph) { transform: scale(1.06); }
+  .cbg-course--live { transition: translate var(--cbg-dur-fast) var(--cbg-ease); }
+  .cbg-course--live .cbg-course__media img { transition: transform 0.8s var(--cbg-ease); }
+  .cbg-course--live:focus-within { translate: 0 -4px; }
+  .cbg-course--live:focus-within .cbg-course__media img { transform: scale(1.06); }
   @media (hover: hover) {
-    .cbg-course:hover { translate: 0 -4px; }
-    .cbg-course:hover .cbg-course__media :is(img, .cbg-course__ph) { transform: scale(1.06); }
+    .cbg-course--live:hover { translate: 0 -4px; }
+    .cbg-course--live:hover .cbg-course__media img { transform: scale(1.06); }
   }
 }
 
-/* The course titles strip (templates/sections/home-disciplines.ts): slides half its width (two of its
-   four identical sets) in 80s, then loops; pauses under the mouse. Under reduced motion it stands still
-   and only the first set shows, wrapped. */
-@keyframes cbg-marquee { to { transform: translateX(-50%); } }
-@media (prefers-reduced-motion: no-preference) {
-  .cbg-marquee__track { animation: cbg-marquee 80s linear infinite; }
-  .cbg-marquee:hover .cbg-marquee__track { animation-play-state: paused; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cbg-marquee__track { width: auto; justify-content: center; }
-  .cbg-marquee__set { flex-wrap: wrap; justify-content: center; row-gap: var(--cbg-s2); }
-  .cbg-marquee__set ~ .cbg-marquee__set { display: none; }
+/* The course titles strip (templates/sections/home-disciplines.ts, still by default: home.css). Where the
+   browser has scroll-driven animations and motion is allowed, both sets sit in one row that drifts left by
+   a quarter of the screen while the strip crosses the screen. Scroll is the only clock: nothing moves
+   while the page is still, and the compositor runs it. */
+@keyframes cbg-marquee { to { transform: translateX(-25vw); } }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .cbg-marquee__track { justify-content: flex-start; width: max-content; animation: cbg-marquee linear both; animation-timeline: view(); }
+    .cbg-marquee__set { flex-wrap: nowrap; }
+    .cbg-marquee__set ~ .cbg-marquee__set { display: flex; }
+  }
 }

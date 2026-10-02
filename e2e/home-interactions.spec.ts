@@ -93,8 +93,11 @@ test.describe('laptop, full motion', () => {
     const errors = watchErrors(page);
     await openHome(page);
     await expect.poll(() => pins(page)).toBe(1);
+    await expect(page.locator('[data-cbg-gallery]')).toHaveClass(/\bis-pan\b/);
     const { top, length } = await pinRange(page);
     expect(length).toBeGreaterThan(300);
+    // The whole panel fits the screen (nothing below it that the pin would hide).
+    expect(await page.locator('[data-cbg-gallery]').evaluate((s) => (s as HTMLElement).offsetHeight)).toBeLessThanOrEqual(LAPTOP.height);
     const state = () =>
       page.evaluate(() => {
         const section = document.querySelector('[data-cbg-gallery]')!.getBoundingClientRect();
@@ -125,13 +128,13 @@ test.describe('laptop, full motion', () => {
     expect(errors).toEqual([]);
   });
 
-  test('card hover: the photo zooms, the card tilts, the gold rule runs and the edge lights', async ({ page }) => {
+  test('live card hover: the photo zooms, the card tilts, the gold rule runs and the edge lights', async ({ page }) => {
     const errors = watchErrors(page);
     await openHome(page);
     await expect.poll(() => pins(page)).toBe(1);
     await scrollToY(page, (await pinRange(page)).top);
     await expect(page.locator('.cbg-gallery__track')).toHaveClass(/cbg-done/, { timeout: 5000 });
-    const sel = '.cbg-course--soon >> nth=0';
+    const sel = '.cbg-course--live';
     await page.mouse.move(5, 5);
     const rest = await cardState(page, sel);
     expect(rest.zoom).toBe(1);
@@ -159,11 +162,28 @@ test.describe('laptop, full motion', () => {
     expect(errors).toEqual([]);
   });
 
-  test('keyboard focus on the live card zooms its photo and runs the rule', async ({ page }) => {
+  test('coming-soon card hover: nothing moves or lights (it is not a link)', async ({ page }) => {
     await openHome(page);
+    await expect.poll(() => pins(page)).toBe(1);
+    await scrollToY(page, (await pinRange(page)).top);
+    await expect(page.locator('.cbg-gallery__track')).toHaveClass(/cbg-done/, { timeout: 5000 });
+    const sel = '.cbg-course--soon >> nth=0';
+    const box = (await page.locator(sel).boundingBox())!;
+    await page.mouse.move(box.x + box.width * 0.85, box.y + box.height * 0.2, { steps: 4 });
+    await page.waitForTimeout(1000);
+    const s = await cardState(page, sel);
+    expect(s).toEqual({ zoom: 1, tilt: 'none', rule: s.rule, light: '0' });
+    expect(s.rule).toBeLessThan(0.2); // the short rest length
+    expect(await page.locator(sel).evaluate((el) => getComputedStyle(el).translate)).toBe('none');
+  });
+
+  test('keyboard focus on the live card zooms its photo and runs the rule, and survives a re-pin', async ({ page }) => {
+    await openHome(page);
+    await expect.poll(() => pins(page)).toBe(1);
     await page.locator('.cbg-course--live a').focus();
-    await page.waitForTimeout(300);
-    await expect(page.locator('.cbg-course--live a')).toBeFocused(); // kept when the section pins
+    await page.setViewportSize({ width: LAPTOP.width, height: LAPTOP.height - 20 }); // ScrollTrigger refreshes: unpins, pins again
+    await page.waitForTimeout(600);
+    await expect(page.locator('.cbg-course--live a')).toBeFocused(); // put back after the re-pin
     await expect.poll(async () => (await cardState(page, '.cbg-course--live')).zoom).toBeGreaterThan(1.04);
     await expect.poll(async () => (await cardState(page, '.cbg-course--live')).rule).toBeCloseTo(1, 2);
   });
@@ -179,6 +199,57 @@ test.describe('laptop, full motion', () => {
     await expect.poll(() => pins(page)).toBe(1);
     expect(errors).toEqual([]);
   });
+
+  test('home chunk arrives after the reader scrolled past the gallery: nothing on screen moves', async ({ page }) => {
+    // (A programmatic scroll that follows the pin spacer down keeps the view still but Chrome still counts it
+    // as a shift, so the gallery instead waits to pin until the reader is back above it.)
+    // Hold the home chunk back until the page is scrolled to the support section.
+    let release!: () => void;
+    const held = new Promise<void>((r) => (release = r));
+    await page.route('**/cbg-lms-site/cbg-home.*.js', async (route) => {
+      await held;
+      await route.continue();
+    });
+    await page.addInitScript(() => {
+      const w = window as unknown as { __cls: number };
+      w.__cls = 0;
+      new PerformanceObserver((list) => {
+        for (const e of list.getEntries() as (PerformanceEntry & { value: number; hadRecentInput: boolean })[]) {
+          if (!e.hadRecentInput) w.__cls += e.value;
+        }
+      }).observe({ type: 'layout-shift', buffered: true });
+    });
+    await openHome(page);
+    const heading = page.locator('#cbg-support h2');
+    await page.locator('#cbg-support').evaluate((s) => s.scrollIntoView({ block: 'start', behavior: 'instant' }));
+    await expect(page.locator('#cbg-support [data-cbg-reveal]')).toHaveClass(/cbg-done/, { timeout: 5000 });
+    await page.waitForTimeout(600);
+    expect(await pins(page)).toBe(0);
+    const top = () => heading.evaluate((h) => h.getBoundingClientRect().top);
+    const before = await top();
+    await page.evaluate(() => ((window as unknown as { __cls: number }).__cls = 0));
+    const chunk = page.waitForResponse('**/cbg-lms-site/cbg-home.*.js');
+    release();
+    await chunk;
+    await page.waitForTimeout(1500); // past the idle setup
+    expect(Math.abs((await top()) - before)).toBeLessThanOrEqual(1);
+    expect(await page.evaluate(() => (window as unknown as { __cls: number }).__cls)).toBeLessThan(0.05);
+    expect(await pins(page)).toBe(0); // the grid, until the reader is back above the section
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+    await expect.poll(() => pins(page)).toBe(1);
+  });
+});
+
+test('a laptop screen too short for the pinned panel keeps the grid: no pin, every card on screen', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 760 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await openHome(page);
+  await page.waitForTimeout(1500); // past the idle setup
+  expect(await pins(page)).toBe(0);
+  await expect(page.locator('[data-cbg-gallery]')).not.toHaveClass(/\bis-pan\b/);
+  const off = await page.$$eval('.cbg-gallery__track > li', (lis) =>
+    lis.filter((li) => { const r = li.getBoundingClientRect(); return r.left < 0 || r.right > innerWidth; }).length);
+  expect(off).toBe(0);
 });
 
 test('coming-soon cards are not links; the live card is one link over its whole area', async ({ page }) => {
@@ -202,11 +273,11 @@ test('reduced motion: no pin, no zoom, no tilt; the strip stands still', async (
   await openHome(page);
   await page.waitForTimeout(500);
   expect(await pins(page)).toBe(0);
-  const card = page.locator('.cbg-course--soon').first();
+  const card = page.locator('.cbg-course--live');
   await card.scrollIntoViewIfNeeded();
   await card.hover();
   await page.waitForTimeout(300);
-  const s = await cardState(page, '.cbg-course--soon >> nth=0');
+  const s = await cardState(page, '.cbg-course--live');
   expect(s.zoom).toBe(1);
   expect(s.tilt).toBe('none');
   const strip = await page.evaluate(() => ({
@@ -216,16 +287,28 @@ test('reduced motion: no pin, no zoom, no tilt; the strip stands still', async (
   expect(strip).toEqual({ animation: 'none', sets: 1 });
 });
 
-test('the disciplines strip: one marquee, hidden from screen readers, paused under the mouse', async ({ page }) => {
+test('the disciplines strip moves only with scroll; nothing on the page loops on a clock', async ({ page }) => {
   await page.setViewportSize(LAPTOP);
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await openHome(page);
   expect(await page.locator('.cbg-marquee').count()).toBe(1);
   await expect(page.locator('#cbg-disciplines')).toHaveAttribute('aria-hidden', 'true');
-  const play = () => page.locator('.cbg-marquee__track').evaluate((t) => [getComputedStyle(t).animationName, getComputedStyle(t).animationPlayState]);
-  expect(await play()).toEqual(['cbg-marquee', 'running']);
-  await page.locator('.cbg-marquee').hover();
-  expect(await play()).toEqual(['cbg-marquee', 'paused']);
+  const track = page.locator('.cbg-marquee__track');
+  expect(await track.evaluate((t) => [getComputedStyle(t).animationName, getComputedStyle(t).animationTimeline])).toEqual(['cbg-marquee', 'view()']);
+  const x = () => track.evaluate((t) => new DOMMatrix(getComputedStyle(t).transform).e);
+  const y = await page.locator('#cbg-disciplines').evaluate((d) => d.getBoundingClientRect().top + scrollY);
+  await page.evaluate((t) => window.scrollTo(0, t), y - 700);
+  await page.waitForTimeout(300);
+  const before = await x();
+  await page.waitForTimeout(1000);
+  expect(await x()).toBe(before); // still while the page is still
+  await page.evaluate((t) => window.scrollTo(0, t), y - 100);
+  await page.waitForTimeout(300);
+  const after = await x();
+  expect(after).toBeLessThan(before - 50); // drifts left as the page scrolls down
+  expect(after).toBeGreaterThan(before - LAPTOP.width / 4 - 1); // a quarter of the screen at most
+  const loops = await page.evaluate(() => document.getAnimations().filter((a) => a.effect?.getTiming().iterations === Infinity).length);
+  expect(loops).toBe(0);
 });
 
 test('the facts count up to the course data; reduced motion shows the final numbers', async ({ page }) => {
@@ -241,13 +324,6 @@ test('the facts count up to the course data; reduced motion shows the final numb
 });
 
 test('the photo band drifts with scroll (full motion only)', async ({ page }) => {
-  // The band photo isn't built yet, so put a band in the served page, as the template renders it.
-  await page.route('http://localhost:4173/', async (route) => {
-    const res = await route.fetch();
-    const img = 'https://mmmwolf45.github.io/cbg-lms-site/img/closing-plate-1536.jpg';
-    const band = `<section id="cbg-band" class="cbg-section cbg-band" data-cbg-section="band" data-cbg-parallax><div class="cbg-wrap"><div class="cbg-band__view"><picture class="cbg-band__media"><img src="${img}" width="1536" height="1024" alt=""></picture></div></div></section>`;
-    await route.fulfill({ response: res, body: (await res.text()).replace('<section id="cbg-courses"', `${band}<section id="cbg-courses"`) });
-  });
   const drift = async () => {
     const y = await page.locator('#cbg-band').evaluate((b) => b.getBoundingClientRect().top + scrollY);
     const at = async (to: number) => {
@@ -260,6 +336,7 @@ test('the photo band drifts with scroll (full motion only)', async ({ page }) =>
   await page.setViewportSize(LAPTOP);
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await openHome(page);
+  expect(await page.locator('#cbg-band[data-cbg-parallax]').count()).toBe(1); // the built band, once
   const [a, b] = await drift();
   expect(b).toBeGreaterThan(a + 5);
   await page.emulateMedia({ reducedMotion: 'reduce' });

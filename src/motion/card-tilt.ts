@@ -3,8 +3,6 @@ import { all } from './reveal';
 import type { Enhancer } from './setup';
 import { fullMotion } from './tokens';
 
-// Mouse only (touch never tilts), full motion only.
-export const TILT = `${fullMotion} and (hover: hover) and (pointer: fine)`;
 export const MAX_DEG = 4;
 
 // The tilt for a pointer at (x, y) in a w x h card: the side under the pointer dips away, at most MAX_DEG.
@@ -13,13 +11,14 @@ export function tiltFor(x: number, y: number, w: number, h: number): [rotationX:
   return [clamp((0.5 - y / h) * 2 * MAX_DEG), clamp((x / w - 0.5) * 2 * MAX_DEG)];
 }
 
-// .cbg-course cards lean toward the mouse (the photo zoom, gold edge and rule are CSS: home.css).
+// Live course cards (links) lean toward the mouse; coming-soon cards are not links, so they stay still (the
+// photo zoom, gold edge and rule are CSS: motion.css). Mouse only (touch never tilts), full motion only.
 // Rotation only, through quickTo; the card's box is read once per hover, not per move.
 export const cardTilt: Enhancer = (roots) => {
-  const cards = all(roots, '.cbg-course');
+  const cards = all(roots, '.cbg-course--live');
   if (!cards.length) return;
   const mm = gsap.matchMedia();
-  mm.add(TILT, () => {
+  mm.add(`${fullMotion} and (hover: hover) and (pointer: fine)`, () => {
     const off = new AbortController();
     const signal = off.signal;
     for (const card of cards) {
@@ -27,7 +26,6 @@ export const cardTilt: Enhancer = (roots) => {
       const toX = gsap.quickTo(card, 'rotationX', { duration: 0.6, ease: 'power3.out' });
       const toY = gsap.quickTo(card, 'rotationY', { duration: 0.6, ease: 'power3.out' });
       let box: DOMRect | undefined;
-      card.addEventListener('pointerenter', () => (box = card.getBoundingClientRect()), { signal });
       card.addEventListener('pointermove', (e) => {
         if (e.pointerType !== 'mouse') return;
         box ??= card.getBoundingClientRect();

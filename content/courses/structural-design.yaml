@@ -14,6 +14,5 @@ card:
     - Telugu
     - Online
   languages: [Malayalam, Telugu]
-  duration: 12 months
   image: course-structural
   order: 4

@@ -72,8 +72,10 @@ export function setupMotion(doc: Document = document, enhancers: Enhancer[] = []
       }
       return () => undo.forEach((f) => f());
     });
-    // course.link's layout shifts as it hydrates and images arrive: re-measure the triggers then.
-    for (const img of roots.flatMap((r) => [...r.querySelectorAll('img')])) {
+    // An image without width and height changes the layout when it arrives: re-measure the triggers then.
+    // Ours all carry both (docs/markup-contract.md), so their (lazy) loads never refresh, which would
+    // otherwise re-pin the home gallery mid-pan.
+    for (const img of roots.flatMap((r) => [...r.querySelectorAll<HTMLImageElement>('img:not([width][height])')])) {
       if (!img.complete) img.addEventListener('load', refreshSoon, { once: true, signal: off.signal });
     }
   };
