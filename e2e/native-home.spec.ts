@@ -79,12 +79,14 @@ test('home route on a phone: Login reads at AA, Register stays hidden as in stoc
   expect((await paint(page, LOGIN)).ratio).toBeGreaterThanOrEqual(4.5);
 });
 
-test('course route does not get the home rules (course restyle comes in T20)', async ({ page }) => {
+// Since T20 the course route shares the dark chrome (course-only rules: native-course.spec.ts).
+test('course route shares the dark chrome', async ({ page }) => {
   await page.goto('/course/preview-101');
   await expect.poll(() => htmlClass(page)).toBe('cbg-js cbg-route-course');
-  expect(await style(page, 'body', 'background-color')).not.toBe(DARK);
-  expect(await style(page, '#navbar', 'background-color')).toBe('rgb(255, 255, 255)');
-  expect(await style(page, LOGIN, 'background-color')).toBe('rgb(255, 255, 255)');
+  await expect.poll(() => mainCssApplied(page)).toContain('blur');
+  expect(await style(page, 'body', 'background-color')).toBe(DARK);
+  expect((await paint(page, '#navbar')).bgLum).toBeLessThan(0.02);
+  expect(await style(page, LOGIN, 'background-color')).toBe('rgba(0, 0, 0, 0)');
 });
 
 // Holding (not aborting) the bundle: an aborted script fires the loader's onerror and fails safe at

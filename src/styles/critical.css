@@ -1,10 +1,21 @@
 /* Inlined in the loader snippet (comments are stripped). First-paint subset of native-overrides.css,
    with literal values because tokens.css isn't loaded yet: page and navbar colours, the logo keyline
    and the auth pills (their 1px borders are here so nothing resizes when the main CSS lands).
-   Scoped to the route class, so cbg-off and other routes stay stock. T20 adds the course route. */
-html.cbg-route-home body{background:#081226}
-html.cbg-route-home #navbar{background:rgba(8,18,38,.72);border-bottom-color:rgba(255,255,255,.09);color:#F3F5F9}
-html.cbg-route-home #navbar .navbar-title-container img{padding:2px;background:#fff;border-radius:50%}
-html.cbg-route-home #navbar .navbar-title-container+div button{background:transparent;color:#F3F5F9;border:1px solid rgba(255,255,255,.16);border-radius:999px}
-html.cbg-route-home #navbar .navbar-title-container+div button.bg-primary{background:#F3F5F9;color:#081226;border-color:#F3F5F9}
+   Scoped to the route classes, so cbg-off and other routes stay stock.
+   Course route: header band, main wrapper and enrol card backgrounds; the wrapper's dark
+   course.link colour variables (so its text is never dark on dark); and every course rule that
+   changes size (title weight and tracking, stats chips, the Course Content heading). */
+html:is(.cbg-route-home,.cbg-route-course) body{background:#081226}
+html:is(.cbg-route-home,.cbg-route-course) #navbar{background:rgba(8,18,38,.72);border-bottom-color:rgba(255,255,255,.09);color:#F3F5F9}
+html:is(.cbg-route-home,.cbg-route-course) #navbar .navbar-title-container img{padding:2px;background:#fff;border-radius:50%}
+html:is(.cbg-route-home,.cbg-route-course) #navbar .navbar-title-container+div button{background:transparent;color:#F3F5F9;border:1px solid rgba(255,255,255,.16);border-radius:999px}
+html:is(.cbg-route-home,.cbg-route-course) #navbar .navbar-title-container+div button.bg-primary{background:#F3F5F9;color:#081226;border-color:#F3F5F9}
 html.cbg-route-home .custom-section:has(>*>[data-cbg]){max-width:none;padding-left:0;padding-right:0}
+html.cbg-route-course body{background:#081226!important}
+html.cbg-route-course #course-header-bg{background-image:linear-gradient(#0A162D,#0A162D)}
+html.cbg-route-course #course-header h2{font-weight:800;letter-spacing:-.025em}
+html.cbg-route-course #course-header ul>li{align-items:center;padding:4px 12px;border:1px solid rgba(255,255,255,.16);border-radius:999px;font-weight:600}
+html.cbg-route-course #react-root>div:has(#course_content){background:#081226;--background:#081226;--foreground:#F3F5F9;--muted-foreground:#8F96A5;--input:rgba(255,255,255,.09);--border:rgba(255,255,255,.09)}
+html.cbg-route-course #react-root>div:has(#course_content) #course_content>div:first-child>h4{font-size:clamp(1.75rem,3.4vw,2.5rem);font-weight:800;line-height:1.1;letter-spacing:-.025em}
+html.cbg-route-course #react-root>div:has(#course_content) #course_content h3>button{background:transparent}
+html.cbg-route-course div:has(>#course_content)+div{background:#131E34;border-color:rgba(255,255,255,.09)}

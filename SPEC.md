@@ -204,15 +204,18 @@ These apply only when the loader has marked the route: `html.cbg-route-home` or 
 
 | Selector (from PLATFORM_NOTES.md) | Route | Restyle |
 |---|---|---|
-| `body` | home, course | Navy-black background ★ |
-| `html` (root, carries the route class) | home | Dark scrollbar (`scrollbar-color` only) |
+| `body` | home, course | Navy-black background ★. On course, `!important` (course.link's course page ships `body{background:white!important}` via react-helmet) |
+| `html` (root, carries the route class) | home, course | Dark scrollbar (`scrollbar-color` only) |
 | `#navbar` | home, course | Dark, translucent, hairline bottom border; Login and Register as ghost buttons ★ |
 | `#navbar .navbar-title-container` (+ its `img`) and `.navbar-title-container + div button` (Register: `button.bg-primary`) | home, course | Logo on a 2px white keyline, unaltered; Login ghost pill, Register solid pill, gold focus ring ★ |
-| `#course-header-bg` | course | Navy-black with a faint blueprint grid ★ |
-| `#course-header` | course | Title in Plus Jakarta Sans 800, a gold rule under the title, stats as chips, enrol button styled as our primary button. The preview `iframe#widget2` is left alone. |
-| `div.bg-white.py-12` (main wrapper) | course | Dark background ★ |
-| Enrol card (found by structure and text, as documented) | course | Dark glass card, gold primary button. The phone bottom bar is matched too. |
-| `#course_content` (Radix accordion) | course | Dark rows with hairline dividers and gold chevrons. Behaviour untouched, so it must still open and close. |
+| `#course-header-bg` (+ its decorative `> [aria-hidden="true"]` overlay) | course | Navy-black with a faint blueprint grid, painted as `background-image` over course.link's inline theme colour ★; the overlay's inline white glow dimmed with `opacity` |
+| `#course-header-bg + div` (divider under the band) | course | Hairline border colour |
+| `#course-header` (`h2`, `h2 + p`, `ul > li`, `ul + div > div > button`, `ul + div > button`, `img`, `:has(> #widget2)`) | course | Title in Plus Jakarta Sans 800 with tight tracking and a short gold rule (out-of-flow `::after`) ★; subtitle `--cbg-text-2`; stats as chips ★; enrol button as a pill (its inline white/#333 colours kept); Share this course as a quiet link (`opacity`); course image with media radius and hairline. The preview `iframe#widget2` is left alone (only its container is rounded); neither live course URL has one today. |
+| `#react-root > div:has(#course_content)` (the `div.bg-white.py-12` main wrapper) | course | Dark background ★; course.link's colour variables (`--background`, `--foreground`, `--muted-foreground`, `--input`, `--border`, `--secondary`, `--muted`, `--accent`, `--card`) redefined dark inside it ★ |
+| `#highlights` (`h4`, `li`, `li svg`) | course | "This course includes" (below 1024px): text colours, gold check icons |
+| Enrol card: `div:has(> #course_content) + div` (the element after the main column) | course | Dark glass card (18px radius from 1024px), hairline border, `--cbg-btn` pill button, gold check icons ★ (background). Same element is the phone bottom bar. Position, top, display, height untouched. |
+| `#course_content` (Radix accordion: `> div:first-child > h4`/`> button`, `.accordion-py`, `h3 > button`, `[role="region"] [role="button"]`) | course | "Course Content" in our h2 style ★; Expand all as a ghost text button; dark rows with hairline dividers, gold chevrons, gold number circle on the open item; lesson rows `--cbg-text-2` with `--cbg-text-3` locks. Behaviour untouched, so it must still open and close. |
+| `#reviews` | course | Not restyled: empty on both live course URLs. If course.link renders reviews, they sit inside the main wrapper and take its dark variables. |
 
 **Not restyled:** the login and register popups, lesson pages, and course.link's dashboard. They stay light (out of scope).
 

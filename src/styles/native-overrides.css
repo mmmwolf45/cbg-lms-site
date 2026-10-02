@@ -1,7 +1,10 @@
 /* Native course.link restyles (SPEC section 6). course.link is a React + Tailwind app we don't
    control, so every rule here is scoped under a route class that the loader puts on <html>
-   (`html.cbg-route-home`, later `html.cbg-route-course`). No route class (lesson pages, dashboard,
+   (`html.cbg-route-home`, `html.cbg-route-course`). No route class (lesson pages, dashboard,
    login popups, cbg-off fail-safe) means stock course.link.
+
+   Shared chrome (rules 1 to 6) applies to both routes through `html:is(.cbg-route-home,
+   .cbg-route-course)` (same specificity as `html.cbg-route-home`).
 
    Selectors, and why (fixture: preview/fixtures/live-home.html; the navbar markup is identical in
    live-course.html and live-course-preview.html):
@@ -44,20 +47,95 @@
    critical.css (inlined in the loader), so there is no white flash while this file loads. Keep the
    two in step.
 
-   T20 (course route): add `html.cbg-route-course` to the selector lists in "Shared chrome" (the
-   navbar is the same markup on course pages), then put course-only rules in their own section. */
+   Course route (T20; fixtures live-course.html and live-course-preview.html, checked against the
+   live DOM of /course/preview-101 and /course/101-iosh-level3-certificate on 2 Oct 2026).
+   `#react-root` children there: toast section, #navbar, #course-header-bg, a divider div, the
+   main wrapper. No footer. Numbering carries on from the home list:
+   1b. `body` again, course only, with !important (see the !important list below for why).
+   8. `#course-header-bg`: course.link paints it with an INLINE `background-color:#203769` (the
+      theme colour). Inline beats any selector, so instead of `!important` we paint over it with
+      `background-image` layers (blueprint grid + a solid --cbg-bg-2 gradient layer); background
+      images always sit on top of background-color. Its first child
+      (`> [aria-hidden="true"]`, an absolute, decorative overlay with an inline white radial
+      glow) is only dimmed with `opacity`.
+   9. `#course-header-bg + div`: the empty `div.border-b.border-input` divider under the band.
+      Border colour only.
+   10. `#course-header h2` (title), `h2 + p` (subtitle), `ul > li` (the stats row: duration,
+      sections, lessons), `ul + div > div > button` (header enrol button, inside the
+      `hidden md:flex` group, so desktop only), `ul + div > button` (Share this course, the
+      direct-child button of the actions row). All structure under the id. The text column has
+      an INLINE `color:#fff`; title, subtitle and chips get their own colour, which beats
+      inheritance without `!important`. The enrol button carries an INLINE
+      `background:#fff;color:#333;border:none` (course.link's header button setting): we leave
+      those colours (already a light pill on dark, close to --cbg-btn) and only round it into a
+      pill and add the gold focus ring. Share has an INLINE `color:#fff`, so "quiet" is done with
+      `opacity`, not colour. The gold rule under the title is an absolutely positioned ::after
+      (out of flow, inside the 12px flex gap), so it moves nothing.
+   11. `#course-header img` and `#course-header :has(> #widget2)`: the course image (an <img> on
+      both live course URLs; no `iframe#widget2` exists on either today). Radius and a box-shadow
+      hairline (a border would add 2px). The iframe itself is never touched; its container gets
+      `overflow: clip` so the corners round (clip, unlike hidden, makes no scroll container).
+   12. Main wrapper `W` = `#react-root > div:has(#course_content)`: the `div.bg-white.py-12`
+      holding #highlights, the main column and the enrol card. Found by the id it contains, not
+      by `bg-white`. It is dark, and inside it we redefine course.link's own colour custom
+      properties (`--background`, `--foreground`, `--muted-foreground`, `--input`, `--border`,
+      `--secondary`, `--muted`, `--accent`, `--card`): every `bg-background`, `text-foreground`,
+      `border-input`, `hover:bg-secondary` etc. in there follows, including anything course.link
+      adds later (e.g. reviews). `--primary` is NOT redefined (buttons keep their own rules).
+      Popovers and dialogs portal to <body>, outside W, so they stay stock.
+      Degrade: without :has() or if the id moves, W matches nothing, the vars stay stock and the
+      wrapper stays white with course.link's dark text. Every main-column rule below is written
+      under W (or #course_content, which is inside it) so text is only lightened where W is dark.
+   13. `#highlights` (h4, li, li svg): "This course includes", shown below 1024px only
+      (`lg:hidden`). Colours only; the check icons are SVG `stroke="currentColor"` with
+      `text-primary`, recoloured gold via `color`.
+   14. `#course_content` (Radix accordion). Hooks: `> div:first-child > h4` (the "Course Content"
+      heading), `> div:first-child > button` ("Expand all sections"), `.accordion-py` (each item;
+      course.link's own class, its CSS pads the h3 with it), `h3 > button` (the Radix trigger,
+      which has Tailwind `bg-white`), its number circle (`> div > div:first-child`), title h6,
+      lesson count `p`, chevron `> svg`, then `[role="region"]` (the Radix content panel) and its
+      `[role="button"]` lesson rows with their lock `svg` and title `p`. Never Radix ids. Only
+      colour, border colour, background and radius: no display, height, overflow, animation or
+      data-state layout is touched, so open/close is course.link's own. `[data-state="open"]` is
+      used only to colour the open item's number circle gold.
+   15. Enrol card `C` = `div:has(> #course_content) + div`: the element right after the main
+      column (the column is the div whose direct child is #course_content). No id. On >= 1024 it
+      is the sticky card (`lg:sticky lg:top-[4.5rem]`); below 1024 course.link's JS adds
+      `fixed bottom-0 !h-auto !opacity-100` and the same element is the phone bottom bar (in the
+      script-less mock it stays `h-[0] opacity-0`, so it is only visible on the live site). We set
+      background, border colour, radius (>= 1024 only; the bar is full width) and shadow, never
+      position, top, display, height or padding, so sticky/fixed behaviour is untouched. Inside:
+      `h5` (title), `p` ("This course includes"), `li` and `li svg` (gold checks via `color`),
+      `button` (the only button: the enrol button, Tailwind `bg-primary`, not !important, so our
+      colours win on specificity), `> div + div` (the inner divider).
+   16. `#reviews`: present but EMPTY on both live course URLs (`<div id="reviews"></div>`, no
+      height), so nothing shows. Not hidden with CSS. If course.link starts rendering reviews UI,
+      it is inside W and picks up the dark vars.
+   Not used on the course route: Radix ids, `bg-white` or other Tailwind utilities as hooks.
 
-/* ---------- Shared chrome: body, navbar (home now; course added in T20) ---------- */
+   Layout: rules that change size (chip padding/border/weight, title weight/tracking, the Course
+   Content heading size) are also in critical.css with literal values, so they are there from the
+   first paint and nothing shifts when this file arrives (e2e/native-course.spec.ts checks the
+   enrol card's box before and after). The course part of critical.css also carries the header,
+   wrapper and card backgrounds and the dark vars, so W's text is never dark-on-dark.
 
-html.cbg-route-home {
+   !important on the course route: one.
+   - `html.cbg-route-course body { background }` (rule 1b): course page markup carries
+     `<style data-rh="true">body { background: white !important; }</style>` (react-helmet, in
+     both course fixtures and live). Only an !important of ours can beat it; ours is more
+     specific (0,1,2 against 0,0,1), so it wins whatever the order. Also in critical.css. */
+
+/* ---------- Shared chrome: html, body, navbar (home and course) ---------- */
+
+html:is(.cbg-route-home, .cbg-route-course) {
   scrollbar-color: rgba(255, 255, 255, 0.22) var(--cbg-bg);
 }
 
-html.cbg-route-home body {
+html:is(.cbg-route-home, .cbg-route-course) body {
   background: var(--cbg-bg);
 }
 
-html.cbg-route-home #navbar {
+html:is(.cbg-route-home, .cbg-route-course) #navbar {
   background: rgba(8, 18, 38, 0.72); /* --cbg-bg at 72% */
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   backdrop-filter: blur(14px) saturate(140%);
@@ -66,24 +144,24 @@ html.cbg-route-home #navbar {
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  html.cbg-route-home #navbar {
+  html:is(.cbg-route-home, .cbg-route-course) #navbar {
     background: rgba(8, 18, 38, 0.96);
   }
 }
 
-html.cbg-route-home #navbar .navbar-title-container img {
+html:is(.cbg-route-home, .cbg-route-course) #navbar .navbar-title-container img {
   padding: 2px;
   background: #fff;
   border-radius: 50%;
 }
 
 /* The link is full-width (course.link sets width:100%), so the ring goes on the round logo. */
-html.cbg-route-home #navbar .navbar-title-container:focus-visible img {
+html:is(.cbg-route-home, .cbg-route-course) #navbar .navbar-title-container:focus-visible img {
   box-shadow: 0 0 0 2px var(--cbg-bg), 0 0 0 4px var(--cbg-gold);
 }
 
 /* Login (and any other navbar button): ghost pill. */
-html.cbg-route-home #navbar .navbar-title-container + div button {
+html:is(.cbg-route-home, .cbg-route-course) #navbar .navbar-title-container + div button {
   background: transparent;
   color: var(--cbg-text-1);
   border: 1px solid var(--cbg-line-strong);
@@ -92,25 +170,25 @@ html.cbg-route-home #navbar .navbar-title-container + div button {
     color var(--cbg-dur-fast) var(--cbg-ease);
 }
 
-html.cbg-route-home #navbar .navbar-title-container + div button:hover {
+html:is(.cbg-route-home, .cbg-route-course) #navbar .navbar-title-container + div button:hover {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.32);
 }
 
 /* Register: solid pill. Same 1px border (in its own colour) so both pills are the same size. */
-html.cbg-route-home #navbar .navbar-title-container + div button.bg-primary {
+html:is(.cbg-route-home, .cbg-route-course) #navbar .navbar-title-container + div button.bg-primary {
   background: var(--cbg-btn);
   color: var(--cbg-btn-text);
   border-color: var(--cbg-btn);
 }
 
-html.cbg-route-home #navbar .navbar-title-container + div button.bg-primary:hover {
+html:is(.cbg-route-home, .cbg-route-course) #navbar .navbar-title-container + div button.bg-primary:hover {
   background: #fff;
   border-color: #fff;
 }
 
 /* Gold focus ring in place of Tailwind's ring (whose white offset would glare on dark). */
-html.cbg-route-home #navbar .navbar-title-container + div button:focus-visible {
+html:is(.cbg-route-home, .cbg-route-course) #navbar .navbar-title-container + div button:focus-visible {
   box-shadow: 0 0 0 2px var(--cbg-bg), 0 0 0 4px var(--cbg-gold);
 }
 
@@ -126,3 +204,247 @@ html.cbg-route-home .custom-section:has(> * > [data-cbg]) {
 }
 
 /* ---------- Course route (T20) ---------- */
+
+/* 1b. course.link's course page adds `<style data-rh>body{background:white!important}</style>`
+   (react-helmet), which beats rule 1. Our selector is more specific, so our !important wins. */
+html.cbg-route-course body {
+  background: var(--cbg-bg) !important;
+}
+
+/* 8. Header band: navy-black with a faint blueprint grid, painted over the inline theme colour. */
+html.cbg-route-course #course-header-bg {
+  background-image:
+    repeating-linear-gradient(0deg, rgba(148, 172, 220, 0.06) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(90deg, rgba(148, 172, 220, 0.06) 0 1px, transparent 1px 48px),
+    radial-gradient(70% 90% at 85% 0%, var(--cbg-glow), transparent 70%),
+    linear-gradient(var(--cbg-bg-2), var(--cbg-bg-2));
+}
+
+html.cbg-route-course #course-header-bg > [aria-hidden="true"] {
+  opacity: 0.4;
+}
+
+/* 9. */
+html.cbg-route-course #course-header-bg + div {
+  border-bottom-color: var(--cbg-line);
+}
+
+/* 10. Header text, stats chips, enrol pill, Share as a quiet link. */
+html.cbg-route-course #course-header h2 {
+  position: relative; /* containing block for the gold rule; no offsets, so it does not move */
+  color: var(--cbg-text-1);
+  font-family: var(--cbg-font-display);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+html.cbg-route-course #course-header h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -7px;
+  width: 48px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--cbg-gold);
+}
+
+html.cbg-route-course #course-header h2 + p {
+  color: var(--cbg-text-2);
+}
+
+html.cbg-route-course #course-header ul > li {
+  align-items: center;
+  padding: 4px 12px;
+  border: 1px solid var(--cbg-line-strong);
+  border-radius: var(--cbg-r-pill);
+  background: var(--cbg-glass);
+  color: var(--cbg-text-2);
+  font-weight: 600;
+}
+
+html.cbg-route-course #course-header ul > li svg {
+  color: var(--cbg-gold);
+}
+
+html.cbg-route-course #course-header ul + div > div > button {
+  border-radius: var(--cbg-r-pill);
+}
+
+html.cbg-route-course #course-header ul + div > button {
+  opacity: 0.72;
+  border-radius: var(--cbg-r-pill);
+  transition: opacity var(--cbg-dur-fast) var(--cbg-ease);
+}
+
+html.cbg-route-course #course-header ul + div > button:hover,
+html.cbg-route-course #course-header ul + div > button:focus-visible {
+  opacity: 1;
+}
+
+html.cbg-route-course #course-header ul + div button:focus-visible {
+  box-shadow: 0 0 0 2px var(--cbg-bg-2), 0 0 0 4px var(--cbg-gold);
+}
+
+/* 11. Course image (or a future preview iframe's container). */
+html.cbg-route-course #course-header img {
+  border-radius: var(--cbg-r-media);
+  box-shadow: 0 0 0 1px var(--cbg-line-strong), 0 24px 48px -20px rgba(0, 0, 0, 0.6);
+}
+
+html.cbg-route-course #course-header :has(> #widget2) {
+  border-radius: var(--cbg-r-media);
+  box-shadow: 0 0 0 1px var(--cbg-line-strong);
+  overflow: clip;
+}
+
+/* 12. Main wrapper W: dark, and course.link's colour variables redefined for everything inside. */
+html.cbg-route-course #react-root > div:has(#course_content) {
+  background: var(--cbg-bg);
+  color: var(--cbg-text-2);
+  --background: var(--cbg-bg);
+  --foreground: var(--cbg-text-1);
+  --muted-foreground: var(--cbg-text-3);
+  --input: var(--cbg-line);
+  --border: var(--cbg-line);
+  --secondary: var(--cbg-surface);
+  --secondary-foreground: var(--cbg-text-1);
+  --muted: var(--cbg-surface);
+  --accent: var(--cbg-surface);
+  --accent-foreground: var(--cbg-text-1);
+  --card: var(--cbg-surface);
+  --card-foreground: var(--cbg-text-1);
+}
+
+/* 13. "This course includes" (below 1024px). */
+html.cbg-route-course #react-root > div:has(#course_content) #highlights h4 {
+  color: var(--cbg-text-1);
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #highlights li {
+  color: var(--cbg-text-2);
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #highlights li svg {
+  color: var(--cbg-gold);
+}
+
+/* 14. Course Content accordion. Colours, borders and radius only. */
+html.cbg-route-course #react-root > div:has(#course_content) #course_content > div:first-child > h4 {
+  color: var(--cbg-text-1);
+  font-family: var(--cbg-font-display);
+  font-size: var(--cbg-fs-h2);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #course_content > div:first-child > button {
+  color: var(--cbg-text-2);
+  text-decoration-color: var(--cbg-gold-line);
+  border-radius: var(--cbg-r-pill);
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #course_content > div:first-child > button:hover {
+  color: var(--cbg-gold);
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #course_content .accordion-py {
+  border-bottom-color: var(--cbg-line);
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #course_content h3 > button {
+  background: transparent;
+  color: var(--cbg-text-1);
+  border-radius: 12px;
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #course_content h3 > button > div > div:first-child {
+  border-color: var(--cbg-line-strong);
+  color: var(--cbg-text-2);
+  transition: border-color var(--cbg-dur-fast) var(--cbg-ease), color var(--cbg-dur-fast) var(--cbg-ease);
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #course_content h3 > button[data-state="open"] > div > div:first-child {
+  border-color: var(--cbg-gold-line);
+  color: var(--cbg-gold);
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #course_content h3 > button p {
+  color: var(--cbg-text-3);
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #course_content h3 > button > svg {
+  color: var(--cbg-gold);
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #course_content [role="region"] > div {
+  background: transparent;
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #course_content [role="region"] [role="button"] {
+  border-color: var(--cbg-line);
+  color: var(--cbg-text-2);
+  transition: background-color var(--cbg-dur-fast) var(--cbg-ease);
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #course_content [role="region"] [role="button"]:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #course_content [role="region"] [role="button"] p {
+  color: var(--cbg-text-2);
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #course_content [role="region"] [role="button"] > svg {
+  color: var(--cbg-text-3);
+}
+
+html.cbg-route-course #react-root > div:has(#course_content) #course_content :is(button, [role="button"]):focus-visible {
+  box-shadow: 0 0 0 2px var(--cbg-bg), 0 0 0 4px var(--cbg-gold);
+}
+
+/* 15. Enrol card: desktop sticky card and phone bottom bar (same element). */
+html.cbg-route-course div:has(> #course_content) + div {
+  background: linear-gradient(var(--cbg-glass), var(--cbg-glass)), var(--cbg-bg-2);
+  border-color: var(--cbg-line);
+  color: var(--cbg-text-2);
+  box-shadow: 0 -12px 32px -12px rgba(0, 0, 0, 0.6);
+}
+
+@media (min-width: 1024px) {
+  html.cbg-route-course div:has(> #course_content) + div {
+    border-radius: var(--cbg-r-card);
+    box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+}
+
+html.cbg-route-course div:has(> #course_content) + div :is(h5, p) {
+  color: var(--cbg-text-1);
+}
+
+html.cbg-route-course div:has(> #course_content) + div > div + div {
+  border-top-color: var(--cbg-line);
+}
+
+html.cbg-route-course div:has(> #course_content) + div li {
+  color: var(--cbg-text-2);
+}
+
+html.cbg-route-course div:has(> #course_content) + div li svg {
+  color: var(--cbg-gold);
+}
+
+html.cbg-route-course div:has(> #course_content) + div button {
+  background: var(--cbg-btn);
+  color: var(--cbg-btn-text);
+  border-radius: var(--cbg-r-pill);
+}
+
+html.cbg-route-course div:has(> #course_content) + div button:hover {
+  background: #fff;
+}
+
+html.cbg-route-course div:has(> #course_content) + div button:focus-visible {
+  box-shadow: 0 0 0 2px var(--cbg-bg-2), 0 0 0 4px var(--cbg-gold);
+}
