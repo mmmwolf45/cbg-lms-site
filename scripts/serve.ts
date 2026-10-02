@@ -14,7 +14,10 @@ const TYPES: Record<string, string> = {
 function fileFor(path: string): string | undefined {
   if (path === '/') return 'dist/preview/home.html';
   if (/^\/course\/(101-[^/]+|preview-101)\/?$/.test(path)) return 'dist/preview/course.html';
-  if (path.startsWith(BASE)) return join('dist', normalize(path.slice(BASE.length)).replace(/^(\.\.[/\\])+/, ''));
+  if (path.startsWith(BASE)) {
+    const rel = normalize(path.slice(BASE.length)).replace(/^(\.\.[/\\])+/, '');
+    return join('dist', rel, path.endsWith('/') ? 'index.html' : '');
+  }
 }
 
 createServer(async (req, res) => {
