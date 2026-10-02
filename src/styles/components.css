@@ -107,3 +107,12 @@
 }
 .cbg-faq details[open] summary::after { transform: rotate(45deg); }
 .cbg-faq details > p { padding-bottom: 20px; max-width: 62ch; }
+/* T21: smooth open/close in CSS alone (Chrome/Edge 131+, others open instantly). No JS needed. */
+@media (prefers-reduced-motion: no-preference) {
+  .cbg-faq details { interpolate-size: allow-keywords; }
+  .cbg-faq details::details-content {
+    block-size: 0; overflow-y: clip;
+    transition: block-size var(--cbg-dur) var(--cbg-ease), content-visibility var(--cbg-dur) allow-discrete;
+  }
+  .cbg-faq details[open]::details-content { block-size: auto; }
+}
