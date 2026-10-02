@@ -28,8 +28,11 @@ function drawing(units: Unit[], total: number) {
     + `<path class="cbg-build__roof" d="M22 36h156"/><path class="cbg-build__dim" d="M186 36v240${ticks}"/></svg>`;
 }
 
-const unit = (u: Unit, i: number, hours: string) => `<li class="cbg-card cbg-unit" data-cbg-unit="${i + 1}">
-<p class="cbg-unit__meta"><span class="cbg-chip">${esc(u.code)}</span><span>${u.glh} ${esc(hours)}</span></p>
+// running: hours built up to and including this unit ("48 / 80"), shown only on narrow columns,
+// where the building drawing sits above the list instead of beside it. Decorative: each unit's own
+// hours are already in the text.
+const unit = (u: Unit, i: number, hours: string, running: number, total: number) => `<li class="cbg-card cbg-unit" data-cbg-unit="${i + 1}">
+<p class="cbg-unit__meta"><span class="cbg-chip">${esc(u.code)}</span><span>${u.glh} ${esc(hours)}<span class="cbg-unit__running" aria-hidden="true">${running} / ${total}</span></span></p>
 <h3 class="cbg-h3">${esc(u.title)}</h3>
 <ul class="cbg-outcomes">${u.outcomes.map((o) => `<li>${esc(o)}</li>`).join('')}</ul>
 <ol class="cbg-sessions">${u.sessions.map((s) => `<li><span>${esc(s.id)}</span> ${esc(s.title)}</li>`).join('')}</ol>
@@ -44,6 +47,6 @@ export const units = (c: Course) => {
   return courseSection('units', `${head(s.heading, s.intro)}
 <div class="cbg-build">
 <div class="cbg-build__plan">${drawing(s.units, total)}<p class="cbg-build__total"><b>${counted(total)}</b><span>${esc(hours)}</span></p></div>
-<ol class="cbg-units">${s.units.map((u, i) => unit(u, i, hours)).join('')}</ol>
+<ol class="cbg-units">${s.units.map((u, i) => unit(u, i, hours, s.units.slice(0, i + 1).reduce((n, x) => n + x.glh, 0), total)).join('')}</ol>
 </div>`, ' data-cbg-build');
 };

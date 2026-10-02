@@ -275,3 +275,7 @@
   .cbg-closing__bg::after { background: linear-gradient(100deg, rgba(8, 18, 38, 0.9) 25%, rgba(8, 18, 38, 0.4) 75%, rgba(8, 18, 38, 0.15)); }
   .cbg-closing__logos { padding: var(--cbg-s5) var(--cbg-s7); gap: var(--cbg-s7); }
 }
+
+/* Running total on each unit ("48 / 80"), only where the building drawing sits above the list. */
+.cbg-unit__running { margin-left: var(--cbg-s3); padding-left: var(--cbg-s3); border-left: 1px solid var(--cbg-line-strong); color: var(--cbg-gold); font-weight: 600; }
+@container cbgc (min-width: 700px) { .cbg-unit__running { display: none; } }

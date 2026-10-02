@@ -10,9 +10,9 @@ export const all = (roots: HTMLElement[], sel: string) => roots.flatMap((r) => [
 
 // 'top 88%', but never past the end of the page, so content near the bottom still reveals.
 // ('clamp(top 88%)' would also clamp to 0, and then content already in view never "enters".)
-export const enterAt = (el: HTMLElement) => () =>
+export const enterAt = (el: HTMLElement, at = 0.88) => () =>
   Math.min(
-    el.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.88,
+    el.getBoundingClientRect().top + window.scrollY - window.innerHeight * at,
     ScrollTrigger.maxScroll(window) - 1,
   );
 

@@ -36,7 +36,8 @@ export function counters(roots: HTMLElement[]) {
       },
       onComplete: () => el.classList.add(DONE),
     });
-    ScrollTrigger.create({ trigger: el, start: enterAt(el), once: true, onEnter: () => void tween.play() });
+    // Counting starts the moment the number appears at the bottom of the screen: a 0 must never sit in view.
+    ScrollTrigger.create({ trigger: el, start: enterAt(el, 1), once: true, onEnter: () => void tween.play() });
   }
   return () => restore.forEach((f) => f());
 }
