@@ -1,1 +1,22 @@
-/* Filled in by its task (see src/motion/*). Course motion styles, scoped to .cbg-course-page. */
+/* T24: the 80-hour build (src/motion/build80.ts). Static layout (sticky drawing beside the list from a
+   700px column) is in course.css. Without JS or under reduced motion none of these classes exist, so the
+   drawing shows built and filled, every card at full strength, and the figure reads 80. */
+
+/* The soft gold fill of a floor: a clone of its outline, faded in with opacity. While it exists the
+   outline itself has no fill, so a floor still being drawn is just a line. */
+.cbg-course-page .cbg-floor .cbg-floor__fill { fill: rgba(214, 177, 96, 0.1); stroke: none; }
+.cbg-course-page .cbg-floor__fill ~ rect { fill: none; }
+
+/* Laptop scrub: the card at the middle of the viewport is active. The others dim to 0.88 opacity, which
+   keeps the softest text (--cbg-text-3) above 4.5:1 on the card (tests/build80.test.ts). The gold border
+   is an overlay that fades with opacity (no animated border colour). */
+.cbg-course-page .cbg-build.is-scrub .cbg-unit::after {
+  content: ""; position: absolute; inset: -1px; border: 1px solid var(--cbg-gold-line); border-radius: inherit;
+  opacity: 0; pointer-events: none;
+}
+.cbg-course-page .cbg-build.is-scrub .cbg-unit.is-active::after { opacity: 1; }
+.cbg-course-page .cbg-build.is-scrub:has(.is-active) .cbg-unit:not(.is-active) { opacity: 0.88; }
+@media (prefers-reduced-motion: no-preference) {
+  .cbg-course-page .cbg-build.is-scrub .cbg-unit,
+  .cbg-course-page .cbg-build.is-scrub .cbg-unit::after { transition: opacity var(--cbg-dur) var(--cbg-ease); }
+}
