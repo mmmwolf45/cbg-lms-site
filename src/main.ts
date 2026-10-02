@@ -2,27 +2,35 @@ import './styles/tokens.css';
 import './styles/base.css';
 import './styles/components.css';
 import './styles/home.css';
+import './styles/course.css';
 import './styles/motion.css';
 import './styles/native-overrides.css';
 import { detectPage, routeOf, type Page } from './pages';
 import { watchRoutes } from './router';
-import { failOpen, setupMotion } from './motion/setup';
+import { failOpen, setupMotion, type Enhancer } from './motion/setup';
+import { blueprint } from './motion/blueprint';
+import { ticks } from './motion/ticks';
+import { loginAction } from './actions';
 
 export type Teardown = () => void;
 export type Setups = Record<Page['kind'], (page: Page) => Teardown>;
 
 const noop = () => () => {};
 
-// Home and course pages share the motion layer (page-specific motion joins in later tasks).
-const motion = () => {
+// Home and course pages share the motion layer; each adds its own enhancers.
+const motion = (enhancers: Enhancer[]) => () => {
   try {
-    return setupMotion();
+    return setupMotion(document, enhancers);
   } catch (err) {
     failOpen(err);
     return () => {};
   }
 };
-const setups: Setups = { home: motion, course: motion, none: noop };
+const setups: Setups = {
+  home: motion([blueprint, ticks, loginAction]),
+  course: motion([]),
+  none: noop,
+};
 
 const warn = (err: unknown) => console.warn('[cbg]', err);
 

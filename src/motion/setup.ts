@@ -15,16 +15,25 @@ export function failOpen(err: unknown, doc: Document = document) {
   console.warn('[cbg]', err);
 }
 
+// A page-specific enhancer (hero lines, hazard scan, login button...): gets the current roots, returns
+// its cleanup. Runs outside the reduced-motion query, so each one handles reduced motion itself.
+export type Enhancer = (roots: HTMLElement[]) => (() => void) | void;
+
 // Runs reveal, thread and counters on every [data-cbg] block in the document and returns the teardown.
 // gsap.matchMedia() is a gsap.context per query: under reduced motion nothing is created and the CSS
 // already shows the final state. If the media query flips, GSAP reverts one side and runs the other.
 // course.link renders blocks inside React, which can add them late or replace them, so a DOM watcher
 // re-runs the setup when the set of roots changes. Finished elements are marked done, so a re-run never
 // repeats a reveal or a count.
-export function setupMotion(doc: Document = document): () => void {
+export function setupMotion(doc: Document = document, enhancers: Enhancer[] = []): () => void {
   const off = new AbortController();
   let mm: gsap.MatchMedia | undefined;
   let roots: HTMLElement[] = [];
+  let cleanups: (() => void)[] = [];
+  const undoEnhancers = () => {
+    cleanups.forEach((f) => f());
+    cleanups = [];
+  };
   let refreshTimer: ReturnType<typeof setTimeout> | undefined;
   let watchTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -36,8 +45,17 @@ export function setupMotion(doc: Document = document): () => void {
   const run = () => {
     mm?.revert();
     mm = undefined;
+    undoEnhancers();
     roots = [...doc.querySelectorAll<HTMLElement>(ROOT)];
     if (!roots.length) return;
+    for (const enhance of enhancers) {
+      try {
+        const undo = enhance(roots);
+        if (undo) cleanups.push(undo);
+      } catch (err) {
+        console.warn('[cbg]', err); // one broken enhancer must not take down the rest
+      }
+    }
     mm = gsap.matchMedia();
     // Also runs later when the preference flips, so it catches its own errors.
     mm.add(fullMotion, () => {
@@ -83,5 +101,6 @@ export function setupMotion(doc: Document = document): () => void {
     clearTimeout(refreshTimer);
     clearTimeout(watchTimer);
     mm?.revert();
+    undoEnhancers();
   };
 }
