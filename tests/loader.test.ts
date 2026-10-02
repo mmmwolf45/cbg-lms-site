@@ -7,7 +7,9 @@ function boot(pathname: string, fetchImpl: () => Promise<unknown>) {
   const classes = new Set<string>();
   const appended: { tag: string; [k: string]: unknown }[] = [];
   const doc = {
-    documentElement: { classList: { add: (...c: string[]) => c.forEach((x) => classes.add(x)), remove: (c: string) => classes.delete(c) } },
+    documentElement: {
+      classList: { add: (...c: string[]) => c.forEach((x) => classes.add(x)), remove: (...c: string[]) => c.forEach((x) => classes.delete(x)) },
+    },
     head: { appendChild: (el: { tag: string }) => appended.push(el) },
     createElement: (tag: string) => ({ tag }),
   };
@@ -41,7 +43,7 @@ describe('loader boot script', () => {
   it('fails safe when the manifest cannot be fetched', async () => {
     const { classes } = boot('/', () => Promise.reject(new Error('offline')));
     await vi.waitFor(() => expect(classes).toContain('cbg-off'));
-    expect(classes).not.toContain('cbg-js');
+    expect([...classes]).toEqual(['cbg-off']);
   });
 
   it('fails safe when the bundle has not started before the timeout', () => {

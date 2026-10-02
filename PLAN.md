@@ -3,6 +3,10 @@
 **Built from:** `SPEC.md` (approved 2 Oct 2026). **Status:** Draft for Maasoom's approval.
 **Convention:** The brief asks for one `PLAN.md`, so the plan and the task list both live here (not in `tasks/`). Tick tasks off here as they land.
 
+## Progress
+- [x] T1 scaffold · [x] T2 content YAML · [x] T3 routing · [x] T4 loader + mock · [x] T5 Pages · [x] T6 live probe (`docs/platform-findings.md`) · [x] T8 art direction (`docs/art-direction.md`)
+- [ ] Foundation checkpoint (Maasoom) · [ ] T7 directions · [ ] T9 tokens · [ ] T10 images
+
 ## Overview
 The work runs in this order:
 1. Foundation (repo, content, loader, hosting)
