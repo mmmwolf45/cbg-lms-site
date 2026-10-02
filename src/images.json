@@ -196,36 +196,36 @@
         {
           "w": 800,
           "file": "img/course-iosh-800.avif",
-          "bytes": 17247
+          "bytes": 30478
         },
         {
           "w": 480,
           "file": "img/course-iosh-480.avif",
-          "bytes": 8552
+          "bytes": 12853
         }
       ],
       "webp": [
         {
           "w": 800,
           "file": "img/course-iosh-800.webp",
-          "bytes": 26366
+          "bytes": 53672
         },
         {
           "w": 480,
           "file": "img/course-iosh-480.webp",
-          "bytes": 12714
+          "bytes": 23162
         }
       ],
       "jpg": [
         {
           "w": 800,
           "file": "img/course-iosh-800.jpg",
-          "bytes": 36136
+          "bytes": 60599
         },
         {
           "w": 480,
           "file": "img/course-iosh-480.jpg",
-          "bytes": 16676
+          "bytes": 25216
         }
       ]
     }
@@ -352,6 +352,132 @@
           "w": 480,
           "file": "img/course-structural-480.jpg",
           "bytes": 16279
+        }
+      ]
+    }
+  },
+  "course-bim": {
+    "width": 800,
+    "height": 533,
+    "variants": {
+      "avif": [
+        {
+          "w": 800,
+          "file": "img/course-bim-800.avif",
+          "bytes": 18270
+        },
+        {
+          "w": 480,
+          "file": "img/course-bim-480.avif",
+          "bytes": 8380
+        }
+      ],
+      "webp": [
+        {
+          "w": 800,
+          "file": "img/course-bim-800.webp",
+          "bytes": 31948
+        },
+        {
+          "w": 480,
+          "file": "img/course-bim-480.webp",
+          "bytes": 14820
+        }
+      ],
+      "jpg": [
+        {
+          "w": 800,
+          "file": "img/course-bim-800.jpg",
+          "bytes": 45155
+        },
+        {
+          "w": 480,
+          "file": "img/course-bim-480.jpg",
+          "bytes": 20124
+        }
+      ]
+    }
+  },
+  "course-interior": {
+    "width": 800,
+    "height": 533,
+    "variants": {
+      "avif": [
+        {
+          "w": 800,
+          "file": "img/course-interior-800.avif",
+          "bytes": 17873
+        },
+        {
+          "w": 480,
+          "file": "img/course-interior-480.avif",
+          "bytes": 7540
+        }
+      ],
+      "webp": [
+        {
+          "w": 800,
+          "file": "img/course-interior-800.webp",
+          "bytes": 25714
+        },
+        {
+          "w": 480,
+          "file": "img/course-interior-480.webp",
+          "bytes": 11134
+        }
+      ],
+      "jpg": [
+        {
+          "w": 800,
+          "file": "img/course-interior-800.jpg",
+          "bytes": 42586
+        },
+        {
+          "w": 480,
+          "file": "img/course-interior-480.jpg",
+          "bytes": 17916
+        }
+      ]
+    }
+  },
+  "band-classroom": {
+    "width": 1536,
+    "height": 1024,
+    "variants": {
+      "avif": [
+        {
+          "w": 1536,
+          "file": "img/band-classroom-1536.avif",
+          "bytes": 50487
+        },
+        {
+          "w": 1024,
+          "file": "img/band-classroom-1024.avif",
+          "bytes": 29317
+        }
+      ],
+      "webp": [
+        {
+          "w": 1536,
+          "file": "img/band-classroom-1536.webp",
+          "bytes": 82234
+        },
+        {
+          "w": 1024,
+          "file": "img/band-classroom-1024.webp",
+          "bytes": 48788
+        }
+      ],
+      "jpg": [
+        {
+          "w": 1536,
+          "file": "img/band-classroom-1536.jpg",
+          "bytes": 116235
+        },
+        {
+          "w": 1024,
+          "file": "img/band-classroom-1024.jpg",
+          "bytes": 63361
         }
       ]
     }
