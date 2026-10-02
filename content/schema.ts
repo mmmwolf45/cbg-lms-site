@@ -20,14 +20,16 @@ const cta = { label: s, 'action?': s, 'href?': s } as const;
 const whatsapp = { label: s, number: s, href: s } as const;
 const email = { label: s, address: s, href: s } as const;
 const titled = { title: s, body: s } as const;
+// A logo: the source file in brand/assets/ (src/components/html.ts maps it to the published one) and its alt text.
+const logos = [{ file: s, alt: s }] as const;
 
 const homeShape = {
-  hero: { eyebrow: s, heading: s, subhead: s, primaryCta: { ...cta, 'loggedInLabel?': s }, secondaryCta: whatsapp },
+  hero: { eyebrow: s, heading: s, subhead: s, primaryCta: cta, secondaryCta: whatsapp, imageAlt: s },
   'how-it-works': { heading: s, steps: [titled] },
   courses: { heading: s, intro: s },
   'first-steps': { heading: s, items: [s] },
   support: { heading: s, body: s, whatsapp, emails: [email] },
-  about: { heading: s, body: s, 'highlight?': s, logos: [s], link },
+  about: { heading: s, body: s, 'highlight?': s, logos, link },
   'footer-note': { text: s },
 } as const;
 
@@ -37,12 +39,13 @@ const courseShape = {
   path: s,
   card: { title: s, status: s, tag: s, line: s, meta: [s], cta: link },
   hero: {
-    eyebrow: s, heading: s, subhead: s,
+    eyebrow: s, heading: s, subhead: s, imageAlt: s,
     facts: [{ value: s, 'label?': s, 'count?': 'number', 'prefix?': s }],
     cta,
     // Hazard Scan: `at` is the marker point [x, y] and `zoom` the phone-tour area [x, y, w, h], in source
     // pixels of the hazard-worksite photo (HAZARD_PHOTO), checked in validateCourse.
     hazards: [{ label: s, detail: s, at: ['number'], zoom: ['number'] }],
+    tour: { previous: s, next: s }, // the phone tour's step buttons
   },
   included: { heading: s, intro: s, cards: [{ ...titled, 'featured?': 'boolean' }] },
   units: {
@@ -67,7 +70,7 @@ const courseShape = {
   },
   payments: { heading: s, body: s },
   faq: { heading: s, items: [{ q: s, a: s }] },
-  help: { heading: s, whatsapp, email, logos: [s] },
+  help: { heading: s, whatsapp, email, logos },
 } as const;
 
 export type Home = Infer<typeof homeShape>;
@@ -79,6 +82,9 @@ export const courseSections = Object.keys(courseShape)
   .filter((k) => !['slug', 'uniqueId', 'path', 'card'].includes(k)) as (keyof Course)[];
 
 const EM_DASH = String.fromCharCode(0x2014);
+// Every `href` in the content: an https: or mailto: link, an in-page #anchor, or a site path ("/course/...",
+// but not "//host", which is another site). Anything else (http:, javascript:, a bare word) is an error.
+const HREF = /^(https:\/\/|mailto:|#|\/(?!\/))/;
 
 function check(value: unknown, shape: Shape, path: string, file: string): void {
   const fail = (msg: string): never => { throw new Error(`${file}: ${path || '(top)'}: ${msg}`); };
@@ -86,6 +92,7 @@ function check(value: unknown, shape: Shape, path: string, file: string): void {
     if (typeof value !== shape) fail(`expected ${shape}, got ${JSON.stringify(value)}`);
     if (typeof value === 'string' && !value.trim()) fail('is empty');
     if (typeof value === 'string' && value.includes(EM_DASH)) fail('contains an em-dash (U+2014); use a comma, colon or full stop');
+    if (/(^|\.)href$/.test(path) && !HREF.test(value as string)) fail(`must start with https://, mailto:, # or /, got ${JSON.stringify(value)}`);
     return;
   }
   if (Array.isArray(shape)) {

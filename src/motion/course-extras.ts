@@ -35,10 +35,8 @@ export const stackOffsets = (lefts: number[], step = 3) => lefts.map((l, i) => (
 const box = (el: HTMLElement): Box => ({ x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight });
 
 // Starts when the element's top reaches this fraction of the viewport (never past the end of the page).
-const at = (el: HTMLElement, f: number) => () =>
-  Math.min(el.getBoundingClientRect().top + scrollY - innerHeight * f, ScrollTrigger.maxScroll(window) - 1);
 const once = (el: HTMLElement, f: number, onEnter: () => void, onRefresh?: () => void) =>
-  ScrollTrigger.create({ trigger: el, start: at(el, f), end: 1e9, once: true, onEnter, onRefresh });
+  ScrollTrigger.create({ trigger: el, start: enterAt(el, f), end: 1e9, once: true, onEnter, onRefresh });
 
 const done = (el: Element) => el.classList.add(DONE);
 const CLEAR = 'transform,transformOrigin,opacity,zIndex';
@@ -100,9 +98,10 @@ export const courseExtras: Enhancer = (roots) => {
   const touched: Element[] = [];
   mm.add(fullMotion, () => {
     for (const ul of all(roots, '[data-cbg-hand]')) if (!ul.classList.contains(DONE)) hand(ul, touched);
-    // Assessment cards: reveal.ts fades and lifts them (data-cbg-reveal="stagger", set up after the enhancers).
-    // On the same trigger and stagger this adds x, so they rise in from opposite sides. It ends a little
-    // sooner, so reveal's clearProps is the last word on the transform.
+    // Assessment cards: reveal.ts fades and lifts them (data-cbg-reveal="stagger"; set up before this runs,
+    // since the course enhancers arrive in a lazy chunk, but the order doesn't matter: GSAP keeps one
+    // transform per element, so x and y compose). On the same trigger and stagger this adds x, so they rise
+    // in from opposite sides. It ends a little sooner, so reveal's clearProps is the last word on the transform.
     for (const ex of all(roots, '.cbg-exams[data-cbg-reveal="stagger"]')) {
       if (ex.classList.contains(DONE)) continue;
       touched.push(...ex.children);

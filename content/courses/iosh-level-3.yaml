@@ -41,6 +41,8 @@ hero:
   eyebrow: IOSH Approved Study Centre 1003 · Live online
   heading: IOSH Level 3 Certificate in Occupational Safety and Health Principles and Practice
   subhead: The Ofqual-regulated qualification that meets the academic requirement for Tech IOSH, taught live online by CBG trainers, with four career certificates included.
+  # Alt text of the hazard-worksite photo.
+  imageAlt: "A concrete building site at dusk: an open trench, stacked cement bags, a ladder against the frame, an orange cable across the ground and a worker grinding steel"
   # Key facts. `count` is the number that counts up (optional); `prefix` is the text before it.
   facts:
     - value: Level 3
@@ -92,6 +94,10 @@ hero:
       detail: Grinding throws sparks and fragments, but the worker has no safety glasses or face shield.
       at: [1385, 560]
       zoom: [1260, 470, 276, 420]
+  # The phone tour's step buttons.
+  tour:
+    previous: Previous
+    next: Next
 
 included:
   heading: One course, five certificates and a toolkit
@@ -316,7 +322,9 @@ help:
     label: Email
     address: safety.training@carbonblueglobal.com
     href: mailto:safety.training@carbonblueglobal.com
-  # Logo files in brand/assets/, used as supplied.
+  # Logo files in brand/assets/, used as supplied, with their alt text.
   logos:
-    - cbg-mark-512.png
-    - iosh-1003-white.png
+    - file: cbg-mark-512.png
+      alt: CBG Training Institute
+    - file: iosh-1003-white.png
+      alt: IOSH Approved Study Centre 1003

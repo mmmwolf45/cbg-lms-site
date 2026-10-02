@@ -1,5 +1,6 @@
 // Local mock of course.link: the preview pages at their real paths, our build at the Pages base.
 // Run after `npm run build`: npm run serve, then open http://localhost:4173/
+// (and /gallery for the component gallery, preview/components.html: local only, never published).
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
@@ -13,6 +14,7 @@ const TYPES: Record<string, string> = {
 
 function fileFor(path: string): string | undefined {
   if (path === '/') return 'dist/preview/home.html';
+  if (path === '/gallery') return 'preview/components.html';
   if (/^\/course\/(101-[^/]+|preview-101)\/?$/.test(path)) return 'dist/preview/course.html';
   if (path.startsWith(BASE)) {
     const rel = normalize(path.slice(BASE.length)).replace(/^(\.\.[/\\])+/, '');
@@ -31,4 +33,4 @@ createServer(async (req, res) => {
   } catch {
     res.writeHead(404).end('not found');
   }
-}).listen(PORT, () => console.log(`mock course.link on http://localhost:${PORT}/ and /course/preview-101`));
+}).listen(PORT, () => console.log(`mock course.link on http://localhost:${PORT}/, /course/preview-101 and /gallery`));

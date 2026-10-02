@@ -7,6 +7,8 @@
 #   - the document title line, "Audience" and "Rules"
 #   - hero "Visual idea"
 #   - the CTA destinations written as notes ("the course.link login", "the user's courses")
+#   - the logged-in CTA label "Go to my courses" (SPEC section 5: not shown until a reliable
+#     logged-in signal exists; add it back here, with the code that reads it, at that point)
 #   - courses "Template note"; the course cards live in content/courses/*.yaml under `card:`
 #   - instructions "Three steps, numbered" and "A short checklist, with ticks that animate in"
 #   - "(button opens WhatsApp)" and the about "Logos" note (the logos are listed as files)
@@ -20,11 +22,12 @@ hero:
   primaryCta:
     label: Log in
     action: login
-    loggedInLabel: Go to my courses # only used once a reliable logged-in signal exists
   secondaryCta:
     label: Need help?
     number: "+974 7048 5638"
     href: https://wa.me/97470485638
+  # Alt text of the hero photo.
+  imageAlt: A steel-frame building under construction at dusk, its lower floors lit, with a tower crane beside it
 
 how-it-works:
   heading: How this site works
@@ -75,10 +78,12 @@ about:
     As an IOSH Approved Study Centre (Centre 1003), CBG brings live-project experience into professional qualifications, taught by practitioners who have run safety on real sites.
   # Words from the body shown in bold (as in the copy deck).
   highlight: IOSH Approved Study Centre (Centre 1003)
-  # Logo files in brand/assets/, used as supplied.
+  # Logo files in brand/assets/, used as supplied, with their alt text.
   logos:
-    - cbg-mark-512.png
-    - iosh-1003-white.png
+    - file: cbg-mark-512.png
+      alt: CBG Training Institute
+    - file: iosh-1003-white.png
+      alt: IOSH Approved Study Centre 1003
   link:
     label: www.carbonblueglobal.com
     href: https://www.carbonblueglobal.com

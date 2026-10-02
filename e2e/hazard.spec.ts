@@ -102,6 +102,20 @@ test.describe('laptop', () => {
       for (let i = 0; i < 6; i++) await expectOnHazard(page, i);
     }
   });
+
+  test('mid-sweep, a marker the line has not reached yet is visible once focused', async ({ page }) => {
+    await open(page, 'no-preference');
+    await expect(box(page)).toHaveClass(/is-scan/);
+    const last = dots(page).nth(5); // the grinder, far right: the line reaches it last
+    await last.focus();
+    await page.waitForTimeout(350); // the 300ms opacity transition
+    const s = await last.evaluate((d) => ({
+      waiting: d.closest('.is-scan') !== null && !d.classList.contains('is-seen'),
+      opacity: getComputedStyle(d).opacity,
+    }));
+    expect(s.waiting).toBe(true); // the line hasn't reached it yet
+    expect(s.opacity).toBe('1');
+  });
 });
 
 async function expectTipInFrame(page: Page) {
@@ -135,8 +149,11 @@ test.describe('phone tour', () => {
     await page.locator('[data-cbg-hazard]').scrollIntoViewIfNeeded();
     await page.waitForTimeout(800);
     await page.screenshot({ path: `${SCREENS}/hazard-phone-tour-1.png` });
+    // The automatic first step is not announced; from the first press on, steps are.
+    await expect(caption(page)).toHaveAttribute('aria-live', 'off');
 
     await next.tap();
+    await expect(caption(page)).toHaveAttribute('aria-live', 'polite');
     await expect(count).toHaveText('2 of 6');
     await expect(caption(page).locator('strong')).toHaveText(hazards[1].label);
     await expect(caption(page).locator('span')).toHaveText(hazards[1].detail);
@@ -180,6 +197,7 @@ test('a route change tears down cleanly and the next setup adds no duplicate lis
   await expect(dots(page).first()).toBeHidden();
   await expect(page.locator('.cbg-hazard-tour')).toBeHidden();
   await expect(caption(page)).toBeEmpty();
+  await expect(caption(page)).toHaveAttribute('aria-live', 'off');
   // And back: one Next moves one step.
   await page.evaluate(() => history.pushState({}, '', '/course/preview-101'));
   await expect(count).toHaveText('1 of 6');

@@ -44,6 +44,21 @@ describe('content schema', () => {
     expect(() => validateHome(d)).toThrow('testimonials: unknown section id');
   });
 
+  it('rejects an href that is not https:, mailto:, #anchor or a site path', () => {
+    for (const bad of ['http://wa.me/97470485638', 'javascript:alert(1)', '//evil.example/x', 'www.carbonblueglobal.com']) {
+      const d = home();
+      d.about.link.href = bad;
+      expect(() => validateHome(d)).toThrow(`about.link.href: must start with https://, mailto:, # or /, got "${bad}"`);
+    }
+    const c = course();
+    c.card.cta.href = 'ftp://x';
+    expect(() => validateCourse(c)).toThrow('card.cta.href: must start with');
+    c.card.cta.href = '/course/101-iosh-level3-certificate';
+    c.hero.cta.href = '#course_content';
+    c.help.email.href = 'mailto:safety.training@carbonblueglobal.com';
+    expect(() => validateCourse(c)).not.toThrow();
+  });
+
   it('rejects a wrong type', () => {
     const c = course();
     c.units.units[0].glh = '21';
@@ -58,7 +73,7 @@ const EDITORIAL_BLOCK = /\*\*(Rules|Sources):\*\*/; // the list under these is s
 const EDITORIAL_PARA = /^(The course\.link header|The native course\.link header|A short checklist, with ticks)/;
 const NOT_COPY: (string | RegExp)[] = [
   /^Unit \d+$/, /^\d+ GLH$/, /^Card \d+$/, // shown from data (position, glh number)
-  'Three steps, numbered', 'the course.link login', 'If logged in', "the user's courses",
+  'Three steps, numbered', 'the course.link login', 'If logged in', 'Go to my courses', "the user's courses",
   'button opens WhatsApp', "We're here to help", 'Small print', 'plus two more',
   'Course at a glance', 'first custom section in the main column', "What's included", 'The four units',
   'Your four bonus certificates', 'CBG Field Guides', 'Help and contacts', 'closing band',

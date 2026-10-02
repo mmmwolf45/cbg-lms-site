@@ -86,11 +86,14 @@ export const hazardScan: Enhancer = (roots) => {
     else open(i);
   };
 
-  const go = (i: number) => {
+  // The caption is rendered aria-live="off": the first tour step comes on its own (after the sweep, on
+  // rotate) and must not be spoken unprompted. From the student's first press on, steps are announced.
+  const go = (i: number, pressed = false) => {
+    if (pressed) cap.setAttribute('aria-live', 'polite');
     step = i;
     const z = i < 0 ? undefined : zoomFor(dots[i].dataset.cbgZoom!.split(' ').map(Number));
     stage.style.transform = z ? `translate(${z.x}%, ${z.y}%) scale(${z.s})` : '';
-    stage.style.setProperty('--zs', String(z?.s ?? 1));
+    stage.style.setProperty('--cbg-zs', String(z?.s ?? 1));
     dots.forEach((d, j) => d.classList.toggle('is-active', j === i));
     count.textContent = i < 0 ? `All ${n}` : `${i + 1} of ${n}`;
     if (i < 0) cap.replaceChildren();
@@ -144,12 +147,12 @@ export const hazardScan: Enhancer = (roots) => {
   on(frame, 'focusout', (e) => dots.includes((e as FocusEvent).relatedTarget as HTMLElement) || close());
   on(frame, 'click', (e) => {
     const i = dotOf(e);
-    if (i >= 0 && tour) go(i);
+    if (i >= 0 && tour) go(i, true);
     else open(i);
   });
   on(bar, 'click', (e) => {
     const by = Number((e.target as Element).closest<HTMLElement>('[data-cbg-hazard-step]')?.dataset.cbgHazardStep);
-    if (by) go(nextStep(step, by, n));
+    if (by) go(nextStep(step, by, n), true);
   });
   on(document, 'keydown', (e) => (e as KeyboardEvent).key === 'Escape' && shown >= 0 && close());
   on(window, 'resize', close);
@@ -160,8 +163,9 @@ export const hazardScan: Enhancer = (roots) => {
     ctx.revert();
     close();
     go(-1);
+    cap.setAttribute('aria-live', 'off');
     count.textContent = '';
-    stage.style.removeProperty('--zs');
+    stage.style.removeProperty('--cbg-zs');
     box.classList.remove('is-on', 'is-scan', 'is-tour');
     bar.hidden = true;
     dots.forEach((d) => {

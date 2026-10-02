@@ -13,12 +13,6 @@ export function contrast(a: string, b: string): number {
 }
 
 // Every text colour is used at body or label size, so all pairs must reach 4.5:1 (AA, normal text).
-const PAIRS = [
-  ['text1', 'bg'], ['text2', 'bg'], ['text3', 'bg'], ['gold', 'bg'],
-  ['text1', 'surface'], ['text2', 'surface'], ['text3', 'surface'], ['gold', 'surface'],
-  ['btn-text', 'btn'],
-];
-
 describe('final tokens (T9) pass AA contrast', () => {
   const css = readFileSync('src/styles/tokens.css', 'utf8');
   const t = Object.fromEntries([...css.matchAll(/--cbg-([\w-]+):\s*(#[0-9A-Fa-f]{6})\b/g)].map((m) => [m[1], m[2]]));
@@ -28,18 +22,4 @@ describe('final tokens (T9) pass AA contrast', () => {
     ['text-1', 'surface'], ['text-2', 'surface'], ['text-3', 'surface'], ['gold', 'surface'],
     ['btn-text', 'btn'],
   ])('%s on %s', (fg, bg) => expect(contrast(t[fg], t[bg])).toBeGreaterThanOrEqual(4.5));
-});
-
-describe('visual directions (T7) pass AA contrast', () => {
-  const html = readFileSync('public/directions/index.html', 'utf8');
-  const blocks = [...html.matchAll(/\[data-dir="(\w)"\] \{([^}]+)\}/g)];
-
-  it('defines three directions', () => expect(blocks.map((b) => b[1])).toEqual(['a', 'b', 'c']));
-
-  for (const [, dir, body] of blocks) {
-    const tokens = Object.fromEntries([...body.matchAll(/--([\w-]+):\s*(#[0-9A-Fa-f]{6})\b/g)].map((m) => [m[1], m[2]]));
-    it.each(PAIRS)(`${dir}: %s on %s`, (fg, bg) => {
-      expect(contrast(tokens[fg], tokens[bg])).toBeGreaterThanOrEqual(4.5);
-    });
-  }
 });

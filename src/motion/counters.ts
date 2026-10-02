@@ -11,7 +11,8 @@ export function countText(value: number, target: number, final: string): string 
   return final.includes(',') ? n.toLocaleString('en-US') : String(n);
 }
 
-// [data-cbg-count="N"] counts 0 -> N once in view. Screen readers get the final text from aria-label throughout.
+// [data-cbg-count="N"] counts 0 -> N once in view. The counted element is aria-hidden: screen readers read
+// the .cbg-sr-only copy of the final value beside it (docs/markup-contract.md), never the running number.
 // Returns a cleanup that puts the final text back (used when the page or the motion preference changes).
 export function counters(roots: HTMLElement[]) {
   const restore: (() => void)[] = [];
@@ -19,7 +20,6 @@ export function counters(roots: HTMLElement[]) {
     const target = Number(el.dataset.cbgCount);
     const final = el.textContent ?? '';
     if (el.classList.contains(DONE) || !(target > 0) || !final.trim()) continue;
-    el.setAttribute('aria-label', final.trim());
     // One text node, updated through .data: a characterData change, which the DOM watchers ignore.
     const text = document.createTextNode(countText(0, target, final));
     el.replaceChildren(text);

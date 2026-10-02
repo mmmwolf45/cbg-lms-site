@@ -47,3 +47,18 @@ export function picture(name: ImageName, o: PictureOpts) {
     + `<img src="${PAGES}${fallback.file}" srcset="${srcset(v.jpg)}" sizes="${o.sizes}" width="${width}" height="${height}" alt="${esc(o.alt)}" ${load}>`
     + '</picture>';
 }
+
+// Logos by the source file the YAML names (brand/assets/), as published from public/brand/: the CBG mark
+// resized to 160px, the IOSH 1003 mark exactly as supplied. Display sizes [w, h] (the files are larger,
+// for sharp screens): 'lg' in the home about panel, 'sm' in the course closing band.
+const LOGOS = {
+  'cbg-mark-512.png': { src: 'brand/cbg-mark-160.png', lg: [72, 72], sm: [64, 64] },
+  'iosh-1003-white.png': { src: 'brand/iosh-1003-white.png', lg: [200, 100], sm: [160, 80] },
+} as const;
+
+export function logo(file: string, alt: string, size: 'lg' | 'sm', cls = '') {
+  const l = LOGOS[file as keyof typeof LOGOS];
+  if (!l) throw new Error(`logos: no published file for ${file}`);
+  const [w, h] = l[size];
+  return `<img${cls ? ` class="${cls}"` : ''} src="${PAGES}${l.src}" width="${w}" height="${h}" alt="${esc(alt)}" loading="lazy" decoding="async">`;
+}

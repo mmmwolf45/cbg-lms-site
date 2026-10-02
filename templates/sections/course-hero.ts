@@ -2,9 +2,6 @@ import { arrow, esc, picture } from '../../src/components/html';
 import { HAZARD_PHOTO, type Course } from '../../content/schema';
 import { counted, courseSection } from './course-shared';
 
-// Move to the YAML (hero.visualAlt) when T22 adds the hazard data.
-const ALT = 'A concrete building site at dusk: an open trench, stacked cement bags, a ladder against the frame, an orange cable across the ground and a worker grinding steel';
-
 type Fact = Course['hero']['facts'][number];
 type Hazard = Course['hero']['hazards'][number];
 
@@ -19,18 +16,20 @@ const dot = ({ label, at: [x, y], zoom: [zx, zy, zw, zh] }: Hazard, i: number) =
   + ` data-cbg-zoom="${pct(zx, PW)} ${pct(zy, PH)} ${pct(zw, PW)} ${pct(zh, PH)}" aria-describedby="cbg-hazard-${i + 1}"`
   + ` style="--x:${pct(x, PW)}%;--y:${pct(y, PH)}%" hidden><span>${esc(label)}</span></button>`;
 
-function hazardScan(hazards: Hazard[]) {
+function hazardScan({ hazards, imageAlt, tour }: Course['hero']) {
   const photo = picture('hazard-worksite', {
-    alt: ALT, eager: true, sizes: '(min-width: 1280px) 792px, (min-width: 1024px) 56vw, 100vw',
+    alt: imageAlt, eager: true, sizes: '(min-width: 1280px) 792px, (min-width: 1024px) 56vw, 100vw',
   });
-  const caption = '<div class="cbg-hazard-caption" aria-live="polite"></div>';
+  // aria-live="off" until the student first presses a tour control (hazard-scan.ts), so the tour's
+  // automatic first step is never spoken unprompted.
+  const caption = '<div class="cbg-hazard-caption" aria-live="off"></div>';
   if (!hazards.length) return `<div class="cbg-frame">${photo}</div>${caption}`;
-  const step = (by: number, label: string) => `<button type="button" class="cbg-hazard-btn" data-cbg-hazard-step="${by}">${label}</button>`;
+  const step = (by: number, label: string) => `<button type="button" class="cbg-hazard-btn" data-cbg-hazard-step="${by}">${esc(label)}</button>`;
   return `<div class="cbg-frame"><div class="cbg-hazard__view"><div class="cbg-hazard__stage">${photo}`
     + `<i class="cbg-hazard__scan"></i>${hazards.map(dot).join('')}</div></div>`
     + '<p class="cbg-hazard-tip" aria-hidden="true" hidden></p></div>'
     + caption
-    + `<div class="cbg-hazard-tour" hidden>${step(-1, 'Previous')}<span class="cbg-hazard-count"></span>${step(1, 'Next')}</div>`
+    + `<div class="cbg-hazard-tour" hidden>${step(-1, tour.previous)}<span class="cbg-hazard-count"></span>${step(1, tour.next)}</div>`
     + `<ol class="cbg-hazards" data-cbg-hazard-list>${hazards.map((z, i) =>
       `<li id="cbg-hazard-${i + 1}"><strong>${esc(z.label)}</strong> <span>${esc(z.detail)}</span></li>`).join('')}</ol>`;
 }
@@ -58,5 +57,5 @@ export const hero = ({ hero: h }: Course) => courseSection('hero', `
 <h2 class="cbg-title">${qualification(h.heading)}</h2>
 <p class="cbg-lead">${esc(h.subhead)}</p>
 <div class="cbg-btns"><a class="cbg-btn cbg-btn--primary cbg-btn--down" href="${esc(h.cta.href ?? '#course_content')}" data-cbg-action="${esc(h.cta.action ?? 'start-here')}">${esc(h.cta.label)}${arrow}</a></div>
-<div class="cbg-hazard" data-cbg-hazard>${hazardScan(h.hazards)}</div>
+<div class="cbg-hazard" data-cbg-hazard>${hazardScan(h)}</div>
 <ul class="cbg-facts">${h.facts.map(fact).join('')}</ul>`);

@@ -31,7 +31,8 @@ const counterStates = (page: Page) =>
   page.evaluate(() =>
     [...document.querySelectorAll<HTMLElement>('[data-cbg-count]')].map((el) => ({
       final: Number(el.dataset.cbgCount) === Number((el.textContent ?? '').replace(/,/g, '')),
-      label: el.getAttribute('aria-label') === null || el.getAttribute('aria-label') === el.textContent?.trim(),
+      // Screen readers read the .cbg-sr-only copy beside it: the counted element stays hidden from them.
+      label: el.getAttribute('aria-hidden') === 'true' && el.nextElementSibling?.classList.contains('cbg-sr-only') === true,
     })),
   );
 

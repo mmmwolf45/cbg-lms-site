@@ -2,11 +2,11 @@
    The 1536 x 1024 photo shows uncropped in course.css's 3:2 box, so markers at --x/--y (% of the photo)
    land on their hazards at every width. Markers, tip and tour controls carry `hidden` until the script
    shows them (and marks the block .is-on); without it students get the photo and the plain list. */
-@property --zs { syntax: "<number>"; inherits: true; initial-value: 1; }
+@property --cbg-zs { syntax: "<number>"; inherits: true; initial-value: 1; }
 
 .cbg-course-page .cbg-hazard__stage {
   position: relative; transform-origin: 0 0;
-  transition: transform 700ms var(--cbg-ease), --zs 700ms var(--cbg-ease);
+  transition: transform 700ms var(--cbg-ease), --cbg-zs 700ms var(--cbg-ease);
 }
 .cbg-course-page .cbg-hazard__scan { display: none; }
 .cbg-course-page .is-scan .cbg-hazard__scan { display: block; }
@@ -21,11 +21,11 @@
   box-shadow: 0 0 10px 2px rgba(214, 177, 96, 0.75), 0 0 32px 8px rgba(214, 177, 96, 0.3);
 }
 
-/* Markers: 44px buttons, a gold dot inside; they keep their size while the stage zooms (--zs) */
+/* Markers: 44px buttons, a gold dot inside; they keep their size while the stage zooms (--cbg-zs) */
 .cbg-course-page .cbg-hazard-dot {
   position: absolute; left: var(--x); top: var(--y); width: 44px; height: 44px; margin: -22px 0 0 -22px;
   padding: 0; border: 0; border-radius: 50%; background: none; color: inherit; cursor: pointer;
-  transform: scale(calc(1 / var(--zs, 1)));
+  transform: scale(calc(1 / var(--cbg-zs, 1)));
   transition: opacity 300ms var(--cbg-ease), scale 400ms var(--cbg-ease);
 }
 .cbg-course-page .cbg-hazard-dot::before, .cbg-course-page .cbg-hazard-dot::after {
@@ -36,7 +36,8 @@
   box-shadow: 0 0 0 3px rgba(8, 18, 38, 0.6), 0 0 14px 2px rgba(214, 177, 96, 0.7);
 }
 .cbg-course-page .cbg-hazard-dot::after { inset: 6px; border: 2px solid var(--cbg-gold); opacity: 0; }
-.cbg-course-page .is-scan .cbg-hazard-dot:not(.is-seen) { opacity: 0; scale: 0.3; }
+/* Not yet reached by the line: hidden, unless focused or open (a focused control is always visible) */
+.cbg-course-page .is-scan .cbg-hazard-dot:not(.is-seen, :focus, .is-open) { opacity: 0; scale: 0.3; }
 .cbg-course-page .cbg-hazard-dot.is-seen::after { animation: cbg-hz-pulse 1s ease-out; }
 .cbg-course-page .cbg-hazard-dot:is(:hover, .is-open, .is-active)::before { background: #fff; scale: 1.15; }
 .cbg-course-page .cbg-hazard-dot:is(.is-open, .is-active)::after { opacity: 1; animation: none; }

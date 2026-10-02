@@ -10,8 +10,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Source+Sans+3:wght@400;600&display=swap">
 <script>
   // Loads the real built CSS the same way the loader does, so this gallery shows exactly what ships.
-  fetch('../manifest.json', { cache: 'no-store' }).then((r) => r.json()).then((m) => {
-    const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '../' + m.css; document.head.append(l);
+  // Local only (not published): npm run build, npm run serve, then http://localhost:4173/gallery
+  fetch('/cbg-lms-site/manifest.json', { cache: 'no-store' }).then((r) => r.json()).then((m) => {
+    const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/cbg-lms-site/' + m.css; document.head.append(l);
   });
 </script>
 <style>
@@ -61,7 +62,7 @@
     </div>
 
     <p class="g-label">Framed media (gold corner marks)</p>
-    <div class="cbg-frame" style="max-width:520px"><img src="../img/hero-structure-1024.webp" width="1024" height="683" alt="A steel-frame building under construction at dusk, with a tower crane beside it"></div>
+    <div class="cbg-frame" style="max-width:520px"><img src="/cbg-lms-site/img/hero-structure-1024.webp" width="1024" height="683" alt="A steel-frame building under construction at dusk, with a tower crane beside it"></div>
 
     <p class="g-label">Steps joined by the gold thread</p>
     <ol class="cbg-steps">

@@ -63,7 +63,7 @@ describe.each(courses.map((c) => [c.slug, c] as const))('course blocks: %s (T18,
   it('hero: Start here, hazard hooks and the eager hazard photo', () => {
     expect(top).toContain(`href="#course_content" data-cbg-action="start-here"`);
     expect(top).toContain('data-cbg-hazard');
-    expect(top).toContain('<div class="cbg-hazard-caption" aria-live="polite"></div>');
+    expect(top).toContain('<div class="cbg-hazard-caption" aria-live="off"></div>');
     expect(count(top, /data-cbg-hazard-list/g)).toBe(c.hero.hazards.length ? 1 : 0);
     expect(count(top, /fetchpriority="high"/g)).toBe(1);
     expect(count(main, /fetchpriority="high"/g)).toBe(0);

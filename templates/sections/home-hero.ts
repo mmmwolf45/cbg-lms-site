@@ -1,8 +1,6 @@
 import { arrow, esc, picture, section } from '../../src/components/html';
 import type { Home } from '../../content/schema';
 
-const ALT = 'A steel-frame building under construction at dusk, its lower floors lit, with a tower crane beside it';
-
 // "Welcome to your CBG classroom": from "CBG" on is the dimmed second line, with "CBG" in gold.
 function headline(text: string) {
   const at = text.indexOf('CBG');
@@ -18,7 +16,7 @@ export const hero = ({ hero: h }: Home) => section('hero', `<div class="cbg-hero
 <div class="cbg-btns"><a class="cbg-btn cbg-btn--primary" href="#navbar" data-cbg-action="${esc(h.primaryCta.action ?? 'login')}">${esc(h.primaryCta.label)}${arrow}</a><a class="cbg-btn cbg-btn--ghost" href="${esc(h.secondaryCta.href)}">${esc(h.secondaryCta.label)}</a></div>
 </div>
 <div class="cbg-hero__visual">${picture('hero-structure', {
-  cls: 'cbg-hero__media', alt: ALT, eager: true, sizes: '62vw',
+  cls: 'cbg-hero__media', alt: h.imageAlt, eager: true, sizes: '62vw',
   art: { name: 'hero-structure-phone', media: '(max-width: 1023px)', sizes: '100vw' },
 })}<svg class="cbg-hero__lines" width="0" height="0" aria-hidden="true" focusable="false"></svg></div>
 </div>`, ' data-cbg-hero');
