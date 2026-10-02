@@ -110,3 +110,59 @@ A close, quiet still life on a steel site table at blue hour: a plain white hard
 | `closing-plate.png` | `brand/assets/photos/` | Used in the support and help bands |
 
 Each image gets a row in `brand/assets/CREDITS.md`: "Generated with ChatGPT for CBG". The image pipeline (T10) makes AVIF, WebP and JPEG versions within the size budget, so the PNG sizes don't matter.
+
+---
+
+# Round 2: the course cards (home page redesign, 3 Oct 2026)
+
+Same conversation and **same style block** as before (paste it again if you start a new chat). Landscape 1536 × 1024 every time.
+These images sit at the top of each course card and **zoom slowly on hover**, so:
+- keep the main subject in the **centre**, with a calm margin all round (the card crops to about 4:3 and the zoom crops a little more);
+- one clear subject per image, recognisable at small size (about 380 px wide on a laptop, full width on a phone);
+- no text anywhere, including on screens, drawings and labels (screens show soft, unreadable glow only).
+
+Save each in `brand/assets/photos/` with the file name shown.
+
+## Card 1: Quantity Surveying
+**File name:** `course-qs.png`
+```
+Card image for a quantity surveying course. Same style. A close, calm still life on a steel site table at blue hour: rolled construction drawings, an architect's scale ruler, a tape measure, a calculator and a laptop whose screen shows a soft, unreadable spreadsheet glow. Behind, out of focus, the concrete frame of a building under construction lit by golden work lights. Subject centred with clear space around it. No text, numbers or readable screens anywhere.
+```
+
+## Card 2: MEP Design
+**File name:** `course-mep.png`
+```
+Card image for an MEP (mechanical, electrical and plumbing) design course. Same style. Looking up into the open ceiling of a modern building under fit-out: clean, parallel runs of rectangular HVAC ducts, cable trays with neatly dressed cables and insulated pipes, lit by warm golden work lights against deep navy shadow. Precise, orderly geometry, symmetrical, centred. No people, no text, labels or signs.
+```
+
+## Card 3: Structural Design
+**File name:** `course-structural.png`
+```
+Card image for a structural design course. Same style. A close, low-angle architectural view of a steel beam-to-column connection on a building frame: bolted end plates, stiffeners and the clean lines of I-beams against a deep navy blue-hour sky, a warm gold rim light along the steel edges. Strong geometry, centred, crisp detail. No people, no text, numbers or markings.
+```
+
+## Card 4: BIM (Building Information Modelling)
+**File name:** `course-bim.png`
+```
+Card image for a BIM (Building Information Modelling) course. Same style, indoors. A dark, premium design studio at blue hour: a large monitor shows a glowing gold wireframe 3D model of a multi-storey building on a navy background (abstract lines only, no interface, no text), with a small white architectural model of the same building on the desk in front of it. City lights through the window behind, out of focus. Centred, calm. No text or readable UI anywhere.
+```
+
+## Card 5: Interior Design
+**File name:** `course-interior.png`
+```
+Card image for an interior design course. Same style, indoors. A finished, premium interior at blue hour: a calm lobby or living space with clean architectural lines, a deep navy feature wall, warm gold cove lighting, natural stone and timber textures, minimal furniture. View centred and symmetrical, with the blue-hour sky visible through a large window. No people, no text, art with writing, logos or brand names.
+```
+
+## Card 6: IOSH Level 3 (health and safety)
+**File name:** `course-iosh.png`
+```
+Card image for an occupational health and safety course. Same style. A safe, well-run construction site at blue hour: a raised slab edge protected by a proper yellow guardrail, a worker seen from behind in a plain white hard hat and muted hi-vis vest walking along the protected edge, steel frame and a tower crane softly lit by golden work lights. Everything shown is safe practice. Subject centred. No text, signs, logos or markings on clothing or equipment.
+```
+
+## Band image: "the classroom"
+**File name:** `band-classroom.png` · **Used on:** a wide image band between sections, with gentle parallax. Text does not sit on it.
+```
+Wide atmospheric image for a live online engineering classroom. Same style. On a steel site table at blue hour: an open laptop with a soft glowing screen (unreadable), a plain white hard hat, rolled drawings and a notebook, with a large building under construction glowing with golden work lights in the background across the site. Generous empty navy sky across the top third. No people, no text, logos or readable screens.
+```
+
+When they're in `brand/assets/photos/`, tell me and I'll check each one, process them (AVIF/WebP/JPEG within budget) and put them into the cards.
