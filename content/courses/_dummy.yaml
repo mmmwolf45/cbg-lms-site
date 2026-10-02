@@ -11,12 +11,13 @@ path: /course/999-dummy-course
 
 card:
   title: Dummy Course
-  status: example only
+  status: live now
   tag: Dummy · Placeholder
   line: A placeholder course used to test the course template. Not a real course.
   meta:
     - Placeholder
     - Three units
+  order: 99
   cta:
     label: Open course
     href: /course/999-dummy-course

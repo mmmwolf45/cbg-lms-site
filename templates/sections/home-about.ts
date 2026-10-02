@@ -5,7 +5,7 @@ import type { Home } from '../../content/schema';
 const bold = (body: string, hl?: string) =>
   hl ? esc(body).split(esc(hl)).join(`<strong>${esc(hl)}</strong>`) : esc(body);
 
-// The logo panel's dark background is inline so the white IOSH mark never lands on white,
+// The logo panel's dark background is inline so a white mark (e.g. the IOSH one, if ever listed) never lands on white,
 // even if our stylesheet hasn't loaded.
 export const about =({ about: s }: Home) => section('about', `<div class="cbg-about__grid">
 <div data-cbg-reveal>

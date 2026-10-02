@@ -1,0 +1,19 @@
+# Card only: this course has no page on course.link yet, so its home page card shows "Coming soon" and
+# is not a link. Source: Maasoom's workbook "CBG - Course List for Web Development.xlsx" (all courses
+# are delivered online). To give it a page, add the page sections (see HOW_TO_ADD_A_COURSE.md), then
+# set status: live now and add a cta.
+slug: bim
+
+card:
+  title: BIM (Building Information Modelling)
+  status: coming soon
+  line: Online BIM training in Revit and Navisworks covering 3D modelling, clash detection and project coordination, with live Middle East projects.
+  meta:
+    - 6 months
+    - Malayalam
+    - Telugu
+    - Online
+  languages: [Malayalam, Telugu]
+  duration: 6 months
+  image: course-bim
+  order: 5

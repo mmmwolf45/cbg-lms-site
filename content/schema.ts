@@ -25,12 +25,29 @@ const logos = [{ file: s, alt: s }] as const;
 
 const homeShape = {
   hero: { eyebrow: s, heading: s, subhead: s, primaryCta: cta, secondaryCta: whatsapp, imageAlt: s },
+  // Three facts under the hero. The course and language numbers are counted from content/courses/*.yaml
+  // at build time (every course file; the languages listed on the cards, each counted once), so only
+  // their labels live here. `delivery` is shown as written.
+  facts: { courses: s, languages: s, delivery: { value: s, label: s } },
+  // The slow strip of course titles. Its words come from the course cards, so it has no copy of its own.
+  disciplines: {},
   'how-it-works': { heading: s, steps: [titled] },
+  // A full-width photo band. `image` is a name from src/images.json; the band is left out until
+  // `npm run images` has built it.
+  'band?': { image: s },
   courses: { heading: s, intro: s },
-  'first-steps': { heading: s, items: [s] },
   support: { heading: s, body: s, whatsapp, emails: [email] },
   about: { heading: s, body: s, 'highlight?': s, logos, link },
   'footer-note': { text: s },
+} as const;
+
+// A home page course card. `status` is "live now" or "coming soon" (checkCard): a live card needs `cta`
+// and becomes a link; a coming-soon card has none. `line` is the course description, `meta` the chips,
+// `languages` and `duration` the course facts (the languages feed the home page count). `image` is a
+// name from src/images.json (a navy placeholder shows until it is built). Cards sort by `order`.
+const cardShape = {
+  title: s, status: s, 'tag?': s, 'line?': s, 'meta?': [s],
+  'languages?': [s], 'duration?': s, 'image?': s, order: 'number', 'cta?': link,
 } as const;
 
 // Every section except `hero` is optional: a course shows only the sections its YAML has, in this order.
@@ -38,7 +55,7 @@ const courseShape = {
   slug: s,
   uniqueId: s,
   path: s,
-  card: { title: s, status: s, tag: s, line: s, meta: [s], cta: link }, // the home page course card
+  card: cardShape, // the home page course card
   hero: {
     eyebrow: s, heading: s, subhead: s,
     // The picture under the CTA (checkHero): 'hazard-scan' (needs `image`, `imageAlt`, `hazards`, `tour`),
@@ -82,13 +99,22 @@ const courseShape = {
 } as const;
 
 export const HERO_VISUALS = ['hazard-scan', 'photo', 'none'] as const;
+export const CARD_STATUSES = ['live now', 'coming soon'] as const;
 export type Home = Infer<typeof homeShape>;
+export type Card = Infer<typeof cardShape>;
+// A course with its own page (hero and the other sections).
 export type Course = Infer<typeof courseShape> & { hero: { visual: (typeof HERO_VISUALS)[number] } };
+// A course that only has a home page card for now (no page sections, "coming soon").
+export type CardOnly = { slug: string; card: Card };
+export type CourseFile = Course | CardOnly;
+export const hasPage = (c: CourseFile): c is Course => 'hero' in c;
+// The keys of a card-only course file.
+const cardOnlyShape = { slug: s, card: cardShape } as const;
 // One course section's data, for a course that has it (e.g. Section<'units'>).
 export type Section<K extends keyof Course> = NonNullable<Course[K]>;
 
 // Section ids in page order (used as id="cbg-<section>").
-export const homeSections = Object.keys(homeShape) as (keyof Home)[];
+export const homeSections = Object.keys(homeShape).map((k) => k.replace(/\?$/, '')) as (keyof Home)[];
 export const courseSections = Object.keys(courseShape).map((k) => k.replace(/\?$/, ''))
   .filter((k) => !['slug', 'uniqueId', 'path', 'card'].includes(k)) as (keyof Course)[];
 
@@ -180,9 +206,20 @@ function checkShelf({ 'field-guides': g }: Course, file: string) {
   if (width > 788) throw new Error(`${file}: field-guides: ${r} released + ${u} upcoming covers are ${width}px wide on a laptop, more than the 788px column; list fewer`);
 }
 
+// Live cards link to their page (`cta` needed); coming-soon cards are not links (`cta` refused, so no
+// silently unused copy). A course file with no page sections can only be coming soon.
+function checkCard(c: Card, file: string, page: boolean) {
+  const fail = (msg: string): never => { throw new Error(`${file}: card.${msg}`); };
+  if (!CARD_STATUSES.includes(c.status as (typeof CARD_STATUSES)[number])) fail(`status: must be ${CARD_STATUSES.join(' or ')}; got ${JSON.stringify(c.status)}`);
+  if (!page && c.status !== 'coming soon') fail('status: a course file with no page sections must be "coming soon"');
+  if (c.status === 'live now' && !c.cta) fail('cta: missing field (a live card links to its course page)');
+  if (c.status === 'coming soon' && c.cta) fail('cta: not used while the course is coming soon; remove it');
+}
+
 export function validateCourse(data: unknown, file = 'content/courses/(course).yaml'): Course {
   check(data, courseShape, '', file);
   const c = data as Course;
+  checkCard(c.card, file, true);
   checkHero(c, file);
   checkShelf(c, file);
   if (c.help?.image) checkImage(c.help.image, 'help.image', file);
@@ -199,18 +236,38 @@ function read(rel: string, file: string): unknown {
 
 export const loadHome = () => validateHome(read('./home.yaml', 'content/home.yaml'));
 
-// One course file, e.g. loadCourse('_dummy.yaml'). Its slug must match the file name.
-export function loadCourse(name: string): Course {
+// A course file is card-only when it has nothing but `slug` and `card`; anything else is a full page.
+export function validateCourseFile(data: unknown, file = 'content/courses/(course).yaml'): CourseFile {
+  const keys = data && typeof data === 'object' ? Object.keys(data) : [];
+  if (keys.some((k) => k !== 'slug' && k !== 'card')) return validateCourse(data, file);
+  check(data, cardOnlyShape, '', file);
+  const c = data as CardOnly;
+  checkCard(c.card, file, false);
+  return c;
+}
+
+// One course file, e.g. loadCourseFile('bim.yaml'). Its slug must match the file name.
+export function loadCourseFile(name: string): CourseFile {
   const file = `content/courses/${name}`;
-  const course = validateCourse(read(`./courses/${name}`, file), file);
+  const course = validateCourseFile(read(`./courses/${name}`, file), file);
   if (course.slug !== name.slice(0, -5)) throw new Error(`${file}: slug: must match the file name ("${name.slice(0, -5)}")`);
   return course;
 }
 
+// One course with a page, e.g. loadCourse('_dummy.yaml').
+export function loadCourse(name: string): Course {
+  const c = loadCourseFile(name);
+  if (!hasPage(c)) throw new Error(`content/courses/${name}: has no page sections (card only)`);
+  return c;
+}
+
 // Every content/courses/*.yaml except files starting with "_" (drafts, examples such as _dummy.yaml).
-export function loadCourses(): Course[] {
+export function loadCourseFiles(): CourseFile[] {
   return readdirSync(new URL('./courses/', import.meta.url))
     .filter((f) => f.endsWith('.yaml') && !f.startsWith('_'))
     .sort()
-    .map(loadCourse);
+    .map(loadCourseFile);
 }
+
+// The courses that have a page (built into <slug>-top and <slug>-main blocks).
+export const loadCourses = (): Course[] => loadCourseFiles().filter(hasPage);

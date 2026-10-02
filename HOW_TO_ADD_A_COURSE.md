@@ -1,6 +1,35 @@
 # How to add a course
 
-A course page is built from one file: `content/courses/<slug>.yaml`. No code changes are needed. Every course.link page at `/course/...` already gets the CBG styling and motion.
+A course is one file: `content/courses/<slug>.yaml`. No code changes are needed. Every course.link page at `/course/...` already gets the CBG styling and motion.
+
+There are two kinds of course file:
+- **Card only:** just a home page card that says "Coming soon" and is not a link. Use this while the course has no page on course.link yet (see "Card-only course" below).
+- **Full page:** the card plus the course page sections (steps 1 to 6 below). Its card is a link to the page.
+
+## Card-only course (coming soon)
+Make a file with only `slug` and `card`, like `content/courses/bim.yaml`:
+
+```yaml
+slug: bim
+card:
+  title: BIM (Building Information Modelling)
+  status: coming soon
+  line: Online BIM training in Revit and Navisworks covering 3D modelling, clash detection and project coordination, with live Middle East projects.
+  meta: [6 months, Malayalam, Telugu, Online]
+  languages: [Malayalam, Telugu]
+  duration: 6 months
+  image: course-bim
+  order: 5
+```
+
+- `slug` is the file name without `.yaml`. `title`, `status` and `order` are required; everything else is optional (`content/courses/interior-design.yaml` has only the title, so the card shows just the title and "Coming soon").
+- `status` must be `coming soon`, and a card-only file has no `cta`.
+- `line` is the course description, `meta` the small chips, `languages` the teaching languages (the home page counts the different languages across all cards), `duration` the course length.
+- `order` sets the card's place on the home page (lowest first). Every course file counts in the home page "courses" number.
+- `image` is the card photo's name. Put the photo (3:2, for example 1536 x 1024) in `brand/assets/photos/<image>.png` and run `npm run images`. Until then the card shows a navy blueprint placeholder; `npm run content:check` lists the photos still missing. The names already set up are `course-iosh`, `course-qs`, `course-mep`, `course-structural`, `course-bim` and `course-interior`; for a new name, ask Claude Code to add it to `scripts/images.ts`.
+- Then run `npm run build` and re-paste the home page block (step 6). No course page blocks are made for a card-only course.
+
+**When the course page is ready:** add the page sections to the same file (steps 1 and 2), set `status: live now` and add a `cta` (the "Open course" button and its link). The card then becomes a link automatically.
 
 ## 1. Copy a course file
 Make a copy of `content/courses/iosh-level-3.yaml` in the same folder and name it after the new course, in lower case with dashes, for example `content/courses/nebosh-igc.yaml`.
@@ -9,7 +38,7 @@ At the top, set:
 - `slug`: the file name without `.yaml` (for example `nebosh-igc`). The build stops if they differ.
 - `uniqueId`: the course number course.link uses in the page address (`101` in `/course/101-iosh-level3-certificate`).
 - `path`: the course page address on course.link, starting with `/course/`.
-- `card`: the course card on the home page (title, status, tag, line, chips and button).
+- `card`: the course card on the home page (title, status, tag, line, chips, languages, duration, image, order and button). A course with a page is `status: live now` and needs a `cta` (the "Open course" button); see "Card-only course" above for the other fields.
 
 ## 2. Fill in the sections
 - `hero` is the only section you must keep. Every other section (`included`, `units`, `how-classes-run`, `assessment`, `trainers`, `bonus`, `field-guides`, `payments`, `faq`, `help`) is optional: delete the whole section and the page simply leaves it out. The rest keep their order.
@@ -39,7 +68,7 @@ For a short example, see `content/courses/_dummy.yaml` (files starting with `_` 
 npm run content:check
 npm run build
 ```
-`content:check` lists every course it found (for example `content OK: home.yaml (7 sections), 2 course(s): iosh-level-3, nebosh-igc`) or names the exact field that is wrong. `npm run build` writes the paste-ready blocks to `dist/blocks/`:
+`content:check` lists every course it found (for example `content OK: home.yaml (9 sections), 7 course(s): bim (card only), ..., nebosh-igc`) or names the exact field that is wrong. `npm run build` writes the paste-ready blocks to `dist/blocks/`:
 - `<slug>-top.html` and `<slug>-main.html` for the course page
 - `home.html` for the home page (now with the new course card)
 

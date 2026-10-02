@@ -33,6 +33,10 @@ card:
     - About 2 months
     - 4 bonus certificates
     - 8 Field Guides
+  languages: [English]
+  duration: About 2 months
+  image: course-iosh
+  order: 1
   cta:
     label: Open course
     href: /course/101-iosh-level3-certificate

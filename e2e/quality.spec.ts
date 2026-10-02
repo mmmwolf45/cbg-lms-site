@@ -10,6 +10,18 @@ const PAGES = [
   { name: 'course', path: '/course/preview-101', root: '[data-cbg$="-top"]' },
 ];
 
+// Home: when our script is blocked or fails, the course cards must not be left in the laptop row
+// (which only the script pans): every card sits fully on screen, in the grid, and nothing is pinned.
+async function cardsOnScreen(page: Page) {
+  if (!(await page.locator('[data-cbg-gallery]').count())) return;
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.waitForTimeout(300);
+  expect(await page.locator('.pin-spacer').count()).toBe(0);
+  const off = await page.$$eval('.cbg-gallery__track > li', (lis) =>
+    lis.filter((li) => { const r = li.getBoundingClientRect(); return r.left < 0 || r.right > innerWidth; }).length);
+  expect(off, 'course cards off screen').toBe(0);
+}
+
 async function scrollThrough(page: Page) {
   const height = await page.evaluate(() => document.body.scrollHeight);
   for (let y = 0; y < height; y += 500) {
@@ -84,6 +96,7 @@ for (const p of PAGES) {
       expect(hidden).toBe(0);
       const dim = await page.$$eval('[data-cbg] img', (imgs) => imgs.filter((i) => getComputedStyle(i).filter.includes('brightness')).length);
       expect(dim, 'no photo left in its dark starting state').toBe(0);
+      await cardsOnScreen(page);
     });
 
     test('bundle blocked: the block still reads in its final state', async ({ page }) => {
@@ -94,6 +107,7 @@ for (const p of PAGES) {
         els.filter((e) => e.textContent?.trim() && getComputedStyle(e).opacity === '0').length);
       expect(hidden).toBe(0);
       await expect(page.locator(p.root)).toBeVisible();
+      await cardsOnScreen(page);
     });
   });
 }

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { parse } from 'yaml';
-import { loadCourses, loadHome, validateCourse, validateHome } from '../content/schema';
+import { loadCourseFiles, loadCourses, loadHome, validateCourse, validateCourseFile, validateHome } from '../content/schema';
 
 const EM_DASH = String.fromCharCode(0x2014);
 const yaml = (file: string) => parse(readFileSync(file, 'utf8'));
@@ -10,8 +10,9 @@ const course = () => yaml('content/courses/iosh-level-3.yaml');
 
 describe('content schema', () => {
   it('accepts both YAML files', () => {
-    expect(Object.keys(loadHome())).toEqual(['hero', 'how-it-works', 'courses', 'first-steps', 'support', 'about', 'footer-note']);
-    expect(loadCourses().map((c) => c.slug)).toContain('iosh-level-3');
+    expect(Object.keys(loadHome())).toEqual(['hero', 'facts', 'disciplines', 'how-it-works', 'band', 'courses', 'support', 'about', 'footer-note']);
+    expect(loadCourses().map((c) => c.slug)).toEqual(['iosh-level-3']);
+    expect(loadCourseFiles().map((c) => c.slug)).toEqual(['bim', 'interior-design', 'iosh-level-3', 'mep-design', 'quantity-surveying', 'structural-design']);
   });
 
   it('rejects a missing section', () => {
@@ -66,6 +67,43 @@ describe('content schema', () => {
   });
 });
 
+// A course file is a full page (as iosh-level-3.yaml) or card only (just `slug` and `card`, coming soon).
+describe('course files', () => {
+  const cardOnly = () => yaml('content/courses/bim.yaml');
+
+  it('accepts a card-only file and keeps it off the page builds', () => {
+    expect(validateCourseFile(cardOnly())).toEqual(cardOnly());
+    expect(loadCourses().some((c) => c.slug === 'bim')).toBe(false);
+  });
+
+  it('a card-only file is coming soon and has no link', () => {
+    const c = cardOnly();
+    c.card.status = 'live now';
+    expect(() => validateCourseFile(c)).toThrow('card.status: a course file with no page sections must be "coming soon"');
+    const d = cardOnly();
+    d.card.cta = { label: 'Open course', href: '/course/1-x' };
+    expect(() => validateCourseFile(d)).toThrow('card.cta: not used while the course is coming soon; remove it');
+  });
+
+  it('a status is live now or coming soon; a live card needs its link', () => {
+    const c = course();
+    c.card.status = 'soon';
+    expect(() => validateCourse(c)).toThrow('card.status: must be live now or coming soon; got "soon"');
+    const d = course();
+    delete d.card.cta;
+    expect(() => validateCourse(d)).toThrow('card.cta: missing field (a live card links to its course page)');
+  });
+
+  it('needs a card order; any other top-level key makes it a full page', () => {
+    const c = cardOnly();
+    delete c.card.order;
+    expect(() => validateCourseFile(c)).toThrow('card.order: missing field');
+    const d = cardOnly();
+    d.uniqueId = '202';
+    expect(() => validateCourseFile(d)).toThrow('path: missing section');
+  });
+});
+
 // Every copy sentence in the original copy deck must appear in the YAML, word for word.
 // Editorial notes (not shown to students) are skipped, as listed at the top of each YAML file.
 const EDITORIAL_LINE = /^\s*(?:-\s*)?\*\*(Audience|Rules|Sources|Visual idea|Template note|Logos|Small logos|Photos|Page):\*\*/;
@@ -80,6 +118,17 @@ const NOT_COPY: (string | RegExp)[] = [
   'It scrolls to #course_content and opens its first accordion item', 'Start Here',
   'found by position or text, never by Radix id',
 ];
+// Removed from the home page on purpose on 3 Oct 2026 (Maasoom: the home page speaks for the whole
+// institute; IOSH content belongs on the IOSH course page). See the note at the top of content/home.yaml.
+const REMOVED = [
+  'welcome guide, class links, slides, bonus certificate guides and more', // now "slides and more"
+  'Before your first class', 'Log in here and open your course', 'Read the "Start Here" lessons on your course page',
+  'Join the introduction session', 'Download your CBG Field Guides', 'Set up your bonus certificate accounts',
+  'start with IBM SkillsBuild', // the first-steps checklist
+  'As an IOSH Approved Study Centre',
+  'CBG brings live-project experience into professional qualifications, taught by practitioners who have run safety on real sites',
+];
+NOT_COPY.push(...REMOVED);
 const notCopy = (f: string) => NOT_COPY.some((n) => (typeof n === 'string' ? n === f : n.test(f)));
 
 function copyFragments(md: string): string[] {
@@ -120,7 +169,7 @@ describe('copy deck coverage', () => {
   for (const md of ['docs/copy-deck/home.md', 'docs/copy-deck/courses/iosh-level-3.md']) {
     it(`every sentence in ${md} is in the YAML`, () => {
       const fragments = copyFragments(readFileSync(md, 'utf8'));
-      expect(fragments.length).toBeGreaterThan(50);
+      expect(fragments.length).toBeGreaterThan(40); // the parser still finds the copy (48 home fragments after the 3 Oct removals)
       expect(fragments.filter((f) => !found(f))).toEqual([]);
     });
   }

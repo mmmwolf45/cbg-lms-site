@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { countText } from '../src/motion/counters';
 import { litCount, nodeFractions } from '../src/motion/thread';
+import { panFor } from '../src/motion/gallery';
+import { MAX_DEG, tiltFor } from '../src/motion/card-tilt';
 
 describe('countText', () => {
   it('writes whole numbers on the way up', () => {
@@ -46,5 +48,21 @@ describe('thread nodes', () => {
     expect(litCount(200 / 560, vertical)).toBe(2);
     expect(litCount(0.9, vertical)).toBe(3);
     expect(litCount(1, vertical)).toBe(3);
+  });
+});
+
+describe('home gallery and card tilt', () => {
+  it('pans to centre a focused card, never past either end', () => {
+    expect(panFor(0, 360, 1160, 1120)).toBe(0); // first card: no pan
+    expect(panFor(1152, 360, 1160, 1120)).toBe(752); // a middle card, centred
+    expect(panFor(1920, 360, 1160, 1120)).toBe(1120); // last card: the end
+  });
+
+  it('tilts the side under the mouse away, at most MAX_DEG', () => {
+    expect(tiltFor(200, 150, 400, 300)).toEqual([0, 0]); // centre: flat
+    expect(tiltFor(400, 0, 400, 300)).toEqual([MAX_DEG, MAX_DEG]); // top right corner
+    expect(tiltFor(0, 300, 400, 300)).toEqual([-MAX_DEG, -MAX_DEG]);
+    expect(tiltFor(900, -50, 400, 300)).toEqual([MAX_DEG, MAX_DEG]); // outside the card: clamped
+    expect(MAX_DEG).toBeLessThanOrEqual(4);
   });
 });

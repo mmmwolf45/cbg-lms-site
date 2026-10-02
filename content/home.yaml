@@ -10,13 +10,18 @@
 #   - the logged-in CTA label "Go to my courses" (SPEC section 5: not shown until a reliable
 #     logged-in signal exists; add it back here, with the code that reads it, at that point)
 #   - courses "Template note"; the course cards live in content/courses/*.yaml under `card:`
-#   - instructions "Three steps, numbered" and "A short checklist, with ticks that animate in"
+#   - instruction "Three steps, numbered"
+#
+# Changed from the copy deck on 3 Oct 2026 (Maasoom: the home page speaks for the whole institute;
+# IOSH content lives only on the IOSH course page): the hero eyebrow, the first-steps checklist
+# (removed), "bonus certificate guides" in how-it-works step 2, the safety.training@ email and the
+# IOSH sentence, highlight and mark in about. New: facts, disciplines and band.
 #   - "(button opens WhatsApp)" and the about "Logos" note (the logos are listed as files)
 #   - section names from the copy deck where the section has its own heading:
 #     "Welcome", "We're here to help", "Small print"
 
 hero:
-  eyebrow: CBG Training Institute · IOSH Approved Study Centre 1003
+  eyebrow: Carbon Blue Global Training Institute
   heading: Welcome to your CBG classroom
   subhead: Your courses, live class links and study materials, all in one place.
   primaryCta:
@@ -29,6 +34,18 @@ hero:
   # Alt text of the hero photo.
   imageAlt: A steel-frame building under construction at dusk, its lower floors lit, with a tower crane beside it
 
+# Under the hero. The numbers of courses and languages are counted from content/courses/*.yaml when the
+# site is built; only their labels are here. "Online": every course is delivered online (course workbook).
+facts:
+  courses: courses
+  languages: languages
+  delivery:
+    value: Online
+    label: every course
+
+# A slow strip of the course titles (from the course cards). Nothing to fill in.
+disciplines: {}
+
 how-it-works:
   heading: How this site works
   steps:
@@ -36,24 +53,19 @@ how-it-works:
       body: Once your enrolment is confirmed, CBG gives you access to your course. Your login details are shared about one week before your batch starts.
     - title: Log in and open your course.
       body: >-
-        Everything for your course sits on its course page: welcome guide, class links, slides, bonus certificate guides and more.
+        Everything for your course sits on its course page: welcome guide, class links, slides and more.
     - title: Join your live classes and keep going.
       body: Classes run live on Google Meet. After each class, the slides and new study materials are waiting for you here.
+
+# A full-width photo between the steps and the course cards (decorative). Shown once
+# brand/assets/photos/band-classroom.png exists and `npm run images` has built it.
+band:
+  image: band-classroom
 
 courses:
   heading: Your courses
   intro: Pick your course to see the class links, materials and next steps.
   # The cards come from content/courses/*.yaml (the `card:` key in each file).
-
-first-steps:
-  heading: Before your first class
-  items:
-    - A laptop or PC with a webcam and a stable internet connection
-    - Log in here and open your course
-    - Read the "Start Here" lessons on your course page
-    - Join the introduction session
-    - Download your CBG Field Guides
-    - Set up your bonus certificate accounts (start with IBM SkillsBuild)
 
 support:
   heading: Questions? Talk to us
@@ -64,9 +76,6 @@ support:
     href: https://wa.me/97470485638
   emails:
     - label: Email
-      address: safety.training@carbonblueglobal.com
-      href: mailto:safety.training@carbonblueglobal.com
-    - label: General enquiries
       address: info@carbonblueglobal.com
       href: mailto:info@carbonblueglobal.com
 
@@ -75,15 +84,10 @@ about:
   body: >-
     CBG Training Institute is the training arm of Carbon Blue Global, a Doha-based engineering services company.
     It works with contractors, consultants and project teams across Qatar and the GCC on BIM, quantity surveying, shop drawings, design and corporate training.
-    As an IOSH Approved Study Centre (Centre 1003), CBG brings live-project experience into professional qualifications, taught by practitioners who have run safety on real sites.
-  # Words from the body shown in bold (as in the copy deck).
-  highlight: IOSH Approved Study Centre (Centre 1003)
   # Logo files in brand/assets/, used as supplied, with their alt text.
   logos:
     - file: cbg-mark-512.png
       alt: CBG Training Institute
-    - file: iosh-1003-white.png
-      alt: IOSH Approved Study Centre 1003
   link:
     label: www.carbonblueglobal.com
     href: https://www.carbonblueglobal.com

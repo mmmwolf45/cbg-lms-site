@@ -1,14 +1,33 @@
-import { arrow, esc, section } from '../../src/components/html';
-import type { Course, Home } from '../../content/schema';
+import { arrow, esc, picture, section } from '../../src/components/html';
+import images from '../../src/images.json';
+import type { Card, Home } from '../../content/schema';
 
-const card = ({ card: c }: Course) => `<article class="cbg-card cbg-course">
-<p class="cbg-course__top"><span class="cbg-tag">${esc(c.tag)}</span> <span class="cbg-status">${esc(c.status)}</span></p>
+type ImageName = keyof typeof images;
+
+// The card's photo, or (until `npm run images` has built it) a navy blueprint placeholder from home.css.
+const media = (c: Card) => (c.image && c.image in images
+  ? picture(c.image as ImageName, { alt: '', sizes: '(min-width: 1024px) 400px, (min-width: 768px) 50vw, 86vw' })
+  : '<span class="cbg-course__ph"></span>');
+
+// A live card is a link (its button stretches over the whole card); a coming-soon card is not.
+function card(c: Card) {
+  const cta = c.status === 'live now' ? c.cta : undefined;
+  return `<li><article class="cbg-card cbg-course cbg-course--${cta ? 'live' : 'soon'}">
+<div class="cbg-course__media" aria-hidden="true">${media(c)}</div>
+<div class="cbg-course__body">
+<p class="cbg-course__top">${c.tag ? `<span class="cbg-tag">${esc(c.tag)}</span> ` : ''}<span class="cbg-status">${esc(c.status)}</span></p>
 <h3 class="cbg-h3">${esc(c.title)}</h3>
-<p>${esc(c.line)}</p>
-<ul class="cbg-chips">${c.meta.map((m) => `<li class="cbg-chip">${esc(m)}</li>`).join('')}</ul>
-<a class="cbg-btn cbg-btn--primary" href="${esc(c.cta.href)}">${esc(c.cta.label)}${arrow}</a>
-</article>`;
+${c.line ? `<p>${esc(c.line)}</p>` : ''}
+${c.meta?.length ? `<ul class="cbg-chips">${c.meta.map((m) => `<li class="cbg-chip">${esc(m)}</li>`).join('')}</ul>` : ''}
+${cta ? `<a class="cbg-btn cbg-btn--primary cbg-course__link" href="${esc(cta.href)}">${esc(cta.label)}${arrow}</a>` : ''}
+</div></article></li>`;
+}
 
-export const courses = ({ courses: s }: Home, list: Course[]) => section('courses', `
-<div class="cbg-section-head" data-cbg-reveal><h2 class="cbg-h2">${esc(s.heading)}</h2><p>${esc(s.intro)}</p></div>
-<div class="cbg-course-grid" data-cbg-reveal="stagger">${list.map(card).join('')}</div>`);
+// The cards sit in one row (src/motion/gallery.ts pans it on a laptop; phones swipe it, home.css), so the
+// row is a focusable, labelled region: keyboard users can scroll it with the arrow keys.
+export const courses = ({ courses: s }: Home, cards: Card[]) => section('courses', `
+<div class="cbg-section-head" data-cbg-reveal><h2 class="cbg-h2" id="cbg-courses-heading">${esc(s.heading)}</h2><p>${esc(s.intro)}</p></div>
+<div class="cbg-gallery" role="region" aria-labelledby="cbg-courses-heading" tabindex="0">
+<ul class="cbg-gallery__track" data-cbg-reveal="stagger">${cards.map(card).join('')}</ul>
+</div>
+<div class="cbg-gallery__bar" aria-hidden="true"><i></i></div>`, ' data-cbg-gallery');

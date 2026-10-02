@@ -1,0 +1,19 @@
+# Card only: this course has no page on course.link yet, so its home page card shows "Coming soon" and
+# is not a link. Source: Maasoom's workbook "CBG - Course List for Web Development.xlsx" (all courses
+# are delivered online). To give it a page, add the page sections (see HOW_TO_ADD_A_COURSE.md), then
+# set status: live now and add a cta.
+slug: mep-design
+
+card:
+  title: MEP Design
+  status: coming soon
+  line: Online MEP design training across electrical, plumbing and HVAC systems, using AutoCAD and HAP software.
+  meta:
+    - 8 months
+    - Malayalam
+    - Tamil
+    - Online
+  languages: [Malayalam, Tamil]
+  duration: 8 months
+  image: course-mep
+  order: 3

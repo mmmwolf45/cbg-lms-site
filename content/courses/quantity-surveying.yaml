@@ -1,0 +1,20 @@
+# Card only: this course has no page on course.link yet, so its home page card shows "Coming soon" and
+# is not a link. Source: Maasoom's workbook "CBG - Course List for Web Development.xlsx" (all courses
+# are delivered online). To give it a page, add the page sections (see HOW_TO_ADD_A_COURSE.md), then
+# set status: live now and add a cta.
+slug: quantity-surveying
+
+card:
+  title: Quantity Surveying
+  status: coming soon
+  line: Online quantity surveying training covering BOQ preparation, billing, tendering, FIDIC contracts and project scheduling, with live Middle East construction projects.
+  meta:
+    - 8 months
+    - Malayalam
+    - Telugu
+    - Tamil
+    - Online
+  languages: [Malayalam, Telugu, Tamil]
+  duration: 8 months
+  image: course-qs
+  order: 2

@@ -132,18 +132,20 @@ Section ids come from `content/` and are used as `id="cbg-<section>"` in the HTM
 
 ### 5.1 Home page (`/`)
 
-**Replaces course.link's native Banner and Courses sections** (switched off in course.link, not hidden with CSS). The block is a single Custom Block. Copy and order are exactly as in `content/home.md`.
+**Replaces course.link's native Banner and Courses sections** (switched off in course.link, not hidden with CSS). The block is a single Custom Block. Copy and order are exactly as in `content/home.md`, with the 3 Oct 2026 changes noted at the top of `content/home.yaml` (the home page speaks for the whole institute).
 
 The home page has no `h1` today. The hero headline becomes the page's `h1`.
 
 | Section | Layout | Motion | Phone (390px) |
 |---|---|---|---|
 | `hero` | Eyebrow chip; `h1` set in two tones ("Welcome to your" white / "CBG classroom" dimmed, with gold on "CBG"). Wording unchanged. Subhead, two CTAs, and the **Blueprint to built** visual. | **Blueprint to built:** gold blueprint lines of a structure draw in (about 2s), then the matching photo fades in under them (about 0.8s). Lines settle to low opacity. On laptop, the mouse moves the line layer and the photo layer by different amounts (12px at most) for depth. | Visual sits above the copy at 4:3. Same draw-in, no mouse parallax. |
+| `facts` | Three facts on a hairline: number of courses and of languages (counted from the course files at build time), and "Online / every course" | Counters count up once in view | Three narrow columns |
+| `disciplines` | The course titles (from the cards) on one strip, gold rules between; decorative, `aria-hidden` | The page's only marquee: slow (80s per loop), pauses under the mouse; still under reduced motion | Same |
 | `how-it-works` | Three numbered steps (01, 02, 03) | The **gold thread** links the step numbers and draws as you scroll; each number lights gold when the thread reaches it. | Vertical, thread at the left edge |
-| `courses` | One card per course in `content/courses/*.yaml`, built from data: tag chip, title, line, meta row (dot-separated), CTA | Cards reveal with a stagger; on hover or focus, the card lifts 4px and its gold top rule extends | 1 column; 2 columns from 768px |
-| `first-steps` | Checklist of 6 items | Ticks draw in one after another (SVG stroke) when the list comes into view. Display only, nothing is saved. | Same |
-| `support` | Heading, body, WhatsApp button, two email links in a frosted-glass card | Reveal only | Full-width buttons |
-| `about` | Text, CBG mark, IOSH 1003 mark (white version, unaltered, on a plain dark area), link | Reveal only | Logos stack |
+| `band` (optional) | A full-width decorative photo (`band-classroom`), shown once the image is built | Gentle scroll parallax (full motion only) | Same |
+| `courses` | One card per course file in `content/courses/*.yaml` (card-only "coming soon" files too), in `card.order`: photo (4:3 crop, navy blueprint placeholder until built), tag, status, title, line, chips. Live cards are one link ("Open course"); coming-soon cards are not links | Laptop (1024px+, mouse, full motion): the section pins and scroll pans the card row sideways, gold progress line. Hover or focus: photo zooms to 1.06 over 0.8s, card tilts toward the mouse (4deg at most, mouse only), gold rule extends, soft gold edge light. Reduced motion: a still grid | Swipeable scroll-snap row (focusable region, arrow keys); 2 columns from 768px |
+| `support` | Heading, body, WhatsApp button, one email link (info@) in a frosted-glass card | Reveal only | Full-width buttons |
+| `about` | Text, CBG mark (on a plain dark area), link. No IOSH content on the home page: it lives on the IOSH course page | Reveal only | Logos stack |
 | `footer-note` | Small print | None | Same |
 
 **Hero CTAs:**

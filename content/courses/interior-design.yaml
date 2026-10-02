@@ -1,0 +1,10 @@
+# Card only, and a placeholder: title and "Coming soon" until Maasoom sends the course details
+# (languages, duration, description). Add them as `line`, `meta`, `languages` and `duration`, like
+# bim.yaml. It still counts as a course in the home page facts.
+slug: interior-design
+
+card:
+  title: Interior Design
+  status: coming soon
+  image: course-interior
+  order: 6

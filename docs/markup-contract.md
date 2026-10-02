@@ -19,9 +19,12 @@ Templates (T11, T12, T18+) produce static HTML. Styles and motion (T13, T14+) on
 | `data-cbg-reveal="stagger"` | a parent | Its direct children reveal one after another (70 ms apart). |
 | `data-cbg-thread` | `.cbg-steps` list (or any element with `.cbg-node` children) | The gold thread draws with scroll; each `.cbg-node` gets `is-lit` when the thread reaches it. |
 | `data-cbg-count="<number>"` | an `aria-hidden="true"` element whose text is the final number, next to a `.cbg-sr-only` copy of the same value (e.g. `<b><span aria-hidden="true" data-cbg-count="80">80</span><span class="cbg-sr-only">80</span></b>`) | Counts up from 0 when in view. Prefix/suffix text sits outside the element. Screen readers only ever read the hidden final value (`aria-label` on a plain span is ignored by several screen readers). |
-| `data-cbg-ticks` | the `first-steps` list | Each item's `.cbg-tick` SVG path draws in sequence (T16). |
+| `data-cbg-gallery` | the home `courses` section | Laptop (1024px+, mouse, full motion): the section pins at the top and vertical scroll pans `.cbg-gallery__track` sideways, with the gold `.cbg-gallery__bar` showing progress (src/motion/gallery.ts). Phones: a scroll-snap row in the focusable `.cbg-gallery` region. Tablets and reduced motion: a grid. |
+| `data-cbg-parallax` | the home `band` section | Its `.cbg-band__media` drifts with scroll, full motion only (src/motion/parallax.ts). |
 | `data-cbg-hero` | the home hero section | Holds `.cbg-hero__media` (the `<picture>`) and an empty `<svg class="cbg-hero__lines">` for the blueprint lines (T15). |
 | `data-cbg-action="login"` | the hero Log in link (`href="#navbar"`) | Clicks course.link's own navbar Login button (T16). |
+
+Home course cards (`.cbg-course`) need no hook: src/motion/card-tilt.ts tilts every card toward the mouse (4deg at most), and the photo zoom, gold rule and edge light are CSS (motion.css). The `disciplines` strip (`.cbg-marquee`) is CSS only and `aria-hidden`.
 
 ## States set by motion
 - `cbg-done`: an element has finished revealing; CSS never hides it again (survives re-setup after client-side navigation).

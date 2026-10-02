@@ -1,14 +1,16 @@
 // Turns brand/assets photos and trainer headshots into AVIF/WebP/JPEG at the widths the
 // templates need, writes them to public/img/ and lists them in src/images.json.
-// Exits non-zero if any image is missing or an AVIF is over its budget (SPEC section 8).
-import { mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+// Exits non-zero if a required image is missing or an AVIF is over its budget (SPEC section 8).
+// Optional photos (the home course cards and band, still being made) are skipped while missing: the
+// templates show a placeholder card image, and no band.
+import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import sharp from 'sharp';
 
 type Crop = { left: number; top: number; width: number; height: number };
 type Quality = { avif: number; webp: number; jpg: number; chroma?: '4:4:4'; bits?: 10 };
 type Job = {
   name: string; src: string; widths: number[]; q: Quality;
-  crop?: Crop; square?: boolean; budgetKB: number;
+  crop?: Crop; square?: boolean; budgetKB: number; optional?: boolean;
 };
 type Variant = { w: number; file: string; bytes: number };
 type Entry = { width: number; height: number; crop?: Crop; variants: Record<Fmt, Variant[]> };
@@ -38,6 +40,11 @@ const jobs: Job[] = [
     crop: { left: 171, top: 0, width: 1365, height: 1024 } },
   { name: 'hazard-worksite', src: `${PHOTOS}/hazard-worksite.png`, widths: [1536, 1024, 768], q: photo, budgetKB: 250 },
   { name: 'closing-plate', src: `${PHOTOS}/closing-plate.png`, widths: [1536, 800], q: gradient, budgetKB: 150 },
+  // Home course cards (3:2 sources, shown cropped to 4:3) and the home band. Optional until supplied.
+  ...['course-iosh', 'course-qs', 'course-mep', 'course-structural', 'course-bim', 'course-interior'].map((name) => ({
+    name, src: `${PHOTOS}/${name}.png`, widths: [800, 480], q: photo, budgetKB: 60, optional: true,
+  })),
+  { name: 'band-classroom', src: `${PHOTOS}/band-classroom.png`, widths: [1536, 1024], q: photo, budgetKB: 150, optional: true },
   ...trainers.map((f) => ({
     name: `trainer-${f.replace('.jpg', '')}`, src: `${TRAINERS}/${f}`, widths: [224, 112], q: face, budgetKB: 20, square: true, crop: FACE[f],
   })),
@@ -84,6 +91,11 @@ const rows: string[] = [];
 const kb = (b: number) => (b / 1024).toFixed(1).padStart(7);
 
 for (const job of jobs) {
+  if (!existsSync(job.src)) {
+    if (!job.optional) throw new Error(`missing required image ${job.src}`);
+    console.log(`${job.name}: ${job.src} missing, skipped`);
+    continue;
+  }
   const entry = await build(job);
   manifest[job.name] = entry;
   const { avif, webp, jpg } = entry.variants;
