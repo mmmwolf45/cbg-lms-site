@@ -31,10 +31,17 @@ function mock(fixture: string, place: (page: string) => string) {
 
 mkdirSync('dist/preview', { recursive: true });
 
+// The live home page already has an (empty) Custom Block inside course.link's own wrapper,
+// div.custom-section.container.px-primary: ours goes inside it, exactly where the paste lands.
+const HOME_SLOT = /(<div id="custom-\d+" class="w-full Custom Block">)(<\/div>)/;
+
 writeFileSync(
   'dist/preview/home.html',
-  mock('live-home.html', (p) =>
-    beforeId(p, 'banner-home', `<style>#banner-home,#courses{display:none}</style>${block('home')}`)),
+  mock('live-home.html', (p) => {
+    if (!HOME_SLOT.test(p)) throw new Error('home Custom Block slot not found in fixture');
+    return p.replace(HOME_SLOT, `$1${block('home').replace(/^<div id="custom-home">|<\/div>$/g, '')}$2`)
+      .replace('</head>', '<style>#banner-home,#courses{display:none}</style></head>');
+  }),
 );
 
 writeFileSync(

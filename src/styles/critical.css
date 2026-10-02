@@ -1,2 +1,10 @@
-/* Layout-affecting native restyles (marked with a star in SPEC section 6), inlined in the loader
-   so there is no layout shift while the main CSS loads. Filled in T13 and T20. Keep it tiny. */
+/* Inlined in the loader snippet (comments are stripped). First-paint subset of native-overrides.css,
+   with literal values because tokens.css isn't loaded yet: page and navbar colours, the logo keyline
+   and the auth pills (their 1px borders are here so nothing resizes when the main CSS lands).
+   Scoped to the route class, so cbg-off and other routes stay stock. T20 adds the course route. */
+html.cbg-route-home body{background:#081226}
+html.cbg-route-home #navbar{background:rgba(8,18,38,.72);border-bottom-color:rgba(255,255,255,.09);color:#F3F5F9}
+html.cbg-route-home #navbar .navbar-title-container img{padding:2px;background:#fff;border-radius:50%}
+html.cbg-route-home #navbar .navbar-title-container+div button{background:transparent;color:#F3F5F9;border:1px solid rgba(255,255,255,.16);border-radius:999px}
+html.cbg-route-home #navbar .navbar-title-container+div button.bg-primary{background:#F3F5F9;color:#081226;border-color:#F3F5F9}
+html.cbg-route-home .custom-section:has(>*>[data-cbg]){max-width:none;padding-left:0;padding-right:0}

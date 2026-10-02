@@ -13,7 +13,9 @@
 [data-cbg] :where(p, ul, ol, figure, blockquote) { margin: 0; }
 [data-cbg] :where(img, svg, picture) { display: block; max-width: 100%; height: auto; }
 [data-cbg] :where(a) { color: inherit; }
-[data-cbg] :where(a, button, summary):focus-visible { outline: 2px solid var(--cbg-gold); outline-offset: 3px; border-radius: 4px; }
+/* Box-shadow, not outline: course.link ships `a,button,input,select,textarea{outline:none!important}`. */
+[data-cbg] :where(a, button, summary):focus-visible { outline: none; box-shadow: 0 0 0 2px var(--cbg-bg), 0 0 0 4px var(--cbg-gold); }
+[data-cbg] :where(a, summary):not([class*="cbg-btn"]):focus-visible { border-radius: 4px; }
 [data-cbg] ::selection { background: var(--cbg-gold); color: var(--cbg-bg); }
 
 .cbg-sr-only {

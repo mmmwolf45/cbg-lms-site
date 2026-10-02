@@ -1,1 +1,128 @@
-/* Filled in by its task: see PLAN.md. */
+/* Native course.link restyles (SPEC section 6). course.link is a React + Tailwind app we don't
+   control, so every rule here is scoped under a route class that the loader puts on <html>
+   (`html.cbg-route-home`, later `html.cbg-route-course`). No route class (lesson pages, dashboard,
+   login popups, cbg-off fail-safe) means stock course.link.
+
+   Selectors, and why (fixture: preview/fixtures/live-home.html; the navbar markup is identical in
+   live-course.html and live-course-preview.html):
+   1. `body`: course.link paints `body{background:var(--background)}` (white). It is the full-width
+      canvas behind everything between the navbar and our block. The wrappers in between
+      (`#react-root`, the `div.w-full.flex.flex-col` after `#navbar`, `div.custom-section`) have no
+      background of their own, so they need no rule. There is no footer on any fixture.
+   2. `html` (root only, it carries the route class): `scrollbar-color`, so the desktop scrollbar
+      doesn't stay light on a dark page. Nothing else is set on it.
+   3. `#navbar`: `<div id="navbar" class="border-b border-input flex">`, first child of
+      `#react-root` after the toast region. course.link's CSS gives it `background:#fff`, sticky,
+      `height:3.5rem!important`. We change colours only, never size or position.
+   4. `#navbar .navbar-title-container` and its `img`: the home link wrapping the logo
+      (`<a class="navbar-title-container ..." href="/"><img alt="logo">`). `navbar-title-container`
+      is course.link's own semantic class (its CSS sizes the logo with it), not a Tailwind utility.
+   5. `#navbar .navbar-title-container + div button`: the auth buttons. They sit in the div that
+      follows the title link (`div > div.flex.gap-3 > button` Login, `button` Register). Reached by
+      structure, so every button there gets the ghost pill (white text on dark), which is the safe
+      default for any button in a dark navbar.
+   6. `... button.bg-primary`: Register. `bg-primary` IS a Tailwind utility class (the only one used
+      here). If course.link renames it, Register silently falls back to the ghost pill from rule 5,
+      which is still legible on dark. Harmless degrade.
+
+   Not used: Radix ids, bare tags without the route class, layout properties (padding, height,
+   font size, display), so nothing shifts when this file arrives. Register keeps course.link's
+   `hidden md:flex` (Login only on phones).
+
+   Logo: course.link renders `1790843789235-Fulllogo.png`, which is the round CBG mark (navy left
+   half with white C and B, white right half with a brown G), not the wordmark. On #081226 the white
+   half reads but the navy half melts into the canvas (about 1.5:1), so the roundel loses its shape.
+   We don't recolour, invert or filter it: it gets a 2px white keyline (padding + white disc behind
+   the transparent PNG), like a sticker on a dark surface. The image box stays 2rem tall (border-box),
+   so the logo shrinks by 4px inside an unchanged box. No IOSH mark is in the navbar.
+
+   !important: none. Focus rings are box-shadows, not outlines: course.link ships
+   `input,textarea,a,select,button{outline:none!important}`, which no outline can beat without
+   !important of our own. A 2px canvas gap then a 2px gold ring, following the pill radius.
+
+   The layout and first-paint subset of rules 1, 3, 4, 5 and 6 is duplicated with literal values in
+   critical.css (inlined in the loader), so there is no white flash while this file loads. Keep the
+   two in step.
+
+   T20 (course route): add `html.cbg-route-course` to the selector lists in "Shared chrome" (the
+   navbar is the same markup on course pages), then put course-only rules in their own section. */
+
+/* ---------- Shared chrome: body, navbar (home now; course added in T20) ---------- */
+
+html.cbg-route-home {
+  scrollbar-color: rgba(255, 255, 255, 0.22) var(--cbg-bg);
+}
+
+html.cbg-route-home body {
+  background: var(--cbg-bg);
+}
+
+html.cbg-route-home #navbar {
+  background: rgba(8, 18, 38, 0.72); /* --cbg-bg at 72% */
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom-color: var(--cbg-line);
+  color: var(--cbg-text-1);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html.cbg-route-home #navbar {
+    background: rgba(8, 18, 38, 0.96);
+  }
+}
+
+html.cbg-route-home #navbar .navbar-title-container img {
+  padding: 2px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+/* The link is full-width (course.link sets width:100%), so the ring goes on the round logo. */
+html.cbg-route-home #navbar .navbar-title-container:focus-visible img {
+  box-shadow: 0 0 0 2px var(--cbg-bg), 0 0 0 4px var(--cbg-gold);
+}
+
+/* Login (and any other navbar button): ghost pill. */
+html.cbg-route-home #navbar .navbar-title-container + div button {
+  background: transparent;
+  color: var(--cbg-text-1);
+  border: 1px solid var(--cbg-line-strong);
+  border-radius: var(--cbg-r-pill);
+  transition: background-color var(--cbg-dur-fast) var(--cbg-ease), border-color var(--cbg-dur-fast) var(--cbg-ease),
+    color var(--cbg-dur-fast) var(--cbg-ease);
+}
+
+html.cbg-route-home #navbar .navbar-title-container + div button:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.32);
+}
+
+/* Register: solid pill. Same 1px border (in its own colour) so both pills are the same size. */
+html.cbg-route-home #navbar .navbar-title-container + div button.bg-primary {
+  background: var(--cbg-btn);
+  color: var(--cbg-btn-text);
+  border-color: var(--cbg-btn);
+}
+
+html.cbg-route-home #navbar .navbar-title-container + div button.bg-primary:hover {
+  background: #fff;
+  border-color: #fff;
+}
+
+/* Gold focus ring in place of Tailwind's ring (whose white offset would glare on dark). */
+html.cbg-route-home #navbar .navbar-title-container + div button:focus-visible {
+  box-shadow: 0 0 0 2px var(--cbg-bg), 0 0 0 4px var(--cbg-gold);
+}
+
+/* 7. `.custom-section:has(> * > [data-cbg])`: course.link wraps every home Custom Block in
+   `div.custom-section.w-full.px-primary.container` (capped width, side padding). Only the wrapper
+   that holds one of our blocks is released to full width; our block brings its own gutters.
+   Browsers without :has() keep the capped container, which still reads fine on the dark body.
+   Layout-affecting, so it is also in critical.css. */
+html.cbg-route-home .custom-section:has(> * > [data-cbg]) {
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ---------- Course route (T20) ---------- */

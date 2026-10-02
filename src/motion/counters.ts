@@ -1,0 +1,42 @@
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { DONE, all, enterAt } from './reveal';
+import { dur } from './tokens';
+
+// The text shown for a running value: whole numbers, grouped like the final text ("1,200"),
+// and exactly the final text once the target is reached.
+export function countText(value: number, target: number, final: string): string {
+  if (value >= target) return final;
+  const n = Math.max(0, Math.floor(value));
+  return final.includes(',') ? n.toLocaleString('en-US') : String(n);
+}
+
+// [data-cbg-count="N"] counts 0 -> N once in view. Screen readers get the final text from aria-label throughout.
+// Returns a cleanup that puts the final text back (used when the page or the motion preference changes).
+export function counters(roots: HTMLElement[]) {
+  const restore: (() => void)[] = [];
+  for (const el of all(roots, '[data-cbg-count]')) {
+    const target = Number(el.dataset.cbgCount);
+    const final = el.textContent ?? '';
+    if (el.classList.contains(DONE) || !(target > 0) || !final.trim()) continue;
+    el.setAttribute('aria-label', final.trim());
+    // One text node, updated through .data: a characterData change, which the DOM watchers ignore.
+    const text = document.createTextNode(countText(0, target, final));
+    el.replaceChildren(text);
+    restore.push(() => (text.data = final));
+    const state = { v: 0 };
+    const tween = gsap.to(state, {
+      v: target,
+      duration: dur.slow,
+      ease: 'power2.out',
+      paused: true,
+      onUpdate: () => {
+        const next = countText(state.v, target, final);
+        if (next !== text.data) text.data = next;
+      },
+      onComplete: () => el.classList.add(DONE),
+    });
+    ScrollTrigger.create({ trigger: el, start: enterAt(el), once: true, onEnter: () => void tween.play() });
+  }
+  return () => restore.forEach((f) => f());
+}

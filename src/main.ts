@@ -6,12 +6,23 @@ import './styles/motion.css';
 import './styles/native-overrides.css';
 import { detectPage, routeOf, type Page } from './pages';
 import { watchRoutes } from './router';
+import { failOpen, setupMotion } from './motion/setup';
 
 export type Teardown = () => void;
 export type Setups = Record<Page['kind'], (page: Page) => Teardown>;
 
 const noop = () => () => {};
-const setups: Setups = { home: noop, course: noop, none: noop };
+
+// Home and course pages share the motion layer (page-specific motion joins in later tasks).
+const motion = () => {
+  try {
+    return setupMotion();
+  } catch (err) {
+    failOpen(err);
+    return () => {};
+  }
+};
+const setups: Setups = { home: motion, course: motion, none: noop };
 
 const warn = (err: unknown) => console.warn('[cbg]', err);
 

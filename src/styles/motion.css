@@ -1,1 +1,14 @@
-/* Filled in by its task: see PLAN.md. */
+/* Motion starting states (src/motion/*). Hidden only while JS runs (html.cbg-js) and motion is allowed;
+   without JS, under reduced motion, or once an element is done (.cbg-done), everything shows its final state. */
+@media (prefers-reduced-motion: no-preference) {
+  html.cbg-js [data-cbg-reveal]:not([data-cbg-reveal="stagger"]):not(.cbg-done),
+  html.cbg-js [data-cbg-reveal="stagger"]:not(.cbg-done) > * { opacity: 0; transform: translateY(16px); }
+  html.cbg-js [data-cbg-thread] { --cbg-thread: 0; }
+  html.cbg-js [data-cbg-thread] .cbg-node:not(.is-lit) { background: var(--cbg-bg); color: var(--cbg-gold); }
+}
+
+/* Thread nodes: lit (filled gold, dark number) is the final state. */
+[data-cbg-thread] .cbg-node, .cbg-node.is-lit { background: var(--cbg-gold); color: var(--cbg-bg); }
+
+/* Counters keep their width while the digits change. */
+[data-cbg-count] { font-variant-numeric: tabular-nums; }

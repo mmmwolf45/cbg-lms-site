@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" class="cbg-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>CBG components</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Source+Sans+3:wght@400;600&display=swap">
+<script>
+  // Loads the real built CSS the same way the loader does, so this gallery shows exactly what ships.
+  fetch('../manifest.json', { cache: 'no-store' }).then((r) => r.json()).then((m) => {
+    const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '../' + m.css; document.head.append(l);
+  });
+</script>
+<style>
+  body { margin: 0; background: #081226; }
+  .g-label { font: 600 13px/1.4 system-ui, sans-serif; color: #8F96A5; letter-spacing: .02em; margin: 48px 0 16px; }
+  .g-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+  .g-sw { width: 120px; }
+  .g-sw i { display: block; height: 56px; border-radius: 12px; border: 1px solid rgba(255,255,255,.12); }
+  .g-sw span { display: block; font: 12px/1.4 system-ui; color: #C0C6D2; margin-top: 6px; }
+  .g-grid { display: grid; gap: 16px; }
+  @media (min-width: 768px) { .g-grid { grid-template-columns: 1.2fr 1fr; } }
+</style>
+</head>
+<body>
+<div data-cbg="gallery" style="padding: 32px 0 96px">
+  <div class="cbg-wrap">
+    <p class="g-label">Colour</p>
+    <div class="g-row">
+      <div class="g-sw"><i style="background:#081226"></i><span>bg #081226</span></div>
+      <div class="g-sw"><i style="background:#0A162D"></i><span>bg-2 #0A162D</span></div>
+      <div class="g-sw"><i style="background:#0F1B33"></i><span>surface #0F1B33</span></div>
+      <div class="g-sw"><i style="background:#F3F5F9"></i><span>text-1 #F3F5F9</span></div>
+      <div class="g-sw"><i style="background:#C0C6D2"></i><span>text-2 #C0C6D2</span></div>
+      <div class="g-sw"><i style="background:#8F96A5"></i><span>text-3 #8F96A5</span></div>
+      <div class="g-sw"><i style="background:#D6B160"></i><span>gold #D6B160</span></div>
+    </div>
+
+    <p class="g-label">Type: Plus Jakarta Sans for headings, Source Sans 3 for body</p>
+    <h1 class="cbg-display">Welcome to your <span class="cbg-dim" style="display:block"><span class="cbg-gold">CBG</span> classroom</span></h1>
+    <p class="cbg-lead" style="margin-top:20px">Your courses, live class links and study materials, all in one place.</p>
+    <h2 class="cbg-h2" style="margin-top:40px">One course, five certificates <span class="cbg-dim">and a toolkit</span></h2>
+    <h3 class="cbg-h3" style="margin-top:24px">Join your live classes and keep going.</h3>
+    <p style="margin-top:8px;max-width:62ch">Classes run live on Google Meet. After each class, the slides and new study materials are waiting for you here.</p>
+    <p class="cbg-small" style="margin-top:8px">© Carbon Blue Global. This site is for enrolled CBG students.</p>
+
+    <p class="g-label">Chips and buttons</p>
+    <div class="cbg-chips"><span class="cbg-chip">CBG Training Institute · IOSH Approved Study Centre 1003</span><span class="cbg-chip">Live online</span><span class="cbg-chip">About 2 months</span></div>
+    <div class="cbg-btns" style="margin-top:20px">
+      <a class="cbg-btn cbg-btn--primary" href="#">Log in <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="cbg-btn cbg-btn--ghost" href="#">Need help?</a>
+    </div>
+
+    <p class="g-label">Cards (featured has the gold edge)</p>
+    <div class="g-grid">
+      <div class="cbg-card cbg-card--feat"><h3 class="cbg-h3">IOSH Level 3 Certificate.</h3><p>The regulated qualification employers recognise. Awarded by IOSH, regulated by Ofqual, and your academic route to Technical Member (Tech IOSH).</p></div>
+      <div class="cbg-card"><h3 class="cbg-h3">Eight CBG Field Guides.</h3><p>Practical workbooks for daily HSE work, yours from day 1.</p></div>
+    </div>
+
+    <p class="g-label">Framed media (gold corner marks)</p>
+    <div class="cbg-frame" style="max-width:520px"><img src="../img/hero-structure-1024.webp" width="1024" height="683" alt="A steel-frame building under construction at dusk, with a tower crane beside it"></div>
+
+    <p class="g-label">Steps joined by the gold thread</p>
+    <ol class="cbg-steps">
+      <li class="cbg-step"><span class="cbg-node">1</span><h3 class="cbg-h3">We set up your access.</h3><p>Once your enrolment is confirmed, CBG gives you access to your course.</p></li>
+      <li class="cbg-step"><span class="cbg-node">2</span><h3 class="cbg-h3">Log in and open your course.</h3><p>Everything for your course sits on its course page.</p></li>
+      <li class="cbg-step"><span class="cbg-node">3</span><h3 class="cbg-h3">Join your live classes and keep going.</h3><p>Classes run live on Google Meet.</p></li>
+    </ol>
+
+    <p class="g-label">Facts (course page, 792px column)</p>
+    <div style="max-width:792px">
+      <div class="cbg-facts">
+        <div class="cbg-fact"><b>Level 3</b><span>(RQF)</span></div>
+        <div class="cbg-fact"><b>80</b><span>guided learning hours</span></div>
+        <div class="cbg-fact"><b>About 2</b><span>months</span></div>
+        <div class="cbg-fact"><b>4</b><span>units</span></div>
+        <div class="cbg-fact"><b>2</b><span>IOSH assessments</span></div>
+        <div class="cbg-fact cbg-fact--text"><b>Ofqual no. 610/3188/4</b></div>
+      </div>
+
+      <p class="g-label">FAQ (native details, works without JavaScript)</p>
+      <div class="cbg-faq">
+        <details open><summary>Where do I find the link for my live class?</summary><p>In the unit sections of this course, each session has a "Live Class" lesson with the Google Meet link, just before that session's slides.</p></details>
+        <details><summary>What do I need for the classes?</summary><p>A laptop or PC with a webcam and a stable internet connection. Join a few minutes early.</p></details>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

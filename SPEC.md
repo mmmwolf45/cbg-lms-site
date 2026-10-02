@@ -205,7 +205,9 @@ These apply only when the loader has marked the route: `html.cbg-route-home` or 
 | Selector (from PLATFORM_NOTES.md) | Route | Restyle |
 |---|---|---|
 | `body` | home, course | Navy-black background ★ |
+| `html` (root, carries the route class) | home | Dark scrollbar (`scrollbar-color` only) |
 | `#navbar` | home, course | Dark, translucent, hairline bottom border; Login and Register as ghost buttons ★ |
+| `#navbar .navbar-title-container` (+ its `img`) and `.navbar-title-container + div button` (Register: `button.bg-primary`) | home, course | Logo on a 2px white keyline, unaltered; Login ghost pill, Register solid pill, gold focus ring ★ |
 | `#course-header-bg` | course | Navy-black with a faint blueprint grid ★ |
 | `#course-header` | course | Title in Plus Jakarta Sans 800, a gold rule under the title, stats as chips, enrol button styled as our primary button. The preview `iframe#widget2` is left alone. |
 | `div.bg-white.py-12` (main wrapper) | course | Dark background ★ |
