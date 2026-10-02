@@ -28,3 +28,4 @@ html.cbg-route-course div:has(>#course_content)+div{background:#131E34;border-co
 @font-face{font-family:cbg-pjs-fb;src:local("Arial"),local("ArialMT"),local("Helvetica Neue"),local("Roboto");font-weight:100 500;size-adjust:106%}
 @font-face{font-family:cbg-pjs-fb;src:local("Arial Bold"),local("Arial-BoldMT"),local("Helvetica Neue Bold"),local("Roboto Bold");font-weight:600 900;size-adjust:101.6%}
 html.cbg-route-home,html.cbg-route-course{--font-family:"Plus Jakarta Sans",cbg-pjs-fb,sans-serif!important}
+html.cbg-route-home:has([data-cbg="home"]) #courses{display:none}

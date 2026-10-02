@@ -211,6 +211,15 @@ html.cbg-route-home .custom-section:has(> * > [data-cbg]) {
   padding-right: 0;
 }
 
+/* 8. `#courses` (the native "Explore Courses" catalogue): course.link locks this section on (its
+   toggle is disabled in Website > Home page), so it can't be switched off like the Banner. Our home
+   block has its own data-driven course cards, so the native one is hidden, but only while our block
+   is on the page: if the block is removed or our CSS fails, the catalogue comes back. Also in
+   critical.css, so it never flashes. */
+html.cbg-route-home:has([data-cbg="home"]) #courses {
+  display: none;
+}
+
 /* ---------- Course route (T20) ---------- */
 
 /* 1b. course.link's course page adds `<style data-rh>body{background:white!important}</style>`

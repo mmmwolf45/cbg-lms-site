@@ -40,7 +40,7 @@ writeFileSync(
   mock('live-home.html', (p) => {
     if (!HOME_SLOT.test(p)) throw new Error('home Custom Block slot not found in fixture');
     return p.replace(HOME_SLOT, `$1${block('home').replace(/^<div id="custom-home">|<\/div>$/g, '')}$2`)
-      .replace('</head>', '<style>#banner-home,#courses{display:none}</style></head>');
+      .replace('</head>', '<style>#banner-home{display:none}</style></head>');
   }),
 );
 

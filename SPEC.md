@@ -207,6 +207,7 @@ These apply only when the loader has marked the route: `html.cbg-route-home` or 
 | `body` | home, course | Navy-black background ★. On course, `!important` (course.link's course page ships `body{background:white!important}` via react-helmet) |
 | `html` (root, carries the route class) | home, course | Dark scrollbar (`scrollbar-color` only) |
 | `#navbar` | home, course | Dark, translucent, hairline bottom border; Login and Register as ghost buttons ★ |
+| `#courses` (native catalogue) | home | **Hidden** while our home block is on the page (`:has([data-cbg="home"])`) ★. Change from the plan: course.link locks the Courses section on, so it can't be switched off. Falls back to visible if our block or CSS is missing. |
 | `#navbar .navbar-title-container` (+ its `img`) and `.navbar-title-container + div button` (Register: `button.bg-primary`) | home, course | Logo on a 2px white keyline, unaltered; Login ghost pill, Register solid pill, gold focus ring ★ |
 | `#course-header-bg` (+ its decorative `> [aria-hidden="true"]` overlay) | course | Navy-black with a faint blueprint grid, painted as `background-image` over course.link's inline theme colour ★; the overlay's inline white glow dimmed with `opacity` |
 | `#course-header-bg + div` (divider under the band) | course | Hairline border colour |
