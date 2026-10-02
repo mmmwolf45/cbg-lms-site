@@ -70,11 +70,12 @@ describe.each(courses.map((c) => [c.slug, c] as const))('course blocks: %s (T18,
   });
 
   it('lists hazards as a plain list when there are any', () => {
-    const withHazards: Course = { ...c, hero: { ...c.hero, hazards: [{ label: 'Open trench' }, { label: 'Trailing cable' }] } };
-    const out = courseTop(withHazards);
+    const z = { at: [10, 10], zoom: [0, 0, 100, 100] };
+    const hazards = [{ label: 'Open trench', detail: 'No barrier.', ...z }, { label: 'Trailing cable', detail: 'A trip hazard.', ...z }];
+    const out = courseTop({ ...c, hero: { ...c.hero, hazards } } satisfies Course);
     const list = out.match(/<ol class="cbg-hazards" data-cbg-hazard-list>([\s\S]*?)<\/ol>/)![1];
-    expect(count(list, /<li>/g)).toBe(2);
-    expect(text(list)).toBe('Open trenchTrailing cable');
+    expect(count(list, /<li id="cbg-hazard-\d">/g)).toBe(2);
+    expect(text(list)).toBe('Open trench No barrier.Trailing cable A trip hazard.');
   });
 
   it('counters follow the contract: aria-hidden number next to an sr-only copy', () => {

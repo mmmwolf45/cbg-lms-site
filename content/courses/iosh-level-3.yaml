@@ -64,9 +64,34 @@ hero:
     label: Start here
     action: start-here
     href: "#course_content"
-  # Hazard Scan labels for the hero photo. Drafted in task T22; they are new copy,
-  # so a CBG trainer must sign them off before launch.
-  hazards: []
+  # Hazard Scan on the hero photo (T22). New copy, approved word for word by a CBG trainer
+  # (docs/hazard-labels.md). `at` is the marker point and `zoom` the phone-tour area
+  # [x, y, w, h], in source pixels of the 1536 x 1024 hazard-worksite photo.
+  hazards:
+    - label: Open edge, no guardrail
+      detail: Working next to an unprotected edge at height. A fall from here could be fatal.
+      at: [346, 140]
+      zoom: [200, 40, 380, 260]
+    - label: Ladder not secured
+      detail: Set at a steep angle and not tied, footed or held. It can slip or tip over.
+      at: [1185, 400]
+      zoom: [1050, 110, 300, 600]
+    - label: Trailing cable across a walkway
+      detail: A trip hazard, and the cable can be damaged by people and equipment passing over it.
+      at: [760, 690]
+      zoom: [430, 600, 760, 200]
+    - label: Unstable stack
+      detail: Bags stacked high and leaning. The stack could topple onto someone.
+      at: [190, 610]
+      zoom: [20, 440, 360, 400]
+    - label: Unprotected excavation
+      detail: No barrier or cover around the trench. Someone could walk or fall into it.
+      at: [800, 860]
+      zoom: [420, 690, 780, 334]
+    - label: No eye protection
+      detail: Grinding throws sparks and fragments, but the worker has no safety glasses or face shield.
+      at: [1385, 560]
+      zoom: [1260, 470, 276, 420]
 
 included:
   heading: One course, five certificates and a toolkit

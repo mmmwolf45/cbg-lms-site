@@ -40,7 +40,9 @@ const courseShape = {
     eyebrow: s, heading: s, subhead: s,
     facts: [{ value: s, 'label?': s, 'count?': 'number', 'prefix?': s }],
     cta,
-    hazards: [{ label: s }],
+    // Hazard Scan: `at` is the marker point [x, y] and `zoom` the phone-tour area [x, y, w, h], in source
+    // pixels of the hazard-worksite photo (HAZARD_PHOTO), checked in validateCourse.
+    hazards: [{ label: s, detail: s, at: ['number'], zoom: ['number'] }],
   },
   included: { heading: s, intro: s, cards: [{ ...titled, 'featured?': 'boolean' }] },
   units: {
@@ -114,8 +116,23 @@ export function validateHome(data: unknown, file = 'content/home.yaml'): Home {
   return data as Home;
 }
 
+// Source size of brand/assets/photos/hazard-worksite.png (src/images.json).
+export const HAZARD_PHOTO = [1536, 1024] as const;
+
+// Each hazard's marker point and zoom area must be whole-photo numbers inside the frame.
+function checkHazards(c: Course, file: string) {
+  const [W, H] = HAZARD_PHOTO;
+  c.hero.hazards.forEach(({ at, zoom }, i) => {
+    const fail = (msg: string): never => { throw new Error(`${file}: hero.hazards[${i}].${msg}`); };
+    const [x, y, w, h] = zoom;
+    if (at.length !== 2 || !(at[0] >= 0 && at[0] <= W && at[1] >= 0 && at[1] <= H)) fail(`at: must be [x, y] inside ${W}x${H}`);
+    if (zoom.length !== 4 || !(x >= 0 && y >= 0 && w > 0 && h > 0 && x + w <= W && y + h <= H)) fail(`zoom: must be [x, y, w, h] inside ${W}x${H}`);
+  });
+}
+
 export function validateCourse(data: unknown, file = 'content/courses/(course).yaml'): Course {
   check(data, courseShape, '', file);
+  checkHazards(data as Course, file);
   return data as Course;
 }
 
