@@ -4,6 +4,9 @@ import './styles/components.css';
 import './styles/home.css';
 import './styles/course.css';
 import './styles/motion.css';
+import './styles/hazard.css';
+import './styles/build80.css';
+import './styles/course-motion.css';
 import './styles/native-overrides.css';
 import { detectPage, routeOf, type Page } from './pages';
 import { watchRoutes } from './router';
@@ -11,6 +14,10 @@ import { failOpen, setupMotion, type Enhancer } from './motion/setup';
 import { blueprint } from './motion/blueprint';
 import { ticks } from './motion/ticks';
 import { loginAction } from './actions';
+import { hazardScan } from './motion/hazard-scan';
+import { build80 } from './motion/build80';
+import { courseExtras } from './motion/course-extras';
+import { startHere } from './motion/start-here';
 
 export type Teardown = () => void;
 export type Setups = Record<Page['kind'], (page: Page) => Teardown>;
@@ -28,7 +35,7 @@ const motion = (enhancers: Enhancer[]) => () => {
 };
 const setups: Setups = {
   home: motion([blueprint, ticks, loginAction]),
-  course: motion([]),
+  course: motion([hazardScan, build80, courseExtras, startHere]),
   none: noop,
 };
 
