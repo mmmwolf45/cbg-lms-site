@@ -5,7 +5,7 @@ import { countText } from '../src/motion/counters';
 import { activeUnit, cumulative, hoursAt, scrubFloors, timedFloors } from '../src/motion/build80';
 
 const iosh = loadCourses().find((c) => c.slug === 'iosh-level-3')!;
-const glh = iosh.units.units.map((u) => u.glh);
+const glh = iosh.units!.units.map((u) => u.glh);
 // Four equal cards with a small gap between them, as fractions of the unit list.
 const spans = [[0, 0.24], [0.25, 0.49], [0.5, 0.74], [0.75, 1]];
 

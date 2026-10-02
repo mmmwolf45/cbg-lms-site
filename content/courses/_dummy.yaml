@@ -1,0 +1,105 @@
+# DUMMY COURSE: an example for checking the course template. Never pasted, never shown to students.
+# Files starting with "_" are skipped by normal builds. Render it with:
+#   npx tsx scripts/build-blocks.ts --dummy
+# which writes dist/blocks/_dummy-top.html and dist/blocks/_dummy-main.html.
+# It uses a different set of sections from iosh-level-3.yaml on purpose: no Hazard Scan (a plain photo),
+# three units, and no how-classes-run, assessment, trainers, bonus, field-guides or payments.
+
+slug: _dummy
+uniqueId: "999"
+path: /course/999-dummy-course
+
+card:
+  title: Dummy Course
+  status: example only
+  tag: Dummy · Placeholder
+  line: A placeholder course used to test the course template. Not a real course.
+  meta:
+    - Placeholder
+    - Three units
+  cta:
+    label: Open course
+    href: /course/999-dummy-course
+
+hero:
+  eyebrow: Dummy course · Placeholder copy
+  heading: Dummy Certificate in Placeholder Studies
+  subhead: This is placeholder text for a dummy course. It checks that a course renders from its YAML file alone.
+  visual: photo
+  image: closing-plate
+  imageAlt: A placeholder photo for the dummy course
+  facts:
+    - value: Dummy
+      label: (example)
+    - value: "42"
+      label: hours of study
+      count: 42
+    - value: "3"
+      label: units
+      count: 3
+  cta:
+    label: Start here
+
+included:
+  heading: What the dummy course includes
+  intro: Placeholder cards. The first one is featured.
+  cards:
+    - title: A dummy certificate.
+      body: Placeholder text for the featured card.
+      featured: true
+    - title: Dummy notes.
+      body: Placeholder text for a second card.
+    - title: Dummy practice questions.
+      body: Placeholder text for a third card.
+
+units:
+  heading: "Dummy learning path: 3 units"
+  intro: Placeholder units with uneven hours, to check the building drawing.
+  hoursLabel: hours of study
+  hoursShort: h
+  units:
+    - code: DUM01
+      title: First dummy unit
+      glh: 2
+      outcomes:
+        - Placeholder outcome one
+      sessions:
+        - { id: "1.1", title: Dummy session }
+    - code: DUM02
+      title: Second dummy unit
+      glh: 10
+      outcomes:
+        - Placeholder outcome two
+        - Placeholder outcome three
+      sessions:
+        - { id: "2.1", title: Dummy session }
+        - { id: "2.2", title: Another dummy session }
+    - code: DUM03
+      title: Third dummy unit
+      glh: 30
+      outcomes:
+        - Placeholder outcome four
+      sessions:
+        - { id: "3.1", title: Dummy session }
+
+faq:
+  heading: Dummy FAQ
+  items:
+    - q: Is this a real course?
+      a: No. It is a dummy course with placeholder copy.
+    - q: Why does it exist?
+      a: To check that the course template works for a course other than IOSH Level 3.
+
+help:
+  heading: Dummy help band. Placeholder text.
+  whatsapp:
+    label: WhatsApp
+    number: "+974 7048 5638"
+    href: https://wa.me/97470485638
+  email:
+    label: Email
+    address: safety.training@carbonblueglobal.com
+    href: mailto:safety.training@carbonblueglobal.com
+  logos:
+    - file: cbg-mark-512.png
+      alt: CBG Training Institute

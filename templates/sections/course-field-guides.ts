@@ -1,8 +1,8 @@
 import { esc } from '../../src/components/html';
-import type { Course } from '../../content/schema';
+import type { Section } from '../../content/schema';
 import { courseSection, head } from './course-shared';
 
-type Released = Course['field-guides']['released'][number];
+type Released = Section<'field-guides'>['released'][number];
 
 // Covers are drawn in HTML/CSS, no images. Released guides in full colour; upcoming ones outlined.
 // A line warning sign on the released cover (decorative).
@@ -20,14 +20,19 @@ const upcoming = (soon: string, title?: string) => `<li class="cbg-cover">
 ${title ? `<p class="cbg-cover__title">${esc(title)}</p>` : ''}
 </li>`;
 
+// A labelled group of covers; an empty group is left out.
+const group = (label: string, covers: string[]) => (covers.length
+  ? `<div class="cbg-shelf__group"><p class="cbg-shelf__label">${esc(label)}</p><ul>${covers.join('')}</ul></div>` : '');
+
 // data-cbg-shelf: T25 fans the shelf open from a stack. On narrow columns the shelf is a
 // scroll-snap row; tabindex + role + aria-label make it reachable and scrollable with arrow keys.
-export const fieldGuides = ({ 'field-guides': s }: Course) => {
+// How many covers fit the laptop fan is checked in content/schema.ts (checkShelf).
+export const fieldGuides = (s: Section<'field-guides'>) => {
   const soon = [...s.upcoming.map((t) => upcoming(s.comingSoonLabel, t)),
     ...Array.from({ length: s.unnamedUpcoming }, () => upcoming(s.comingSoonLabel))];
   return courseSection('field-guides', `${head(s.heading, s.body)}
 <div class="cbg-shelf" data-cbg-shelf tabindex="0" role="region" aria-label="${esc(s.heading)}">
-<div class="cbg-shelf__group"><p class="cbg-shelf__label">${esc(s.releasedLabel)}</p><ul>${s.released.map(released).join('')}</ul></div>
-<div class="cbg-shelf__group"><p class="cbg-shelf__label">${esc(s.upcomingLabel)}</p><ul>${soon.join('')}</ul></div>
+${group(s.releasedLabel, s.released.map(released))}
+${group(s.upcomingLabel, soon)}
 </div>`);
 };

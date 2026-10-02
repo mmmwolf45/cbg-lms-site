@@ -1,9 +1,9 @@
 import { esc, picture } from '../../src/components/html';
 import images from '../../src/images.json';
-import type { Course } from '../../content/schema';
+import type { Section } from '../../content/schema';
 import { courseSection, head } from './course-shared';
 
-type Trainer = Course['trainers']['trainers'][number];
+type Trainer = Section<'trainers'>['trainers'][number];
 
 // trainers[].photo "elman-aloysius.jpg" is built as the image "trainer-elman-aloysius" (src/images.json).
 // alt is empty: the name is the heading right beside the photo.
@@ -23,5 +23,5 @@ ${photo(t.photo)}
 </div>
 </li>`;
 
-export const trainers = ({ trainers: s }: Course) => courseSection('trainers', `${head(s.heading)}
+export const trainers = (s: Section<'trainers'>) => courseSection('trainers', `${head(s.heading)}
 <ul class="cbg-trainers" data-cbg-reveal="stagger">${s.trainers.map(card).join('')}</ul>`);

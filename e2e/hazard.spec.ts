@@ -1,11 +1,11 @@
 import { expect, test, type Page } from '@playwright/test';
-import { loadCourses } from '../content/schema';
+import { loadCourse } from '../content/schema';
 
 // Hazard Scan on the course hero (T22), on the course mock.
 
 const COURSE = '/course/preview-101';
 const SCREENS = 'test-results/screens';
-const hazards = loadCourses()[0].hero.hazards;
+const hazards = loadCourse('iosh-level-3.yaml').hero.hazards!;
 
 function watchErrors(page: Page) {
   const errors: string[] = [];

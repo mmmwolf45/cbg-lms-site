@@ -11,7 +11,7 @@ const course = () => yaml('content/courses/iosh-level-3.yaml');
 describe('content schema', () => {
   it('accepts both YAML files', () => {
     expect(Object.keys(loadHome())).toEqual(['hero', 'how-it-works', 'courses', 'first-steps', 'support', 'about', 'footer-note']);
-    expect(loadCourses().map((c) => c.slug)).toEqual(['iosh-level-3']);
+    expect(loadCourses().map((c) => c.slug)).toContain('iosh-level-3');
   });
 
   it('rejects a missing section', () => {
@@ -19,8 +19,8 @@ describe('content schema', () => {
     delete d.support;
     expect(() => validateHome(d)).toThrow('content/home.yaml: support: missing section');
     const c = course();
-    delete c.faq;
-    expect(() => validateCourse(c)).toThrow('faq: missing section');
+    delete c.hero;
+    expect(() => validateCourse(c)).toThrow('hero: missing section');
   });
 
   it('rejects a missing field', () => {

@@ -33,52 +33,63 @@ const homeShape = {
   'footer-note': { text: s },
 } as const;
 
+// Every section except `hero` is optional: a course shows only the sections its YAML has, in this order.
 const courseShape = {
   slug: s,
   uniqueId: s,
   path: s,
-  card: { title: s, status: s, tag: s, line: s, meta: [s], cta: link },
+  card: { title: s, status: s, tag: s, line: s, meta: [s], cta: link }, // the home page course card
   hero: {
-    eyebrow: s, heading: s, subhead: s, imageAlt: s,
+    eyebrow: s, heading: s, subhead: s,
+    // The picture under the CTA (checkHero): 'hazard-scan' (needs `image`, `imageAlt`, `hazards`, `tour`),
+    // 'photo' (needs `image`, `imageAlt`) or 'none'. `image` is a name from src/images.json.
+    visual: s, 'image?': s, 'imageAlt?': s,
     facts: [{ value: s, 'label?': s, 'count?': 'number', 'prefix?': s }],
     cta,
     // Hazard Scan: `at` is the marker point [x, y] and `zoom` the phone-tour area [x, y, w, h], in source
-    // pixels of the hazard-worksite photo (HAZARD_PHOTO), checked in validateCourse.
-    hazards: [{ label: s, detail: s, at: ['number'], zoom: ['number'] }],
-    tour: { previous: s, next: s }, // the phone tour's step buttons
+    // pixels of the hero image, checked in checkHero.
+    'hazards?': [{ label: s, detail: s, at: ['number'], zoom: ['number'] }],
+    'tour?': { previous: s, next: s }, // the phone tour's step buttons
   },
-  included: { heading: s, intro: s, cards: [{ ...titled, 'featured?': 'boolean' }] },
-  units: {
+  'included?': { heading: s, intro: s, cards: [{ ...titled, 'featured?': 'boolean' }] },
+  'units?': {
     heading: s, intro: s,
+    // The hours wording: `hoursLabel` under the total and beside each unit's hours (default
+    // "guided learning hours"), `hoursShort` on the building drawing's floors (default "GLH").
+    'hoursLabel?': s, 'hoursShort?': s,
     units: [{ code: s, title: s, glh: 'number', outcomes: [s], sessions: [{ id: s, title: s }] }],
   },
-  'how-classes-run': { heading: s, items: [titled], timetable: { label: s, text: s } },
-  assessment: {
+  'how-classes-run?': { heading: s, items: [titled], timetable: { label: s, text: s } },
+  'assessment?': {
     heading: s, intro: s,
     assessments: [{
       label: s, title: s, points: [s],
       'tasksIntro?': s, 'tasks?': [{ name: s, marks: 'number' }], 'tasksNote?': s,
     }],
-    techIoshNote: s,
+    'techIoshNote?': s, // the closing callout under the assessments
   },
-  trainers: { heading: s, trainers: [{ name: s, role: s, photo: s, bio: s, credentials: [s] }] },
-  bonus: { heading: s, intro: s, steps: [titled], smallPrint: s },
-  'field-guides': {
+  'trainers?': { heading: s, trainers: [{ name: s, role: s, photo: s, bio: s, credentials: [s] }] },
+  'bonus?': { heading: s, intro: s, steps: [titled], smallPrint: s },
+  'field-guides?': {
     heading: s, body: s,
     releasedLabel: s, released: [{ label: s, title: s, 'subtitle?': s }],
     upcomingLabel: s, upcoming: [s], unnamedUpcoming: 'number', comingSoonLabel: s,
   },
-  payments: { heading: s, body: s },
-  faq: { heading: s, items: [{ q: s, a: s }] },
-  help: { heading: s, whatsapp, email, logos },
+  'payments?': { heading: s, body: s },
+  'faq?': { heading: s, items: [{ q: s, a: s }] },
+  // `image`: the closing band's background, a name from src/images.json (default "closing-plate").
+  'help?': { heading: s, 'image?': s, whatsapp, email, logos },
 } as const;
 
+export const HERO_VISUALS = ['hazard-scan', 'photo', 'none'] as const;
 export type Home = Infer<typeof homeShape>;
-export type Course = Infer<typeof courseShape>;
+export type Course = Infer<typeof courseShape> & { hero: { visual: (typeof HERO_VISUALS)[number] } };
+// One course section's data, for a course that has it (e.g. Section<'units'>).
+export type Section<K extends keyof Course> = NonNullable<Course[K]>;
 
 // Section ids in page order (used as id="cbg-<section>").
 export const homeSections = Object.keys(homeShape) as (keyof Home)[];
-export const courseSections = Object.keys(courseShape)
+export const courseSections = Object.keys(courseShape).map((k) => k.replace(/\?$/, ''))
   .filter((k) => !['slug', 'uniqueId', 'path', 'card'].includes(k)) as (keyof Course)[];
 
 const EM_DASH = String.fromCharCode(0x2014);
@@ -123,24 +134,59 @@ export function validateHome(data: unknown, file = 'content/home.yaml'): Home {
   return data as Home;
 }
 
-// Source size of brand/assets/photos/hazard-worksite.png (src/images.json).
-export const HAZARD_PHOTO = [1536, 1024] as const;
+// The built pictures and their source sizes (written by `npm run images`). Read, not imported, because
+// Playwright loads this file too and needs an import attribute for JSON.
+const images: Record<string, { width: number; height: number }> =
+  JSON.parse(readFileSync(new URL('../src/images.json', import.meta.url), 'utf8'));
 
-// Each hazard's marker point and zoom area must be whole-photo numbers inside the frame.
-function checkHazards(c: Course, file: string) {
-  const [W, H] = HAZARD_PHOTO;
-  c.hero.hazards.forEach(({ at, zoom }, i) => {
-    const fail = (msg: string): never => { throw new Error(`${file}: hero.hazards[${i}].${msg}`); };
-    const [x, y, w, h] = zoom;
-    if (at.length !== 2 || !(at[0] >= 0 && at[0] <= W && at[1] >= 0 && at[1] <= H)) fail(`at: must be [x, y] inside ${W}x${H}`);
-    if (zoom.length !== 4 || !(x >= 0 && y >= 0 && w > 0 && h > 0 && x + w <= W && y + h <= H)) fail(`zoom: must be [x, y, w, h] inside ${W}x${H}`);
+// A picture name the YAML gives must be one `npm run images` built.
+function checkImage(name: string, path: string, file: string) {
+  if (!(name in images)) throw new Error(`${file}: ${path}: no image "${name}" in src/images.json (add it to scripts/images.ts, then npm run images)`);
+}
+
+// Each hero visual's fields are required for it and refused for the others (no silently unused copy).
+// Hazard Scan: the image must be 3:2 (it shows uncropped in course.css's 3:2 box, so x% of the photo is
+// x% of the box) and every marker point and zoom area must be whole-photo numbers inside it.
+function checkHero({ hero: h }: Course, file: string) {
+  const fail = (msg: string): never => { throw new Error(`${file}: hero.${msg}`); };
+  if (!HERO_VISUALS.includes(h.visual)) fail(`visual: must be ${HERO_VISUALS.join(', ')}; got ${JSON.stringify(h.visual)}`);
+  const scan = h.visual === 'hazard-scan';
+  const needs = { image: h.visual !== 'none', imageAlt: h.visual !== 'none', hazards: scan, tour: scan };
+  for (const [key, needed] of Object.entries(needs)) {
+    const has = h[key as keyof typeof needs] !== undefined;
+    if (needed && !has) fail(`${key}: missing field (visual: ${h.visual} needs it)`);
+    if (!needed && has) fail(`${key}: not used with visual: ${h.visual}; remove it`);
+  }
+  if (h.image) checkImage(h.image, 'hero.image', file);
+  if (!h.image || !h.hazards) return;
+  if (!h.hazards.length) fail('hazards: list at least one hazard (or use visual: photo)');
+  const { width: W, height: H } = images[h.image];
+  if (W * 2 !== H * 3) fail(`image: the Hazard Scan photo must be 3:2; "${h.image}" is ${W}x${H}`);
+  h.hazards.forEach(({ at, zoom }, i) => {
+    const [x, y, w, ht] = zoom;
+    if (at.length !== 2 || !(at[0] >= 0 && at[0] <= W && at[1] >= 0 && at[1] <= H)) fail(`hazards[${i}].at: must be [x, y] inside ${W}x${H}`);
+    if (zoom.length !== 4 || !(x >= 0 && y >= 0 && w > 0 && ht > 0 && x + w <= W && y + ht <= H)) fail(`hazards[${i}].zoom: must be [x, y, w, h] inside ${W}x${H}`);
   });
+}
+
+// On a laptop the field-guide shelf is one fanned row in the 788px column (course.css): released covers
+// 152px wide, upcoming ones 116px, each cover after the first in its group overlapping the one before by
+// 32px, 16px between the two groups. A shelf wider than the column would spill onto the enrol card.
+function checkShelf({ 'field-guides': g }: Course, file: string) {
+  if (!g) return;
+  const r = g.released.length;
+  const u = g.upcoming.length + g.unnamedUpcoming;
+  const width = (r && 152 + 120 * (r - 1)) + (r && u && 16) + (u && 116 + 84 * (u - 1));
+  if (width > 788) throw new Error(`${file}: field-guides: ${r} released + ${u} upcoming covers are ${width}px wide on a laptop, more than the 788px column; list fewer`);
 }
 
 export function validateCourse(data: unknown, file = 'content/courses/(course).yaml'): Course {
   check(data, courseShape, '', file);
-  checkHazards(data as Course, file);
-  return data as Course;
+  const c = data as Course;
+  checkHero(c, file);
+  checkShelf(c, file);
+  if (c.help?.image) checkImage(c.help.image, 'help.image', file);
+  return c;
 }
 
 function read(rel: string, file: string): unknown {
@@ -153,15 +199,18 @@ function read(rel: string, file: string): unknown {
 
 export const loadHome = () => validateHome(read('./home.yaml', 'content/home.yaml'));
 
-// Every content/courses/*.yaml except files starting with "_" (drafts, examples).
+// One course file, e.g. loadCourse('_dummy.yaml'). Its slug must match the file name.
+export function loadCourse(name: string): Course {
+  const file = `content/courses/${name}`;
+  const course = validateCourse(read(`./courses/${name}`, file), file);
+  if (course.slug !== name.slice(0, -5)) throw new Error(`${file}: slug: must match the file name ("${name.slice(0, -5)}")`);
+  return course;
+}
+
+// Every content/courses/*.yaml except files starting with "_" (drafts, examples such as _dummy.yaml).
 export function loadCourses(): Course[] {
   return readdirSync(new URL('./courses/', import.meta.url))
     .filter((f) => f.endsWith('.yaml') && !f.startsWith('_'))
     .sort()
-    .map((f) => {
-      const file = `content/courses/${f}`;
-      const course = validateCourse(read(`./courses/${f}`, file), file);
-      if (course.slug !== f.slice(0, -5)) throw new Error(`${file}: slug: must match the file name ("${f.slice(0, -5)}")`);
-      return course;
-    });
+    .map(loadCourse);
 }

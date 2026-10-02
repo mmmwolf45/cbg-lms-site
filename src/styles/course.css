@@ -43,6 +43,13 @@
 .cbg-c-hero .cbg-fact b span { font: inherit; color: inherit; }
 .cbg-c-hero .cbg-fact > span { display: block; margin-top: var(--cbg-s1); line-height: 1.35; }
 .cbg-c-hero .cbg-fact b small { font-size: 1rem; font-weight: 700; color: var(--cbg-text-3); letter-spacing: 0; }
+/* A number of facts that leaves the last row short (2 per row, 3 from 640px): the last fact fills it,
+   so no empty cell shows the line colour. Six facts (IOSH) fill both grids. */
+@media (max-width: 639.98px) { .cbg-c-hero .cbg-fact:last-child:nth-child(odd) { grid-column: span 2; } }
+@media (min-width: 640px) {
+  .cbg-c-hero .cbg-fact:last-child:nth-child(3n + 1) { grid-column: span 3; }
+  .cbg-c-hero .cbg-fact:last-child:nth-child(3n + 2) { grid-column: span 2; }
+}
 
 /* ---------- included: certificate / kit cards ---------- */
 .cbg-kits { display: grid; gap: var(--cbg-s4); }
@@ -142,6 +149,8 @@
   border: 1px solid var(--cbg-line); border-radius: var(--cbg-r-card); background: var(--cbg-line);
 }
 .cbg-quads li { display: flex; flex-direction: column; gap: var(--cbg-s3); min-height: 148px; padding: 20px; background: var(--cbg-bg); }
+/* An odd number of tasks: the last tile spans the row (no empty cell showing the line colour). */
+.cbg-quads li:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .cbg-quads__name { display: block; font: 600 1rem / 1.3 var(--cbg-font-display); color: var(--cbg-text-1); }
 .cbg-quads__name::first-letter { text-transform: uppercase; }
 .cbg-quads b { margin-top: auto; font: 800 2.5rem / 1 var(--cbg-font-display); letter-spacing: -0.03em; color: var(--cbg-text-1); }

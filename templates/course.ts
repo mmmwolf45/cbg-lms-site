@@ -1,4 +1,4 @@
-// A course page as two Custom Blocks (SPEC 5.2, approved in 13.1):
+// Any course page, from its content/courses/<slug>.yaml alone, as two Custom Blocks (SPEC 5.2, approved in 13.1):
 // top (dist/blocks/<slug>-top.html) above course.link's Course Content, main (<slug>-main.html) below it.
 // Both sit in course.link's 792px main column; course.css lays them out by that column's width.
 import { esc } from '../src/components/html';
@@ -20,6 +20,12 @@ const root = (c: Course, part: 'top' | 'main', inner: string) =>
 
 export const courseTop = (c: Course) => root(c, 'top', hero(c));
 
+// A section the course's YAML leaves out renders nothing.
+const opt = <T>(data: T | undefined, render: (data: T) => string) => (data ? render(data) : '');
+
+// In SPEC 5.2 page order (the order of content/schema.ts).
 export const courseMain = (c: Course) => root(c, 'main', [
-  included(c), units(c), howClassesRun(c), assessment(c), trainers(c), bonus(c), fieldGuides(c), payments(c), faq(c), help(c),
+  opt(c.included, included), opt(c.units, units), opt(c['how-classes-run'], howClassesRun), opt(c.assessment, assessment),
+  opt(c.trainers, trainers), opt(c.bonus, bonus), opt(c['field-guides'], fieldGuides), opt(c.payments, payments),
+  opt(c.faq, faq), opt(c.help, help),
 ].join(''));

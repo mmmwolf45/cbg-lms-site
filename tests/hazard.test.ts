@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { HAZARD_PHOTO, loadCourses, validateCourse } from '../content/schema';
+import { loadCourse, validateCourse } from '../content/schema';
 import { courseTop } from '../templates/course';
 import { pct } from '../templates/sections/course-hero';
 import { nextStep, tipPlace, zoomFor } from '../src/motion/hazard-scan';
 import images from '../src/images.json';
 
-const course = loadCourses()[0];
-const hazards = course.hero.hazards;
+const course = loadCourse('iosh-level-3.yaml');
+const hazards = course.hero.hazards!;
 
 describe('hazard content (T22)', () => {
   it('has the six trainer-approved labels and explanations, word for word', () => {
@@ -21,8 +21,9 @@ describe('hazard content (T22)', () => {
   });
 
   it('matches the photo size and rejects points outside it', () => {
+    expect(course.hero.image).toBe('hazard-worksite');
     const img = images['hazard-worksite'];
-    expect([img.width, img.height]).toEqual([...HAZARD_PHOTO]);
+    expect([img.width, img.height]).toEqual([1536, 1024]);
     const bad = JSON.parse(JSON.stringify(course));
     bad.hero.hazards[2].at = [1600, 10];
     expect(() => validateCourse(bad)).toThrow('hero.hazards[2].at');
