@@ -39,6 +39,14 @@ The loader snippet now carries the critical CSS (no white flash, no layout shift
 - [ ] Client-side navigation home → course → home: blocks animate on every visit, no console errors.
 - [ ] Phone check on a real device (Maasoom).
 
+## Redeploying a page whose block HTML changed (learned 3 Oct 2026)
+The pasted block and the CSS/JS on GitHub Pages must match. Old block + new CSS (or the reverse) looks broken. Keep the mismatch window to minutes:
+1. Stage the new block in course.link (pasted, not saved). Course blocks can sit in the draft safely.
+2. `git push`, wait for the Pages deploy, then poll `https://mmmwolf45.github.io/cbg-lms-site/manifest.json?t=<current 10-minute bucket>` (the loader's bucket is `Math.floor(Date.now()/6e5)`) until it shows the new `cbg.*.js` / `cbg.*.css`.
+3. Maasoom clicks Save (home) or Publish changes (course) straight away.
+4. Live check. Visitors who loaded the page inside the window may see a mismatched page until their next load (at most about 10 minutes). Prefer quiet hours.
+If only CSS/JS changed (no block HTML change), a push alone is enough.
+
 ## Rollback
 - Design/motion bug: revert the commit and push (live in about 20 minutes because of caching), or clear the All Pages Custom Script for an instant return to stock course.link.
 - Block content wrong: switch the Custom Block off (home: Save; course: Publish changes).
