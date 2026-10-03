@@ -159,7 +159,7 @@ The home page has no `h1` today. The hero headline becomes the page's `h1`.
 - **Block "top"**, placed above Course Content, holds only `hero`. A returning student wants their class links, so the page shouldn't make them scroll past nine sections to reach Course Content.
 - **Block "main"**, placed below Course Content, holds every other section.
 
-Course Content stays native and collapsed, so it stays short.
+Course Content stays native and collapsed, so it stays short. course.link opens its first section on every load; the course enhancers close that untouched default once per page view (src/motion/start-here.ts), never a section the reader opened. Opening or closing sections changes the page height, so all scroll-linked motion re-measures (src/motion/setup.ts) or works from the live layout (src/motion/seen.ts).
 
 **Page order:** native header → **top** (`hero`) → native Course Content accordion → **main** (`included` → `units` → `how-classes-run` → `assessment` → `trainers` → `bonus` → `field-guides` → `payments` → `faq` → `help`).
 

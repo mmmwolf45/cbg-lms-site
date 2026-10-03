@@ -2,6 +2,6 @@
 import { hazardScan } from '../motion/hazard-scan';
 import { build80 } from '../motion/build80';
 import { courseExtras } from '../motion/course-extras';
-import { startHere } from '../motion/start-here';
+import { closeDefaultSection, startHere } from '../motion/start-here';
 
-export const enhancers = [hazardScan, build80, courseExtras, startHere];
+export const enhancers = [closeDefaultSection, hazardScan, build80, courseExtras, startHere];

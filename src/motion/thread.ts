@@ -14,6 +14,17 @@ export function nodeFractions(pos: number[], size: number): number[] {
 export const litCount = (progress: number, fractions: number[]) =>
   progress > 0 ? fractions.filter((f) => f <= progress + 1e-6).length : 0;
 
+// An element's layout position on the page, ignoring transforms (offsetTop/Left up the offsetParent chain).
+function pageOffset(el: HTMLElement): [number, number] {
+  let x = 0;
+  let y = 0;
+  for (let e: HTMLElement | null = el; e; e = e.offsetParent as HTMLElement | null) {
+    x += e.offsetLeft;
+    y += e.offsetTop;
+  }
+  return [x, y];
+}
+
 // [data-cbg-thread]: --cbg-thread scrubs 0 -> 1 with scroll (the CSS scales its line by it) and
 // each .cbg-node gets is-lit once the line reaches it.
 export function thread(roots: HTMLElement[]) {
@@ -28,17 +39,19 @@ export function thread(roots: HTMLElement[]) {
       lit = n;
       nodes.forEach((node, i) => node.classList.toggle('is-lit', i < n));
     };
-    // Layout is read only on refresh (load, resize, fonts, images), never per frame.
+    // Layout is read only on refresh (load, resize, fonts, images, the page changing height), never per
+    // frame. Offsets, not boxes: the steps may still be in their reveal starting pose (16px lower, motion.css),
+    // which getBoundingClientRect would include and the finished layout doesn't.
     const measure = () => {
-      const box = el.getBoundingClientRect();
+      const [bx, by] = pageOffset(el);
       const c = nodes.map((n) => {
-        const r = n.getBoundingClientRect();
-        return [r.left + r.width / 2 - box.left, r.top + r.height / 2 - box.top];
+        const [x, y] = pageOffset(n);
+        return [x - bx + n.offsetWidth / 2, y - by + n.offsetHeight / 2];
       });
       const first = c[0] ?? [0, 0];
       const last = c[c.length - 1] ?? first;
       const across = Math.abs(last[0] - first[0]) > Math.abs(last[1] - first[1]);
-      fractions = nodeFractions(c.map((p) => (across ? p[0] : p[1])), across ? box.width : box.height);
+      fractions = nodeFractions(c.map((p) => (across ? p[0] : p[1])), across ? el.offsetWidth : el.offsetHeight);
       lit = -1;
     };
     measure();

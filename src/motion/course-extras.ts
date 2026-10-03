@@ -35,11 +35,13 @@ export const stackOffsets = (lefts: number[], step = 3) => lefts.map((l, i) => (
 
 const box = (el: HTMLElement): Box => ({ x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight });
 
-// Starts when the element's top reaches this fraction of the viewport, or the page rests with it on screen
-// (seen.ts). onRefresh re-measures a starting pose whenever ScrollTrigger re-measures the page.
+// Showpieces: start when the element's top reaches this fraction of the viewport, measured on the live
+// layout (seen.ts), however many Course Content sections are open. Never on a pause with them peeking
+// in: they would play before the reader gets there. onRefresh re-measures a starting pose whenever
+// ScrollTrigger re-measures the page.
 type Cancels = (() => void)[];
 function once(cancels: Cancels, el: HTMLElement, f: number, onEnter: () => void, onRefresh?: () => void) {
-  cancels.push(whenSeen(el, onEnter, f));
+  cancels.push(whenSeen(el, onEnter, f, false));
   if (!onRefresh) return;
   ScrollTrigger.addEventListener('refresh', onRefresh);
   cancels.push(() => ScrollTrigger.removeEventListener('refresh', onRefresh));
@@ -84,7 +86,7 @@ function shelf(el: HTMLElement, touched: Element[], cancels: Cancels) {
     const fade = gsap.fromTo(covers, { opacity: 0 }, {
       opacity: 1, duration: dur.base, ease: ease.out, stagger, paused: true, onComplete: finish(el, covers, CLEAR),
     });
-    cancels.push(whenSeen(el, () => void fade.play()));
+    cancels.push(whenSeen(el, () => void fade.play(), 0.88, false)); // a showpiece too: never unseen
     return;
   }
   // Laptop: the designed fan (course.css transforms) is the end state; it opens from a neat stack.

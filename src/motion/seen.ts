@@ -1,14 +1,17 @@
 // Runs an element's one-off entrance when the reader gets to it. Three ways in, whichever comes first:
 // - scrolling: its top passes `at` of the screen height (0.88 = 'top 88%');
-// - coming to rest: the page has been still for SETTLE ms with any of it on screen, so nothing visible
-//   ever waits for one more scroll (the line at 88% would otherwise leave the bottom of a phone screen
-//   empty, and at the end of the page a short element might never reach it);
+// - coming to rest (plain entrances only): the page has been still for SETTLE ms with a real part of it
+//   on screen (half of it, or REST_PX), so nothing readable waits for one more scroll (the line at 88%
+//   would otherwise leave the bottom of a phone screen empty, and at the end of the page a short element
+//   might never reach it). Showpieces (the field-guide shelf, the hand of certificates) pass rest =
+//   false and keep their designed line: a pause with them peeking in must not play them unseen;
 // - already passed: it is above the screen (a reload mid-page, a jump to an anchor).
 // IntersectionObserver works from the live layout, so a late change above (fonts, images, course.link's
 // own sections) can't leave it waiting on a stale scroll position, which ScrollTrigger start values can.
-type Entry = { el: Element; at: number; play: () => void };
+type Entry = { el: Element; at: number; play: () => void; rest: boolean };
 
 export const SETTLE = 120;
+export const REST_PX = 96;
 
 const entries = new Set<Entry>();
 const observers = new Map<number, IntersectionObserver>();
@@ -39,12 +42,15 @@ function observer(at: number) {
   return io;
 }
 
-// Anything on screen once the page is still. Unrendered elements (display: none) have an empty box.
+// Plain entrances with a real part on screen once the page is still. Unrendered elements
+// (display: none) have an empty box.
 function sweep() {
   const vh = window.innerHeight;
   for (const x of [...entries]) {
+    if (!x.rest) continue;
     const r = x.el.getBoundingClientRect();
-    if (r.height > 0 && r.top < vh && r.bottom > 0) fire(x);
+    const shown = Math.min(r.bottom, vh) - Math.max(r.top, 0);
+    if (r.height > 0 && shown > 0 && shown >= Math.min(r.height / 2, REST_PX)) fire(x);
   }
 }
 
@@ -54,8 +60,8 @@ function onScroll() {
 }
 
 // Calls play once, when el is seen. Returns a cancel for teardown (safe to call after it has played).
-export function whenSeen(el: Element, play: () => void, at = 0.88): () => void {
-  const x: Entry = { el, at, play };
+export function whenSeen(el: Element, play: () => void, at = 0.88, rest = true): () => void {
+  const x: Entry = { el, at, play, rest };
   if (!entries.size) window.addEventListener('scroll', onScroll, { passive: true });
   entries.add(x);
   observer(at).observe(el);

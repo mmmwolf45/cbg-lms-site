@@ -41,3 +41,16 @@ export const startHere: Enhancer = (roots) => {
   }
   return () => off.abort();
 };
+
+// course.link opens the first Course Content section on every load. The page starts with all of them
+// closed: close that default once per rendered list (a re-setup or the reader's own choices later are
+// left alone). Only the untouched default: exactly one open, and it is the first.
+const settled = new WeakSet<Element>();
+export const closeDefaultSection: Enhancer = () => {
+  const content = document.getElementById('course_content');
+  if (!content || settled.has(content)) return;
+  settled.add(content);
+  const triggers = [...content.querySelectorAll<HTMLElement>('button[aria-expanded]')];
+  const open = triggers.filter((t) => t.getAttribute('aria-expanded') === 'true');
+  if (open.length === 1 && open[0] === triggers[0]) open[0].click();
+};

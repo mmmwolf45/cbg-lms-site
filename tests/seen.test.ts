@@ -85,17 +85,41 @@ describe('whenSeen', () => {
     expect(play).not.toHaveBeenCalled();
   });
 
-  it('plays anything on screen once the page comes to rest, even below the line', () => {
+  it('plays a plain entrance with a real part on screen once the page comes to rest, even below the line', () => {
     const play = vi.fn();
     const e = el(at(1200));
     seen.whenSeen(e, play);
-    e.box = at(760); // scrolled: its top is in the bottom 5% of the screen, under the 88% line
+    e.box = at(740); // scrolled: its top is under the 88% line, most of it on screen
     scroll();
     vi.advanceTimersByTime(seen.SETTLE - 20);
     scroll(); // still moving
     vi.advanceTimersByTime(seen.SETTLE - 20);
     expect(play).not.toHaveBeenCalled();
     vi.advanceTimersByTime(40);
+    expect(play).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not play on a pause with only a sliver peeking in', () => {
+    const play = vi.fn();
+    const e = el(at(780, 400)); // 20px of a 400px element on screen
+    seen.whenSeen(e, play);
+    report(FakeIO.all[0]!, e, false);
+    vi.advanceTimersByTime(seen.SETTLE + 1);
+    expect(play).not.toHaveBeenCalled();
+    e.box = at(800 - seen.REST_PX, 400);
+    scroll();
+    vi.advanceTimersByTime(seen.SETTLE + 1);
+    expect(play).toHaveBeenCalledTimes(1);
+  });
+
+  it('showpieces (rest = false) wait for their line, however long the page rests', () => {
+    const play = vi.fn();
+    const e = el(at(700, 400)); // 100px on screen, its top under the 80% line
+    seen.whenSeen(e, play, 0.8, false);
+    scroll();
+    vi.advanceTimersByTime(seen.SETTLE * 10);
+    expect(play).not.toHaveBeenCalled();
+    report(FakeIO.all[0]!, e, true); // crosses the line
     expect(play).toHaveBeenCalledTimes(1);
   });
 
