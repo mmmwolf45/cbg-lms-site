@@ -90,6 +90,7 @@ function run(section: HTMLElement): () => void {
     painted = j === a ? f : -1;
     canvas.dataset.frame = String(j); // the frame on show (tests read it: cross-origin pixels can't be read)
     canvas.classList.add('is-on'); // fades in over the poster
+    film.classList.add('is-playing'); // and the poster steps out: blended with lighten it would fill every gap
   };
   const saveData = (navigator as { connection?: { saveData?: boolean } }).connection?.saveData === true;
   if (base && !saveData) {
@@ -207,6 +208,7 @@ function run(section: HTMLElement): () => void {
     if (chip) chip.style.opacity = '';
     film.style.transform = '';
     canvas.classList.remove('is-on');
+    film.classList.remove('is-playing');
     canvas.width = canvas.height = 960;
     delete canvas.dataset.frame;
   };

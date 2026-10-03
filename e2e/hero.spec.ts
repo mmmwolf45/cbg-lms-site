@@ -113,6 +113,10 @@ test.describe('laptop, full motion', () => {
     expect(gap).toBeGreaterThan(0); // "classroom" never lands on the subtitle
     expect(start.frame).toBe(0);
     expect(end.frame).toBe(47); // the last frame is on the canvas: the building fully apart
+    // ...and nothing else draws the building: the poster under the canvas (blended with lighten) would fill the gaps.
+    await expect.poll(() => page.locator('.cbg-explode__poster').evaluate((p) => getComputedStyle(p).opacity)).toBe('0');
+    // ...and the canvas is actually visible, not just marked on (a first-paint rule once kept it at opacity 0).
+    await expect.poll(() => page.locator('.cbg-explode__canvas').evaluate((c) => getComputedStyle(c).opacity)).toBe('1');
     await scrollHero(page, 0);
     await expect.poll(async () => (await state(page)).moved, { timeout: 8000 }).toBe(0);
     const back = await state(page);
@@ -128,6 +132,7 @@ test.describe('laptop, full motion', () => {
     const s = await state(page);
     expect(s.canvasOn).toBe(false);
     await expect(page.locator('.cbg-explode__poster img')).toBeVisible();
+    expect(await page.locator('.cbg-explode__poster').evaluate((p) => getComputedStyle(p).opacity)).toBe('1'); // the fallback stays
     expect(s.moved).toBeGreaterThan(3);
     expect(errors).toEqual([]);
   });

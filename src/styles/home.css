@@ -34,10 +34,16 @@
   transform: translate(-50%, -54%); opacity: 0.04;
 }
 .cbg-explode__poster, .cbg-explode__canvas { mix-blend-mode: lighten; }
-.cbg-explode__poster { display: block; }
+.cbg-explode__poster { display: block; transition: opacity var(--cbg-dur) var(--cbg-ease); }
+/* Once the frames play, the poster (the assembled building) must go: under lighten the brighter of the
+   two layers wins, so it would fill every gap that opens between the floors (the live bug, 3 Oct 2026). */
+.cbg-explode__film.is-playing .cbg-explode__poster { opacity: 0; }
 .cbg-explode__poster img { width: 100%; height: 100%; object-fit: cover; }
 .cbg-explode__canvas { display: block; opacity: 0; transition: opacity var(--cbg-dur) var(--cbg-ease); }
 .cbg-explode__canvas.is-on { opacity: 1; }
+/* critical.css hides the canvas with html.cbg-route-home .cbg-explode__canvas (0,2,1), which beat the rule
+   above (0,2,0): the frames played unseen (live bug, 3 Oct 2026). This one outranks it. */
+html.cbg-route-home .cbg-explode__canvas.is-on { opacity: 1; }
 /* Centred without a transform on its box: insetting the bottom by 15% puts the centre at 42.5%. */
 .cbg-explode__headline { position: absolute; inset: 0 0 15% 0; display: grid; place-items: center; padding: 0 16px; pointer-events: none; }
 .cbg-explode__title {
