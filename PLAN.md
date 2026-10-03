@@ -9,7 +9,7 @@
 - [x] T11-T12 home block · [x] T13 native home · [x] T14 motion · [x] T15 hero · [x] T16 interactions · [x] T17 e2e · [x] T18-T19 course blocks · [x] T20 native course
 - [x] T21 Start here + FAQ · [x] T22 Hazard Scan · [x] T23 hand · [x] T24 80-hour build · [x] T25 small motions · [x] T26 course suite (in quality/e2e specs, live checks)
 - [x] Pre-launch code review + over-engineering review, all must/should-fix items done
-- [x] Go-live 3 Oct (loader, home, IOSH course) · [x] Home redesign live 3 Oct (all courses, gallery, photos) · [x] Phone fixes live 3 Oct (no flashing, no waiting for another scroll) · [ ] Logged-in check (test student account) · [x] T27-T28 template + HOW_TO_ADD_A_COURSE.md
+- [x] Go-live 3 Oct (loader, home, IOSH course) · [x] Home redesign live 3 Oct (all courses, gallery, photos) · [x] Phone fixes live 3 Oct (no flashing, no waiting for another scroll) · [x] Exploding-building hero live 3 Oct · [ ] Logged-in check (test student account) · [x] T27-T28 template + HOW_TO_ADD_A_COURSE.md
 - Hazard labels drafted for trainer sign-off: `docs/hazard-labels.md`
 
 ## Overview
@@ -313,8 +313,8 @@ Idea: docs/ideas/3d-exploded-hero.md (the line-art version was replaced by photo
 - [x] D3 Styles: poster-scale headline, sticky stage, phone layout, reduced motion and no-JS states. Verify: screenshots 1440 and 390.
 - [x] D4 Motion: `src/motion/explode.ts` (progressive frames, canvas blend, scroll, tilt, headline A), replaces blueprint.ts in the home chunk. Verify: unit tests for the pure maths; size budget.
 - [x] D5 Tests and regressions: e2e hero spec rewritten; full mock suite; phone flash and state diagnostics; CLS; frame-time check.
-- [ ] D6 Ship: push, stage the home block in Chrome, Maasoom saves, live check.
-- [ ] D7 Cleanup after D6 is live: delete public/img/hero-structure-* (kept so the old block keeps its photo until the new one is saved), the old hero critical-CSS rule (next loader re-paste) and brand/assets/photos/hero-structure.png if unused.
+- [x] D6 Ship: live 3 Oct 2026 (home block and loader saved; live check on laptop, Android, iPhone emulation).
+- [x] D7 Cleanup: old hero images deleted, old critical-CSS rule removed (in the re-pasted loader). brand/assets/photos/hero-structure.png kept as a source photo.
 
 ## Before every go-live
 1. performance-optimization pass against SPEC section 8.
