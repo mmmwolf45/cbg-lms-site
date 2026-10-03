@@ -65,8 +65,7 @@ export function setupMotion(doc: Document = document, enhancers: Enhancer[] = []
     mm.add(fullMotion, () => {
       const undo: (() => void)[] = [];
       try {
-        reveal(roots);
-        undo.push(thread(roots), counters(roots));
+        undo.push(reveal(roots), thread(roots), counters(roots));
       } catch (err) {
         failOpen(err, doc);
       }

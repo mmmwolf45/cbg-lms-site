@@ -15,8 +15,8 @@ Templates (T11, T12, T18+) produce static HTML. Styles and motion (T13, T14+) on
 ## Motion hooks (all optional; content must read fully without them)
 | Hook | On | Behaviour (T14 and later) |
 |---|---|---|
-| `data-cbg-reveal` | any element | Rises 16px and fades in once when it enters the viewport. |
-| `data-cbg-reveal="stagger"` | a parent | Its direct children reveal one after another (70 ms apart). |
+| `data-cbg-reveal` | any element | Rises 16px and fades in once: when its top passes 88% of the screen height while scrolling, or as soon as the page comes to rest with any of it on screen (src/motion/seen.ts), so nothing visible waits for one more scroll. |
+| `data-cbg-reveal="stagger"` | a parent | Its direct children reveal one after another (70 ms apart). The parent is marked done before any child's inline styles are cleared, so a landed child never drops back to the hidden state. |
 | `data-cbg-thread` | `.cbg-steps` list (or any element with `.cbg-node` children) | The gold thread draws with scroll; each `.cbg-node` gets `is-lit` when the thread reaches it. |
 | `data-cbg-count="<number>"` | an `aria-hidden="true"` element whose text is the final number, next to a `.cbg-sr-only` copy of the same value (e.g. `<b><span aria-hidden="true" data-cbg-count="80">80</span><span class="cbg-sr-only">80</span></b>`) | Counts up from 0 when in view. Prefix/suffix text sits outside the element. Screen readers only ever read the hidden final value (`aria-label` on a plain span is ignored by several screen readers). |
 | `data-cbg-gallery` | the home `courses` section | Laptop (1024px+ wide, 800px+ tall, mouse, full motion): the section pins at the top and vertical scroll pans `.cbg-gallery__track` sideways, with the gold `.cbg-gallery__bar` showing progress (src/motion/gallery.ts). It pins once the browser is idle and the section is wholly below the screen, and only if the panel fits the screen; until then it is the grid. Phones: a scroll-snap row in the focusable `.cbg-gallery` region. Tablets and reduced motion: a grid. |
@@ -39,7 +39,7 @@ The `disciplines` strip (`.cbg-marquee`) is CSS only, decorative and `aria-hidde
 - `data-cbg-thread` outside `.cbg-steps` needs its own CSS that scales by `--cbg-thread`.
 
 ## Pre-animation states
-- Hidden starting states are CSS under `html.cbg-js` only (in `src/styles/motion.css`) and never under `prefers-reduced-motion: reduce`.
+- Hidden starting states are CSS under `html.cbg-js` only (in `src/styles/motion.css`) and never under `prefers-reduced-motion: reduce`. The reveal state is also in `src/styles/critical.css` (inlined in the loader), so first-screen content is hidden from the first paint instead of showing, hiding when the main CSS lands, then fading in.
 - If page setup throws, the bundle removes `cbg-js`, so hidden content can't stay hidden.
 
 ## Images

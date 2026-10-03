@@ -1,6 +1,6 @@
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { DONE, all, enterAt } from './reveal';
+import { DONE, all } from './reveal';
+import { whenSeen } from './seen';
 import { dur } from './tokens';
 
 // The text shown for a running value: whole numbers, grouped like the final text ("1,200"),
@@ -37,7 +37,7 @@ export function counters(roots: HTMLElement[]) {
       onComplete: () => el.classList.add(DONE),
     });
     // Counting starts the moment the number appears at the bottom of the screen: a 0 must never sit in view.
-    ScrollTrigger.create({ trigger: el, start: enterAt(el, 1), once: true, onEnter: () => void tween.play() });
+    restore.push(whenSeen(el, () => void tween.play(), 1));
   }
   return () => restore.forEach((f) => f());
 }

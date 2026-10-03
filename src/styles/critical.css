@@ -20,6 +20,9 @@ html.cbg-route-course #react-root>div:has(#course_content) #course_content>div:f
 html.cbg-route-course #react-root>div:has(#course_content) #course_content h3>button{background:transparent}
 html.cbg-route-course div:has(>#course_content)+div{background:#131E34;border-color:rgba(255,255,255,.09)}
 @media (prefers-reduced-motion:no-preference){html.cbg-js.cbg-route-home .cbg-hero__visual:not(.cbg-done) .cbg-hero__media{filter:brightness(.35) saturate(.7)}}
+/* The reveal starting state (motion.css), here too so content on the first screen is hidden from the first
+   paint. Only in motion.css, it showed until that file arrived, hid, then faded in: a flash on phones. */
+@media (prefers-reduced-motion:no-preference){html.cbg-js [data-cbg-reveal]:not([data-cbg-reveal="stagger"]):not(.cbg-done),html.cbg-js [data-cbg-reveal="stagger"]:not(.cbg-done)>*{opacity:0;transform:translateY(16px)}}
 /* Font fallback matched to Plus Jakarta Sans's widths (measured: 400 is 106% of Arial, bold 101.6%).
    course.link sets body{font-family:"Plus Jakarta Sans"} with no fallback, so text is first laid out in
    the browser's serif (16% narrower) and re-wraps when the font arrives: our main source of layout shift.

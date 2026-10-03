@@ -1,6 +1,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { DONE, all, enterAt } from './reveal';
+import { DONE, all, finish } from './reveal';
+import { whenSeen } from './seen';
 import type { Enhancer } from './setup';
 import { dur, ease, fullMotion, stagger } from './tokens';
 
@@ -34,14 +35,20 @@ export const stackOffsets = (lefts: number[], step = 3) => lefts.map((l, i) => (
 
 const box = (el: HTMLElement): Box => ({ x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight });
 
-// Starts when the element's top reaches this fraction of the viewport (never past the end of the page).
-const once = (el: HTMLElement, f: number, onEnter: () => void, onRefresh?: () => void) =>
-  ScrollTrigger.create({ trigger: el, start: enterAt(el, f), end: 1e9, once: true, onEnter, onRefresh });
+// Starts when the element's top reaches this fraction of the viewport, or the page rests with it on screen
+// (seen.ts). onRefresh re-measures a starting pose whenever ScrollTrigger re-measures the page.
+type Cancels = (() => void)[];
+function once(cancels: Cancels, el: HTMLElement, f: number, onEnter: () => void, onRefresh?: () => void) {
+  cancels.push(whenSeen(el, onEnter, f));
+  if (!onRefresh) return;
+  ScrollTrigger.addEventListener('refresh', onRefresh);
+  cancels.push(() => ScrollTrigger.removeEventListener('refresh', onRefresh));
+}
 
 const done = (el: Element) => el.classList.add(DONE);
 const CLEAR = 'transform,transformOrigin,opacity,zIndex';
 
-function hand(ul: HTMLElement, touched: Element[]) {
+function hand(ul: HTMLElement, touched: Element[], cancels: Cancels) {
   const cards = [...ul.children] as HTMLElement[];
   touched.push(...cards);
   const boxes = cards.map(box);
@@ -49,11 +56,11 @@ function hand(ul: HTMLElement, touched: Element[]) {
     // One column (phones): each card slides in from alternate sides as it arrives.
     cards.forEach((card, i) => {
       if (card.classList.contains(DONE)) return;
-      gsap.fromTo(card, { x: i % 2 ? 64 : -64, opacity: 0 }, {
-        x: 0, opacity: 1, duration: dur.base, ease: ease.out, clearProps: CLEAR,
+      const slide = gsap.fromTo(card, { x: i % 2 ? 64 : -64, opacity: 0 }, {
+        x: 0, opacity: 1, duration: dur.base, ease: ease.out, clearProps: CLEAR, paused: true,
         onComplete: () => (done(card), cards.every((c) => c.classList.contains(DONE)) && done(ul)),
-        scrollTrigger: { trigger: card, start: enterAt(card), once: true },
       });
+      cancels.push(whenSeen(card, () => void slide.play()));
     });
     return;
   }
@@ -66,18 +73,18 @@ function hand(ul: HTMLElement, touched: Element[]) {
     cards.forEach((c, i) => gsap.set(c, { ...poses[i], transformOrigin: '50% 100%', zIndex: cards.length - i, opacity: 1 }));
   };
   place();
-  once(ul, 0.75, () => void deal.play(), place);
+  once(cancels, ul, 0.75, () => void deal.play(), place);
 }
 
-function shelf(el: HTMLElement, touched: Element[]) {
+function shelf(el: HTMLElement, touched: Element[], cancels: Cancels) {
   const covers = [...el.querySelectorAll<HTMLElement>('.cbg-cover')];
   touched.push(...covers);
   if (getComputedStyle(el).overflowX !== 'visible') {
     // Scroll-snap row (phones, tablets): a gentle fade, nothing that moves the row or takes the scroll.
-    gsap.fromTo(covers, { opacity: 0 }, {
-      opacity: 1, duration: dur.base, ease: ease.out, stagger, clearProps: CLEAR, onComplete: () => done(el),
-      scrollTrigger: { trigger: el, start: enterAt(el), once: true },
+    const fade = gsap.fromTo(covers, { opacity: 0 }, {
+      opacity: 1, duration: dur.base, ease: ease.out, stagger, paused: true, onComplete: finish(el, covers, CLEAR),
     });
+    cancels.push(whenSeen(el, () => void fade.play()));
     return;
   }
   // Laptop: the designed fan (course.css transforms) is the end state; it opens from a neat stack.
@@ -90,14 +97,15 @@ function shelf(el: HTMLElement, touched: Element[]) {
     covers.forEach((c, i) => gsap.set(c, { x: dx[i], y: 0, rotation: i % 2 ? 0.6 : -0.6, zIndex: covers.length - i, opacity: 1 }));
   };
   place();
-  once(el, 0.8, () => void open.play(), place);
+  once(cancels, el, 0.8, () => void open.play(), place);
 }
 
 export const courseExtras: Enhancer = (roots) => {
   const mm = gsap.matchMedia();
   const touched: Element[] = [];
   mm.add(fullMotion, () => {
-    for (const ul of all(roots, '[data-cbg-hand]')) if (!ul.classList.contains(DONE)) hand(ul, touched);
+    const cancels: Cancels = [];
+    for (const ul of all(roots, '[data-cbg-hand]')) if (!ul.classList.contains(DONE)) hand(ul, touched, cancels);
     // Assessment cards: reveal.ts fades and lifts them (data-cbg-reveal="stagger"; set up before this runs,
     // since the course enhancers arrive in a lazy chunk, but the order doesn't matter: GSAP keeps one
     // transform per element, so x and y compose). On the same trigger and stagger this adds x, so they rise
@@ -105,14 +113,15 @@ export const courseExtras: Enhancer = (roots) => {
     for (const ex of all(roots, '.cbg-exams[data-cbg-reveal="stagger"]')) {
       if (ex.classList.contains(DONE)) continue;
       touched.push(...ex.children);
-      gsap.fromTo([...ex.children], { x: (i) => (i % 2 ? 56 : -56) }, {
-        x: 0, duration: dur.base - 0.1, ease: ease.out, stagger,
-        scrollTrigger: { trigger: ex, start: enterAt(ex), once: true },
+      const slide = gsap.fromTo([...ex.children], { x: (i) => (i % 2 ? 56 : -56) }, {
+        x: 0, duration: dur.base - 0.1, ease: ease.out, stagger, paused: true,
       });
+      cancels.push(whenSeen(ex, () => void slide.play()));
     }
     // Quadrants: .cbg-done starts the CSS sequence (each tile's pie draws, then its name and count rise).
-    for (const q of all(roots, '[data-cbg-quadrants]')) if (!q.classList.contains(DONE)) once(q, 0.8, () => done(q));
-    for (const el of all(roots, '[data-cbg-shelf]')) if (!el.classList.contains(DONE)) shelf(el, touched);
+    for (const q of all(roots, '[data-cbg-quadrants]')) if (!q.classList.contains(DONE)) once(cancels, q, 0.8, () => done(q));
+    for (const el of all(roots, '[data-cbg-shelf]')) if (!el.classList.contains(DONE)) shelf(el, touched, cancels);
+    return () => cancels.forEach((f) => f());
   });
   // Route change or re-setup: kill everything, drop our inline styles; finished elements stay done.
   return () => {

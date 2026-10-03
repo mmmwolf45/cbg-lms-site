@@ -1,5 +1,5 @@
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { whenSeen } from './seen';
 import { dur, ease, stagger } from './tokens';
 
 // Marks an element whose one-off motion has finished. motion.css never hides a done element,
@@ -8,21 +8,23 @@ export const DONE = 'cbg-done';
 
 export const all = (roots: HTMLElement[], sel: string) => roots.flatMap((r) => [...r.querySelectorAll<HTMLElement>(sel)]);
 
-// 'top 88%', but never past the end of the page, so content near the bottom still reveals.
-// ('clamp(top 88%)' would also clamp to 0, and then content already in view never "enters".)
-export const enterAt = (el: HTMLElement, at = 0.88) => () =>
-  Math.min(
-    el.getBoundingClientRect().top + window.scrollY - window.innerHeight * at,
-    ScrollTrigger.maxScroll(window) - 1,
-  );
+// Marks el done, then drops the tween's inline styles, in that order. A tween's own clearProps would
+// run per target as each one lands, and a stagger child cleared before its parent is done falls back to
+// motion.css's hidden state until the last sibling lands: the flash seen on phones (3 Oct 2026).
+export const finish = (el: Element, targets: Element[], props: string) => () => {
+  el.classList.add(DONE);
+  gsap.set(targets, { clearProps: props });
+};
 
 // [data-cbg-reveal] rises 16px and fades in once; [data-cbg-reveal="stagger"] does that to its children in turn.
-export function reveal(roots: HTMLElement[]) {
+// Returns the cancel for the waits; the tweens belong to the caller's gsap context.
+export function reveal(roots: HTMLElement[]): () => void {
+  const cancels: (() => void)[] = [];
   for (const el of all(roots, '[data-cbg-reveal]')) {
     if (el.classList.contains(DONE)) continue;
     const targets = el.dataset.cbgReveal === 'stagger' ? [...el.children] : [el];
     if (!targets.length) continue;
-    gsap.fromTo(
+    const tween = gsap.fromTo(
       targets,
       { opacity: 0, y: 16 },
       {
@@ -31,10 +33,11 @@ export function reveal(roots: HTMLElement[]) {
         duration: dur.base,
         ease: ease.out,
         stagger,
-        clearProps: 'opacity,transform',
-        onComplete: () => el.classList.add(DONE),
-        scrollTrigger: { trigger: el, start: enterAt(el), once: true },
+        paused: true,
+        onComplete: finish(el, targets, 'opacity,transform'),
       },
     );
+    cancels.push(whenSeen(el, () => void tween.play()));
   }
+  return () => cancels.forEach((f) => f());
 }
