@@ -5,6 +5,8 @@
 | cbg-full-logo.png, cbg-mark-512.png, favicon-*.png | CBG brand files | CBG owned |
 | iosh-1003-colour.png, iosh-1003-white.png | IOSH Awarding Organisation licence pack (Approved Study Centre 1003) | Use as supplied, unaltered |
 | trainers/*.jpg | Supplied by the trainers | Use for CBG course pages only |
+| trainers/shafeer-p-p.jpg, jubair-kv.jpg, rinsha-v.jpg, nidha-fazli.jpg, swapna-saji.jpg, mini-pramod.jpg, shuhaida-shamsudin.jpg, nadira-farhath.jpg, reenu-cherian.jpg, maneesh-vs.jpg | Entri QS course page (https://entri.app/course/quantity-surveying-course/, "Industry Expert Faculty"), converted from WebP to JPEG; supplied as CBG's own course material, per Maasoom 4 Oct 2026 | Use for CBG course pages only |
+| students/*.jpg | Entri QS course page ("Placement Stories" and written reviews), converted from WebP to JPEG; supplied as CBG's own course material, per Maasoom 4 Oct 2026 | Use for CBG course pages only |
 | link-preview-1200x630.png | Made by Claude from CBG and IOSH marks | CBG |
 | photos/hero-structure.png | Generated with ChatGPT for CBG (2 Oct 2026); prompt in docs/art-direction.md | CBG |
 | photos/hazard-worksite.png | Generated with ChatGPT for CBG (2 Oct 2026); prompt in docs/art-direction.md | CBG |
@@ -19,5 +21,7 @@
 | hero-explode/keyframe-assembled.png, keyframe-exploded.png | Generated with GPT Image 2.5 on Higgsfield for CBG (3 Oct 2026); prompts in docs/ideas/3d-exploded-hero.md | CBG |
 | hero-explode/explode-a.mp4, explode-b.mp4 | Generated with MiniMax H3 on Higgsfield for CBG (3 Oct 2026), from the two keyframes | CBG |
 | hero-explode/poster.png | First frame of explode-a.mp4 (scripts/explode-frames.ts) | CBG |
+| qs-hero/build.mp4, plan.png, villa.png, poster.png | Generated with Higgsfield for CBG, 4 Oct 2026: GPT Image 2.5 keyframes, Wan 3.0 first/last-frame video; poster is the last frame | CBG |
+| photos/qs-xray-concrete.png, photos/qs-xray-steel.png | Generated with Higgsfield for CBG, 4 Oct 2026: GPT Image 2.5, steel version edited from the concrete image | CBG |
 
 Add a row for every image you add: stock photos with the Pexels / Unsplash URL and photographer, AI images with the tool and date.

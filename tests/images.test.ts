@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { existsSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, statSync } from 'node:fs';
 import images from '../src/images.json';
 
 // Largest AVIF per image, in KB (SPEC section 8, T10). Optional ones are built only once their photo exists.
 const OPTIONAL: Record<string, number> = {
   'course-iosh': 60, 'course-qs': 60, 'course-mep': 60, 'course-structural': 60, 'course-bim': 60, 'course-interior': 60,
   'band-classroom': 150,
+  'qs-hero-poster': 180, 'qs-xray-concrete': 200, 'qs-xray-steel': 200,
 };
+// QS learner photos: one student-<slug> per .jpg in brand/assets/students.
+const STUDENTS = 'brand/assets/students';
+const students = existsSync(STUDENTS) ? readdirSync(STUDENTS).filter((f) => f.endsWith('.jpg')) : [];
 const BUDGET: Record<string, number> = {
   ...OPTIONAL,
   'hero-explode-poster': 80,
@@ -15,6 +19,9 @@ const BUDGET: Record<string, number> = {
   'trainer-ali-orkkatteri': 20,
   'trainer-elman-aloysius': 20,
   'trainer-ramshad-kk': 20,
+  ...Object.fromEntries(['shafeer-p-p', 'jubair-kv', 'rinsha-v', 'nidha-fazli', 'swapna-saji', 'mini-pramod',
+    'shuhaida-shamsudin', 'nadira-farhath', 'reenu-cherian', 'maneesh-vs'].map((s) => [`trainer-${s}`, 20])),
+  ...Object.fromEntries(students.map((f) => [`student-${f.replace('.jpg', '')}`, 12])),
 };
 
 type Entry = (typeof images)[keyof typeof images];
@@ -31,6 +38,16 @@ describe('image manifest (T10)', () => {
     const p = images['hero-explode-poster'];
     expect([p.width, p.height]).toEqual([960, 960]);
     expect(p.variants.avif.map((v) => v.w)).toEqual([960, 640]);
+  });
+
+  it('builds a square avatar for every learner photo, at one width of at most 80', () => {
+    expect(students.length).toBeGreaterThan(0);
+    for (const f of students) {
+      const s = images[`student-${f.replace('.jpg', '')}` as keyof typeof images];
+      expect(s.width).toBe(s.height);
+      expect(s.variants.webp.map((v) => v.w)).toEqual([s.width]);
+      expect(s.width).toBeLessThanOrEqual(80);
+    }
   });
 
   it.each(entries)('%s has avif, webp and jpg at the same widths, files on disk', (_, e) => {

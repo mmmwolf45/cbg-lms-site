@@ -316,6 +316,18 @@ Idea: docs/ideas/3d-exploded-hero.md (the line-art version was replaced by photo
 - [x] D6 Ship: live 3 Oct 2026 (home block and loader saved; live check on laptop, Android, iPhone emulation).
 - [x] D7 Cleanup: old hero images deleted, old critical-CSS rule removed (in the re-pasted loader). brand/assets/photos/hero-structure.png kept as a source photo.
 
+## Phase E: Quantity Surveying course page (4 Oct 2026)
+Maasoom set up the QS course on course.link (`/course/102-quantity-surveying`, native Overview, Learn and FAQ) and handed it over for motion and pictures. Decisions (4 Oct): IOSH model (custom top and main blocks, native Overview, Learn and FAQ switched off); full-width hero; hero idea 1 "drawing to building to cost" and idea 3 "rebar X-ray" later in the page; learner reviews only word for word and only those that don't name Entri; employer names as text, no logos. Content: Maasoom's Drive (QS landing copy and 8-module syllabus) over Entri; Entri only for reviews, placements and photos.
+- [x] E0 Schema: `hero.scrub` (visual `build-scrub`), `xray`, `certificates`, `testimonials`, `placements`, `careers`; trainers' `photo` and `credentials` optional. Section stubs wired. Verify: tsc, unit tests.
+- [x] E1 Content: `content/courses/quantity-surveying.yaml` full page, card live (links the home card), copy deck. Verify: content check.
+- [x] E2 Photos: faculty, learners and certificate samples from Entri into the image pipeline. Verify: images build within budget.
+- [x] E3 Sections: certificates, faculty (13, monogram fallback), testimonials, placement wall, careers. Verify: unit + e2e, 1280 and 390, reduced motion.
+- [x] E4 Hero: full-width build scrub over the header band, example take-off, frames pipeline (placeholder until the Higgsfield clip). Verify: unit + e2e, teardown, live header DOM.
+- [x] E5 Rebar X-ray (placeholder images until the Higgsfield pair). Verify: unit + e2e, keyboard, reduced motion.
+- [ ] E6 Integration: full build, size budgets, preview screenshots 1440, 1024, 768, 390; code review.
+- [ ] E7 Ship: push and wait for the manifest; Maasoom re-pastes the loader (critical.css changed), pastes QS top/main (check the 61 KB main block isn't cut off: Custom Block limit unverified), switches native Overview, Learn and FAQ off, publishes; re-pastes the home block.
+- [x] E8 Real media: Higgsfield hero clip (Wan 3.0, first/last frame) and X-ray pair (GPT Image 2.5) generated 4 Oct; no placeholders shipped.
+
 ## Before every go-live
 1. performance-optimization pass against SPEC section 8.
 2. code-review-and-quality, then ponytail-review.

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { clamp01, frameDir, letterShift, loadOrder, progress, smooth, wordPose } from '../src/motion/explode';
+import { letterShift, wordPose } from '../src/motion/explode';
+import { clamp01, frameDir, loadOrder, progress, smooth } from '../src/motion/tokens';
 import { words } from '../templates/sections/home-hero';
 
 describe('exploding-building hero', () => {

@@ -1,9 +1,11 @@
-import { arrow, esc, picture } from '../../src/components/html';
+import { PAGES, arrow, esc, picture } from '../../src/components/html';
 import images from '../../src/images.json';
 import type { Course, Section } from '../../content/schema';
+import { decimals, fmtQty } from '../../src/motion/scrub';
 import { counted, courseSection } from './course-shared';
 
 type Hero = Section<'hero'>;
+type Scrub = NonNullable<Hero['scrub']>;
 type Fact = Hero['facts'][number];
 type Hazard = NonNullable<Hero['hazards']>[number];
 type ImageName = keyof typeof images;
@@ -36,9 +38,27 @@ function hazardScan(h: Hero, hazards: Hazard[], tour: NonNullable<Hero['tour']>)
       `<li id="cbg-hazard-${i + 1}"><strong>${esc(z.label)}</strong> <span>${esc(z.detail)}</span></li>`).join('')}</ol></div>`;
 }
 
-// hero.visual: the Hazard Scan, a plain photo in the same 3:2 frame (no motion hook), or nothing.
+// Build scrub (the QS hero, src/motion/scrub.ts). As written here it is the static version (no JS,
+// reduced motion): the poster, the finished building, framed in the column, and the example take-off with
+// every row at its final quantity. With full motion the script plays the footage full width in the header
+// band, from a clone of these nodes, and hides this copy. `frames` is the folder under public/ that
+// scripts/scrub-frames.ts wrote; the poster's `sizes` is the stage's (full width), so the clone reuses it.
+function buildScrub(h: Hero, s: NonNullable<Hero['scrub']>) {
+  const row = ({ item, qty, unit, at }: Scrub['takeoff'][number]) => {
+    const q = fmtQty(qty, decimals(qty));
+    return `<li class="cbg-takeoff__row" data-cbg-at="${at}"><span class="cbg-takeoff__item">${esc(item)}</span>`
+      + ` <span class="cbg-takeoff__qty"><b aria-hidden="true" data-cbg-qty="${qty}">${q}</b><span class="cbg-sr-only">${q}</span> ${esc(unit)}</span></li>`;
+  };
+  return `<div class="cbg-scrub" data-cbg-scrub="${PAGES}${esc(s.frames)}/" data-cbg-frames="${s.count}">`
+    + `<div class="cbg-frame cbg-scrub__film">${picture(h.image as ImageName, { cls: 'cbg-scrub__poster', alt: h.imageAlt ?? '', eager: true, sizes: '100vw' })}</div>`
+    + `<div class="cbg-takeoff"><p class="cbg-takeoff__label">${esc(s.label)}</p><ul class="cbg-takeoff__rows">${s.takeoff.map(row).join('')}</ul>`
+    + `${s.total ? `<p class="cbg-takeoff__total">${esc(s.total)}</p>` : ''}</div></div>`;
+}
+
+// hero.visual: the Hazard Scan, the build scrub, a plain photo in the same 3:2 frame (no motion hook), or nothing.
 function visual(h: Hero) {
   if (h.visual === 'hazard-scan' && h.hazards && h.tour) return hazardScan(h, h.hazards, h.tour);
+  if (h.visual === 'build-scrub' && h.scrub && h.image) return buildScrub(h, h.scrub);
   if (h.visual === 'photo') return `<div class="cbg-hazard"><div class="cbg-frame">${photo(h)}</div></div>`;
   return '';
 }

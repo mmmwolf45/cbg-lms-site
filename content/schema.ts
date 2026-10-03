@@ -67,6 +67,15 @@ const courseShape = {
     // pixels of the hero image, checked in checkHero.
     'hazards?': [{ label: s, detail: s, at: ['number'], zoom: ['number'] }],
     'tour?': { previous: s, next: s }, // the phone tour's step buttons
+    // Build scrub (visual: 'build-scrub', the QS hero): full-width footage played by the scroll, drawing to
+    // building. `frames` is the folder under public/ the frames script writes, `count` its frame count.
+    // `takeoff` rows count up beside the footage as the scroll passes `at` (0..1 of the scrub);
+    // `label` names the take-off table (it is an example, and says so), `total` its closing row.
+    'scrub?': {
+      frames: s, count: 'number', label: s,
+      takeoff: [{ item: s, qty: 'number', unit: s, at: 'number' }],
+      'total?': s,
+    },
   },
   'included?': { heading: s, intro: s, cards: [{ ...titled, 'featured?': 'boolean' }] },
   'units?': {
@@ -75,6 +84,14 @@ const courseShape = {
     // "guided learning hours"), `hoursShort` on the building drawing's floors (default "GLH").
     'hoursLabel?': s, 'hoursShort?': s,
     units: [{ code: s, title: s, glh: 'number', outcomes: [s], sessions: [{ id: s, title: s }] }],
+  },
+  // Rebar X-ray (the QS page): a concrete photo and the same shot with its steel showing (`image`, `xray`,
+  // names from src/images.json, same size). A scan band follows the cursor (laptop) or the scroll (phone)
+  // and shows the steel inside it. `labels` point at the steel, `at` in source pixels of the photos.
+  'xray?': {
+    heading: s, intro: s, image: s, xray: s, imageAlt: s,
+    labels: [{ text: s, at: ['number'] }],
+    'caption?': s,
   },
   'how-classes-run?': { heading: s, items: [titled], timetable: { label: s, text: s } },
   'assessment?': {
@@ -85,7 +102,34 @@ const courseShape = {
     }],
     'techIoshNote?': s, // the closing callout under the assessments
   },
-  'trainers?': { heading: s, trainers: [{ name: s, role: s, photo: s, bio: s, credentials: [s] }] },
+  // Certificates: cards (each drawn as a sheet of paper), and optionally the rules for earning them
+  // (`rulesLabel` and `rules` together).
+  'certificates?': {
+    heading: s, intro: s,
+    certs: [titled],
+    'rulesLabel?': s, 'rules?': [s],
+  },
+  // `photo` is a file in brand/assets/trainers/ (optional: without one the card shows the initials);
+  // `intro` sits under the heading; `credentials` are optional bullet points.
+  'trainers?': {
+    heading: s, 'intro?': s,
+    trainers: [{ name: s, role: s, 'photo?': s, bio: s, 'credentials?': [s] }],
+  },
+  // Learner reviews, quoted word for word. `photo` is a file in brand/assets/students/ (optional).
+  // `smallPrint` sits under the quotes.
+  'testimonials?': {
+    heading: s, intro: s,
+    quotes: [{ name: s, 'role?': s, 'photo?': s, text: s }],
+    'smallPrint?': s,
+  },
+  // Placement stories: learners and the roles they were placed in. `company` only where it is known.
+  'placements?': {
+    heading: s, intro: s,
+    people: [{ name: s, role: s, 'company?': s, 'photo?': s }],
+    'note?': s,
+  },
+  // Where the course leads: role names as a list.
+  'careers?': { heading: s, intro: s, roles: [s] },
   'bonus?': { heading: s, intro: s, steps: [titled], smallPrint: s },
   'field-guides?': {
     heading: s, body: s,
@@ -98,7 +142,7 @@ const courseShape = {
   'help?': { heading: s, 'image?': s, whatsapp, email, logos },
 } as const;
 
-export const HERO_VISUALS = ['hazard-scan', 'photo', 'none'] as const;
+export const HERO_VISUALS = ['hazard-scan', 'photo', 'build-scrub', 'none'] as const;
 export const CARD_STATUSES = ['live now', 'coming soon'] as const;
 export type Home = Infer<typeof homeShape>;
 export type Card = Infer<typeof cardShape>;
@@ -177,11 +221,18 @@ function checkHero({ hero: h }: Course, file: string) {
   const fail = (msg: string): never => { throw new Error(`${file}: hero.${msg}`); };
   if (!HERO_VISUALS.includes(h.visual)) fail(`visual: must be ${HERO_VISUALS.join(', ')}; got ${JSON.stringify(h.visual)}`);
   const scan = h.visual === 'hazard-scan';
-  const needs = { image: h.visual !== 'none', imageAlt: h.visual !== 'none', hazards: scan, tour: scan };
+  const needs = { image: h.visual !== 'none', imageAlt: h.visual !== 'none', hazards: scan, tour: scan, scrub: h.visual === 'build-scrub' };
   for (const [key, needed] of Object.entries(needs)) {
     const has = h[key as keyof typeof needs] !== undefined;
     if (needed && !has) fail(`${key}: missing field (visual: ${h.visual} needs it)`);
     if (!needed && has) fail(`${key}: not used with visual: ${h.visual}; remove it`);
+  }
+  if (h.scrub) {
+    const { count, takeoff } = h.scrub;
+    if (!(Number.isInteger(count) && count >= 2)) fail(`scrub.count: must be a whole number of frames, 2 or more; got ${count}`);
+    takeoff.forEach(({ at }, i) => {
+      if (!(at >= 0 && at <= 1)) fail(`scrub.takeoff[${i}].at: must be 0..1 (of the scrub); got ${at}`);
+    });
   }
   if (h.image) checkImage(h.image, 'hero.image', file);
   if (!h.image || !h.hazards) return;
@@ -223,6 +274,10 @@ export function validateCourse(data: unknown, file = 'content/courses/(course).y
   checkHero(c, file);
   checkShelf(c, file);
   if (c.help?.image) checkImage(c.help.image, 'help.image', file);
+  if (c.xray) {
+    checkImage(c.xray.image, 'xray.image', file);
+    checkImage(c.xray.xray, 'xray.xray', file);
+  }
   return c;
 }
 

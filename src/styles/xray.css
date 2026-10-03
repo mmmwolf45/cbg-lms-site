@@ -1,0 +1,62 @@
+/* Rebar X-ray on the QS page (templates/sections/course-xray.ts, src/motion/xray.ts).
+   --x is the band's centre and --w its width, both in % of the photo. The band is a window: it slides
+   across while the steel photo inside slides the other way by the same amount, so the steel stays
+   registered with the concrete. Transforms only; the script writes --x, nothing else per frame.
+   Default (no script, reduced motion): the band fixed over the right half, every label showing. */
+.cbg-xray { --x: 75; --w: 50; }
+.cbg-xray__view { position: relative; isolation: isolate; }
+.cbg-xray img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+
+.cbg-xray__band {
+  position: absolute; inset: 0 auto 0 0; width: calc(var(--w) * 1%); overflow: hidden;
+  transform: translateX(calc((var(--x) - var(--w) / 2) * 100% / var(--w)));
+}
+.cbg-xray__steel { width: calc(100% * 100 / var(--w)); height: 100%; transform: translateX(calc((var(--w) / 2 - var(--x)) * 1%)); }
+/* Scan lines and a gold wash at the band's edges, then the edges themselves */
+.cbg-xray__band::before, .cbg-xray__band::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.cbg-xray__band::before {
+  background:
+    repeating-linear-gradient(0deg, rgba(214, 177, 96, 0.07) 0 1px, transparent 1px 4px),
+    linear-gradient(90deg, rgba(214, 177, 96, 0.26), transparent 16%, transparent 84%, rgba(214, 177, 96, 0.26));
+}
+.cbg-xray__band::after {
+  border-inline: 1.5px solid var(--cbg-gold);
+  box-shadow: inset 12px 0 18px -12px rgba(214, 177, 96, 0.8), inset -12px 0 18px -12px rgba(214, 177, 96, 0.8);
+}
+
+/* Labels: a gold point on the steel, a leader, a chip (left of the point for points left of centre) */
+.cbg-xray__tags { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.cbg-xray__tag { position: absolute; left: var(--lx); top: var(--ly); }
+.cbg-xray__tag::before {
+  content: ""; position: absolute; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%;
+  background: var(--cbg-gold); box-shadow: 0 0 0 3px rgba(8, 18, 38, 0.55), 0 0 10px 2px rgba(214, 177, 96, 0.6);
+}
+.cbg-xray__tag span {
+  position: absolute; top: 0; left: 24px; translate: 0 -50%; padding: 3px 10px; white-space: nowrap;
+  border: 1px solid var(--cbg-gold-line); border-radius: var(--cbg-r-pill); background: rgba(8, 18, 38, 0.86);
+  font: 600 0.8125rem / 1.3 var(--cbg-font-display); color: var(--cbg-text-1);
+}
+.cbg-xray__tag span::before { content: ""; position: absolute; top: 50%; right: 100%; width: 19px; height: 1px; background: var(--cbg-gold); }
+.cbg-xray__tag--l span { left: auto; right: 24px; }
+.cbg-xray__tag--l span::before { right: auto; left: 100%; }
+@container cbgc (max-width: 539px) {
+  .cbg-xray__tag span { left: 16px; padding: 2px 7px; font-size: 0.6875rem; }
+  .cbg-xray__tag--l span { left: auto; right: 16px; }
+  .cbg-xray__tag span::before { width: 11px; }
+}
+
+/* Live (src/motion/xray.ts): a narrower band; a label shows only while the band is over its point */
+.cbg-xray.is-live { --w: 22; }
+@container cbgc (max-width: 539px) { .cbg-xray.is-live { --w: 36; } }
+.is-live :is(.cbg-xray__band, .cbg-xray__steel) { will-change: transform; }
+.is-live .cbg-xray__tag { opacity: 0; transition: opacity 250ms var(--cbg-ease); }
+.is-live .cbg-xray__tag span { translate: -6px -50%; transition: translate 350ms var(--cbg-ease); }
+.is-live .cbg-xray__tag--l span { translate: 6px -50%; }
+.is-live .cbg-xray__tag.is-lit { opacity: 1; }
+.is-live .cbg-xray__tag.is-lit span { translate: 0 -50%; }
+
+/* The control: the whole photo. Keyboard focus rings the photo (inside it: the view clips) */
+.cbg-xray__hit { position: absolute; inset: 0; z-index: 3; border-radius: inherit; touch-action: pan-y; }
+.cbg-xray__hit:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--cbg-gold); }
+
+.cbg-xray__caption { margin-top: var(--cbg-s4); font: 400 var(--cbg-fs-small) / 1.5 var(--cbg-font-body); color: var(--cbg-text-3); }

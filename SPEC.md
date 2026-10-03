@@ -227,6 +227,7 @@ These apply only when the loader has marked the route: `html.cbg-route-home` or 
 | `#highlights` (`h4`, `li`, `li svg`) | course | "This course includes" (below 1024px): text colours, gold check icons |
 | Enrol card: `div:has(> #course_content) + div` (the element after the main column) | course | Dark glass card (18px radius from 1024px), hairline border, `--cbg-btn` pill button, gold check icons ★ (background). Same element is the phone bottom bar. Position, top, display, height untouched. |
 | `#course_content` (Radix accordion: `> div:first-child > h4`/`> button`, `.accordion-py`, `h3 > button`, `[role="region"] [role="button"]`) | course | "Course Content" in our h2 style ★; Expand all as a ghost text button; dark rows with hairline dividers, gold chevrons, gold number circle on the open item; lesson rows `--cbg-text-2` with `--cbg-text-3` locks. Behaviour untouched, so it must still open and close. |
+| `#course-header-bg` (QS build-scrub hero, approved 4 Oct 2026) | course | With full motion, `src/motion/scrub.ts` appends one node of our own (`.cbg-scrub-x`) as the band's last child and sets `html.cbg-scrub-on`, which switches the band's `overflow` from `hidden` to `clip` so the stage can stick; teardown removes both. Never before React has hydrated the band (else `html.cbg-scrub-off` and the in-column hero shows). critical.css reserves the stage's height while it waits ★ |
 | `#reviews` | course | Not restyled: empty on both live course URLs. If course.link renders reviews, they sit inside the main wrapper and take its dark variables. |
 
 **Not restyled:** the login and register popups, lesson pages, and course.link's dashboard. They stay light (out of scope).
@@ -284,7 +285,7 @@ The Custom Script for the **All Pages** slot, pasted once. It contains, in order
 
 **Brand and legal:**
 - IOSH 1003 mark only as supplied.
-- No testimonials or invented stats.
+- No invented stats. Testimonials: none, except on the QS page (decided 4 Oct 2026): learner reviews quoted word for word, only those that don't name Entri, plus placement stories (names, roles, employers as text, no logos). The QS hero's take-off quantities are an illustration, labelled "Example take-off" (approved by Maasoom 4 Oct 2026).
 - No em-dashes in any output.
 - Every AI image is recorded in `brand/assets/CREDITS.md` as "Generated with ChatGPT for CBG".
 

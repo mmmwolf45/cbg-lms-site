@@ -14,6 +14,11 @@ import { fieldGuides } from './sections/course-field-guides';
 import { payments } from './sections/course-payments';
 import { faq } from './sections/course-faq';
 import { help } from './sections/course-help';
+import { xray } from './sections/course-xray';
+import { certificates } from './sections/course-certificates';
+import { testimonials } from './sections/course-testimonials';
+import { placements } from './sections/course-placements';
+import { careers } from './sections/course-careers';
 
 const root = (c: Course, part: 'top' | 'main', inner: string) =>
   `<div data-cbg="${esc(c.slug)}-${part}" class="cbg-block cbg-course-page cbg-course-page--${part}">${inner}</div>`;
@@ -25,7 +30,8 @@ const opt = <T>(data: T | undefined, render: (data: T) => string) => (data ? ren
 
 // In SPEC 5.2 page order (the order of content/schema.ts).
 export const courseMain = (c: Course) => root(c, 'main', [
-  opt(c.included, included), opt(c.units, units), opt(c['how-classes-run'], howClassesRun), opt(c.assessment, assessment),
-  opt(c.trainers, trainers), opt(c.bonus, bonus), opt(c['field-guides'], fieldGuides), opt(c.payments, payments),
+  opt(c.included, included), opt(c.units, units), opt(c.xray, xray), opt(c['how-classes-run'], howClassesRun),
+  opt(c.assessment, assessment), opt(c.certificates, certificates), opt(c.trainers, trainers),
+  opt(c.testimonials, testimonials), opt(c.placements, placements), opt(c.careers, careers), opt(c.bonus, bonus), opt(c['field-guides'], fieldGuides), opt(c.payments, payments),
   opt(c.faq, faq), opt(c.help, help),
 ].join(''));

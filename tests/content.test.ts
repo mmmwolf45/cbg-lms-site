@@ -11,7 +11,7 @@ const course = () => yaml('content/courses/iosh-level-3.yaml');
 describe('content schema', () => {
   it('accepts both YAML files', () => {
     expect(Object.keys(loadHome())).toEqual(['hero', 'facts', 'disciplines', 'how-it-works', 'band', 'courses', 'support', 'about', 'footer-note']);
-    expect(loadCourses().map((c) => c.slug)).toEqual(['iosh-level-3']);
+    expect(loadCourses().map((c) => c.slug)).toEqual(['iosh-level-3', 'quantity-surveying']);
     expect(loadCourseFiles().map((c) => c.slug)).toEqual(['bim', 'interior-design', 'iosh-level-3', 'mep-design', 'quantity-surveying', 'structural-design']);
   });
 
@@ -64,6 +64,20 @@ describe('content schema', () => {
     const c = course();
     c.units.units[0].glh = '21';
     expect(() => validateCourse(c)).toThrow('units.units[0].glh: expected number');
+  });
+
+  it('checks the build scrub: two or more whole frames, every take-off point inside the scrub', () => {
+    const qs = () => yaml('content/courses/quantity-surveying.yaml');
+    for (const count of [1, 2.5]) {
+      const c = qs();
+      c.hero.scrub.count = count;
+      expect(() => validateCourse(c)).toThrow(`hero.scrub.count: must be a whole number of frames, 2 or more; got ${count}`);
+    }
+    for (const at of [-0.1, 1.2]) {
+      const c = qs();
+      c.hero.scrub.takeoff[1].at = at;
+      expect(() => validateCourse(c)).toThrow(`hero.scrub.takeoff[1].at: must be 0..1 (of the scrub); got ${at}`);
+    }
   });
 });
 

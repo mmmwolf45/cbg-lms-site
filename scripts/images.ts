@@ -18,6 +18,7 @@ type Fmt = 'avif' | 'webp' | 'jpg';
 
 const PHOTOS = 'brand/assets/photos';
 const TRAINERS = 'brand/assets/trainers';
+const STUDENTS = 'brand/assets/students';
 const OUT = 'public/img';
 
 const photo: Quality = { avif: 50, webp: 72, jpg: 74 };
@@ -26,13 +27,23 @@ const photo: Quality = { avif: 50, webp: 72, jpg: 74 };
 const gradient: Quality = { avif: 62, webp: 80, jpg: 80, chroma: '4:4:4', bits: 10 };
 const face: Quality = { avif: 55, webp: 78, jpg: 78 };
 
-// Headshots are near square already; this one is framed wider than the others, so tighten it
+// Headshots are near square already; these are framed wider than the others, so tighten them
 // to put the face at the same size and eye line.
-const FACE: Record<string, Crop> = { 'ali-orkkatteri.jpg': { left: 64, top: 0, width: 290, height: 290 } };
+const FACE: Record<string, Crop> = {
+  'ali-orkkatteri.jpg': { left: 64, top: 0, width: 290, height: 290 },
+  'jubair-kv.jpg': { left: 150, top: 160, width: 960, height: 960 },
+  'rinsha-v.jpg': { left: 150, top: 94, width: 520, height: 520 },
+  // A 100px source: crop only a little, it is already small.
+  'nidha-fazli.jpg': { left: 6, top: 0, width: 80, height: 80 },
+};
 
 const trainers = readdirSync(TRAINERS).filter((f) => !f.startsWith('.') && f !== 'desktop.ini').sort();
 const odd = trainers.filter((f) => !f.endsWith('.jpg'));
 if (odd.length || !trainers.length) throw new Error(`expected only .jpg trainer photos in ${TRAINERS}, found: ${odd.join(', ') || 'none'}`);
+
+// QS learner photos (placement stories and reviews), small square avatars. A learner without a
+// photo just shows none, so other files and an empty or missing folder are fine.
+const students = existsSync(STUDENTS) ? readdirSync(STUDENTS).filter((f) => f.endsWith('.jpg')).sort() : [];
 
 const jobs: Job[] = [
   // Home hero poster: the first frame of the exploding-building footage (scripts/explode-frames.ts writes
@@ -49,6 +60,15 @@ const jobs: Job[] = [
   { name: 'band-classroom', src: `${PHOTOS}/band-classroom.png`, widths: [2560, 2048, 1536, 1024], q: photo, budgetKB: 260, optional: true },
   ...trainers.map((f) => ({
     name: `trainer-${f.replace('.jpg', '')}`, src: `${TRAINERS}/${f}`, widths: [224, 112], q: face, budgetKB: 20, square: true, crop: FACE[f],
+  })),
+  // One width: the 40px avatar at 2x (face() in templates/sections/course-testimonials.ts).
+  ...students.map((f) => ({
+    name: `student-${f.replace('.jpg', '')}`, src: `${STUDENTS}/${f}`, widths: [80], q: face, budgetKB: 12, square: true,
+  })),
+  // The hero and x-ray sources come from their own scripts; skipped until those have run.
+  { name: 'qs-hero-poster', src: 'brand/assets/qs-hero/poster.png', widths: [1920, 1280, 768], q: photo, budgetKB: 180, optional: true },
+  ...['qs-xray-concrete', 'qs-xray-steel'].map((name) => ({
+    name, src: `${PHOTOS}/${name}.png`, widths: [1536, 1024, 768], q: photo, budgetKB: 200, optional: true,
   })),
 ];
 

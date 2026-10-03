@@ -59,3 +59,9 @@ html.cbg-route-home .cbg-explode__btns{position:absolute;left:0;right:0;bottom:m
 html.cbg-route-home .cbg-explode__btns .cbg-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 24px;border:1px solid transparent;border-radius:999px;font:700 1rem/1 "Plus Jakarta Sans",cbg-pjs-fb,sans-serif;white-space:nowrap}
 html.cbg-route-home .cbg-explode__btns svg{width:18px;height:18px}
 html.cbg-route-home .cbg-explode__btns .cbg-btn--ghost{border-color:rgba(255,255,255,.16)}
+/* QS build-scrub hero (scrub.css, src/motion/scrub.ts): the stage's size, set on the header band so the stage
+   (its child) inherits it, and that height reserved under the native header from the first paint until the
+   stage mounts (html.cbg-scrub-on), so nothing below moves. Same motion condition as the script. */
+html.cbg-route-course #course-header-bg{--cbg-scrub-h:min(calc(100vw + 6.5rem),calc(100svh - 56px));--cbg-scrub-run:80svh}
+@media (min-width:1024px),(orientation:landscape){html.cbg-route-course #course-header-bg{--cbg-scrub-h:max(20rem,calc(100svh - 56px))}}
+@media (prefers-reduced-motion:no-preference){html.cbg-js.cbg-route-course:not(.cbg-scrub-on):not(.cbg-scrub-off):has([data-cbg-scrub]) #course-header-bg::after{content:"";display:block;height:calc(var(--cbg-scrub-h) + var(--cbg-scrub-run))}}

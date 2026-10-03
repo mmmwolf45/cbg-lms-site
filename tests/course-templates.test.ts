@@ -133,14 +133,16 @@ describe.each(courses.map((c) => [c.slug, c] as const))('course blocks: %s (T18,
     expect(count(main, /cbg-kit cbg-card--feat/g)).toBe(c.included!.cards.filter((x) => x.featured).length);
   });
 
-  it.runIf(c.assessment)('assessment: quadrant grid and every card', () => {
-    expect(main).toContain('data-cbg-quadrants');
+  it.runIf(c.assessment)('assessment: every card, and a quadrant grid when there are tasks', () => {
+    expect(main.includes('data-cbg-quadrants')).toBe(c.assessment!.assessments.some((a) => !!a.tasks?.length));
     expect(count(main, /class="cbg-card cbg-exam"/g)).toBe(c.assessment!.assessments.length);
   });
 
-  it.runIf(c.trainers)('trainers: a lazy photo per trainer', () => {
-    const photos = main.match(/<div class="cbg-trainer__photo">[\s\S]*?<\/div>/g)!;
-    expect(photos.length).toBe(c.trainers!.trainers.length);
+  it.runIf(c.trainers)('trainers: a lazy photo per trainer with one, initials for the rest', () => {
+    const photos = main.match(/<div class="cbg-trainer__photo">[\s\S]*?<\/div>/g) ?? [];
+    const withPhoto = c.trainers!.trainers.filter((t) => t.photo).length;
+    expect(photos.length).toBe(withPhoto);
+    expect(count(main, /class="cbg-mono"/g)).toBe(c.trainers!.trainers.length - withPhoto);
     for (const p of photos) expect(p).toContain('loading="lazy"');
   });
 
@@ -259,10 +261,10 @@ describe('course schema: optional sections and hero visuals (T27)', () => {
     expect(() => validateCourse(c)).toThrow('card: missing section');
   });
 
-  it('accepts only the three hero visuals', () => {
+  it('accepts only the four hero visuals', () => {
     const c = yaml();
     c.hero.visual = 'video';
-    expect(() => validateCourse(c)).toThrow('hero.visual: must be hazard-scan, photo, none; got "video"');
+    expect(() => validateCourse(c)).toThrow('hero.visual: must be hazard-scan, photo, build-scrub, none; got "video"');
     delete c.hero.visual;
     expect(() => validateCourse(c)).toThrow('hero.visual: missing field');
   });

@@ -4,13 +4,18 @@
 // Local only: the Pages workflow deletes dist/preview before upload.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { loaderSnippet } from '../src/loader/snippet';
+import { PAGES } from '../src/components/html';
 
 const ORIGIN = 'https://cbgtraininginstitute.course.link';
 const BASE = '/cbg-lms-site/';
 
-const block = (name: string) => {
+// `local`: asset URLs point at the local build (served at BASE), for a page whose images aren't deployed yet.
+// The others keep the Pages URLs, which the e2e specs intercept (e.g. to fail the hero frames).
+const block = (name: string, local = false) => {
   const file = `dist/blocks/${name}.html`;
-  return existsSync(file) ? `<div id="custom-${name}">${readFileSync(file, 'utf8')}</div>` : '';
+  if (!existsSync(file)) return '';
+  const html = readFileSync(file, 'utf8');
+  return `<div id="custom-${name}">${local ? html.replaceAll(PAGES, BASE) : html}</div>`;
 };
 
 // Insert html just before the opening tag of the element carrying this id.
@@ -50,4 +55,13 @@ writeFileSync(
     beforeId(beforeId(p, 'course_content', block('iosh-level-3-top')), 'reviews', block('iosh-level-3-main'))),
 );
 
-console.log('preview: dist/preview/home.html, dist/preview/course.html');
+// The QS page as Maasoom set it up (4 Oct 2026), with the native Overview, Learn and FAQ hidden as they
+// will be switched off when its blocks are pasted. Main goes where the native FAQ sat, below Course Content.
+writeFileSync(
+  'dist/preview/qs.html',
+  mock('live-course-qs.html', (p) =>
+    beforeId(beforeId(p, 'course_content', block('quantity-surveying-top', true)), 'faq', block('quantity-surveying-main', true))
+      .replace('</head>', '<style>#overview,#learn,#faq{display:none!important}</style></head>')),
+);
+
+console.log('preview: dist/preview/home.html, dist/preview/course.html, dist/preview/qs.html');

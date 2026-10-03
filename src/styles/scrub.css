@@ -1,0 +1,113 @@
+/* The QS hero, "from drawing to building to cost" (hero.visual: build-scrub; templates/sections/course-hero.ts,
+   src/motion/scrub.ts). Two forms of the same content:
+   1. In the top block (.cbg-scrub): the poster (the finished villa) framed in the column and the example
+      take-off with every row final. This is what no JS and reduced motion show.
+   2. With full motion, a stage of our own (.cbg-scrub-x) appended to course.link's header band, full width,
+      under the native title: it sticks under the navbar for the band's run while the footage plays and the
+      take-off fills in. html.cbg-scrub-on is set while it is mounted. Its height (--cbg-scrub-h, the sticky
+      stage; --cbg-scrub-run, the scroll it plays over) is set on the band in critical.css, which also
+      reserves it from the first paint. Phones in portrait: square footage with a one-row take-off strip
+      under it. Wider (LAYOUT_WIDE in scrub.ts): full-bleed footage, the table to the right of the building. */
+
+/* ---------- take-off (both forms) ---------- */
+.cbg-takeoff { font-family: var(--cbg-font-display); color: var(--cbg-text-2); }
+.cbg-takeoff__label {
+  display: flex; align-items: center; gap: var(--cbg-s2); margin: 0;
+  font: 600 0.75rem / 1.3 var(--cbg-font-display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--cbg-text-3);
+}
+.cbg-takeoff__label::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--cbg-gold); }
+.cbg-takeoff__rows { margin: var(--cbg-s3) 0 0; padding: 0; list-style: none; }
+.cbg-takeoff__row {
+  display: flex; justify-content: space-between; align-items: baseline; gap: var(--cbg-s4);
+  padding: 10px 0; border-top: 1px solid var(--cbg-line); font-size: 0.9375rem; line-height: 1.3;
+}
+.cbg-takeoff__qty { flex: none; color: var(--cbg-text-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.cbg-takeoff__qty b { color: var(--cbg-text-1); font-weight: 700; }
+.cbg-takeoff__total {
+  margin: 0; padding-top: var(--cbg-s3); border-top: 1px solid var(--cbg-gold-line);
+  color: var(--cbg-gold); font-weight: 700; font-size: 0.9375rem; line-height: 1.35;
+}
+
+/* ---------- 1. in the column ---------- */
+.cbg-scrub { display: grid; gap: var(--cbg-s5); margin-top: var(--cbg-s6); }
+.cbg-scrub__film img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.cbg-scrub .cbg-takeoff { padding: var(--cbg-s5); border: 1px solid var(--cbg-line); border-radius: var(--cbg-r-card); background: var(--cbg-glass); }
+html.cbg-scrub-on .cbg-scrub { display: none; } /* the stage shows it */
+
+/* ---------- 2. the stage in the header band ---------- */
+/* overflow: clip, not course.link's hidden: hidden makes the band a scroll container, so nothing in it could
+   stick to the viewport. Clip cuts the same edges without that. */
+html.cbg-scrub-on #course-header-bg { overflow: clip; }
+/* The stage's sizes, as in critical.css (which reaches the live site only with a re-pasted loader): repeated
+   here so the stage has its height under an older loader too. */
+html.cbg-route-course #course-header-bg { --cbg-scrub-h: min(calc(100vw + 6.5rem), calc(100svh - 56px)); --cbg-scrub-run: 80svh; }
+@media (min-width: 1024px), (orientation: landscape) {
+  html.cbg-route-course #course-header-bg { --cbg-scrub-h: max(20rem, calc(100svh - 56px)); }
+}
+.cbg-scrub-x {
+  position: relative; box-sizing: border-box; height: calc(var(--cbg-scrub-h) + var(--cbg-scrub-run));
+  color: var(--cbg-text-2); font-family: var(--cbg-font-display); -webkit-font-smoothing: antialiased;
+}
+.cbg-scrub-x *, .cbg-scrub-x *::before, .cbg-scrub-x *::after { box-sizing: inherit; }
+.cbg-scrub-x__stage { position: sticky; top: 56px; height: var(--cbg-scrub-h); overflow: hidden; }
+/* Phones: the stage is shorter than the screen, so it holds in the middle of what is under the navbar. */
+@media (max-width: 1023.98px) and (orientation: portrait) {
+  .cbg-scrub-x__stage { top: max(56px, calc(56px + (100svh - 56px - var(--cbg-scrub-h)) / 2)); }
+}
+/* The footage fades into the page at the top and bottom (its navy is a shade off the canvas). */
+.cbg-scrub-x__film {
+  position: absolute; inset: 0 0 6.5rem; pointer-events: none;
+  -webkit-mask-image: linear-gradient(transparent, #000 9%, #000 86%, transparent);
+  mask-image: linear-gradient(transparent, #000 9%, #000 86%, transparent);
+}
+.cbg-scrub-x__poster, .cbg-scrub-x__canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.cbg-scrub-x__poster img { display: block; width: 100%; height: 100%; max-width: none; object-fit: cover; }
+.cbg-scrub-x__canvas { object-fit: cover; opacity: 0; transition: opacity var(--cbg-dur) var(--cbg-ease); }
+.cbg-scrub-x__canvas.is-on { opacity: 1; }
+
+/* Phone strip: the label (and the gold total once reached) over the one row being measured. */
+.cbg-takeoff--live {
+  position: absolute; left: var(--cbg-scrub-l, 24px); right: var(--cbg-scrub-r, 24px); bottom: 0; height: 6.5rem;
+  display: grid; grid-template: "label total" auto "rows rows" 1fr / 1fr auto; align-content: start; column-gap: var(--cbg-s3);
+  padding-top: var(--cbg-s3);
+}
+.cbg-takeoff--live .cbg-takeoff__label { grid-area: label; }
+.cbg-takeoff--live .cbg-takeoff__rows { grid-area: rows; display: grid; margin-top: var(--cbg-s2); }
+.cbg-takeoff--live .cbg-takeoff__row {
+  grid-area: 1 / 1; padding: 10px 0 0; font-size: 1.0625rem; opacity: 0;
+  transition: opacity var(--cbg-dur-fast) linear;
+}
+.cbg-takeoff--live .cbg-takeoff__row.is-now { opacity: 0.45; }
+.cbg-takeoff--live .cbg-takeoff__row.is-now.is-on { opacity: 1; }
+.cbg-takeoff--live .cbg-takeoff__total {
+  grid-area: total; align-self: center; padding: 0; border: 0; font-size: 0.8125rem; text-align: right;
+  opacity: 0; transition: opacity var(--cbg-dur) var(--cbg-ease);
+}
+.cbg-takeoff--live .cbg-takeoff__total.is-on { opacity: 1; }
+
+/* Laptops (and any landscape screen): full-bleed footage, the whole table in a glass panel to the right of
+   the building, lined up with the native header's right edge. Rows wait dimmed, then light up and count. */
+@media (min-width: 1024px), (orientation: landscape) {
+  .cbg-scrub-x__film { inset: 0; }
+  /* The footage box runs off the left edge by --shift, which moves the (centred) building left of the
+     table: clear of it from about 1280px, a slight overlap under the glass panel at 1024. */
+  .cbg-scrub-x__film { --shift: min(12vw, 180px); }
+  .cbg-scrub-x__poster, .cbg-scrub-x__canvas { left: calc(-1 * var(--shift)); width: calc(100% + var(--shift)); }
+  .cbg-takeoff--live {
+    display: block; left: auto; right: var(--cbg-scrub-r, 48px); top: 50%; bottom: auto; height: auto;
+    width: clamp(15rem, 22vw, 19rem); padding: var(--cbg-s5); transform: translateY(-50%);
+    border: 1px solid var(--cbg-line); border-radius: var(--cbg-r-card); background: rgba(8, 18, 38, 0.6);
+  }
+  @supports (backdrop-filter: blur(1px)) {
+    .cbg-takeoff--live { background: rgba(8, 18, 38, 0.45); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+  }
+  .cbg-takeoff--live .cbg-takeoff__rows { display: block; margin-top: var(--cbg-s3); }
+  .cbg-takeoff--live .cbg-takeoff__row { padding: 10px 0; font-size: 0.9375rem; opacity: 0.32; }
+  .cbg-takeoff--live .cbg-takeoff__row.is-on, .cbg-takeoff--live .cbg-takeoff__row.is-now.is-on { opacity: 1; }
+  .cbg-takeoff--live .cbg-takeoff__row.is-now:not(.is-on) { opacity: 0.32; }
+  .cbg-takeoff--live .cbg-takeoff__total {
+    padding-top: var(--cbg-s3); border-top: 1px solid var(--cbg-gold-line); font-size: 0.9375rem; text-align: left;
+    transform: translateY(6px); transition: opacity var(--cbg-dur) var(--cbg-ease), transform var(--cbg-dur) var(--cbg-ease);
+  }
+  .cbg-takeoff--live .cbg-takeoff__total.is-on { transform: none; }
+}

@@ -158,10 +158,11 @@ describe('home course cards', () => {
   });
 
   it('only live cards are links; coming-soon cards have none', () => {
-    expect(count(cards, /cbg-course--live/g)).toBe(1);
-    expect(count(cards, /cbg-course--soon/g)).toBe(5);
-    expect(count(cards, /<a /g)).toBe(1);
+    expect(count(cards, /cbg-course--live/g)).toBe(2);
+    expect(count(cards, /cbg-course--soon/g)).toBe(4);
+    expect(count(cards, /<a /g)).toBe(2);
     expect(cards).toContain('href="/course/101-iosh-level3-certificate"');
+    expect(cards).toContain('href="/course/102-quantity-surveying"');
     for (const card of articles.filter((c) => c.includes('cbg-course--soon')))
       expect(card).not.toMatch(/<a\b/);
   });

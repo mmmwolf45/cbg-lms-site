@@ -49,6 +49,8 @@ async function scrollToY(page: Page, y: number) {
 }
 
 // The visual state of one course card: photo zoom (scale), tilt, gold rule (scaleX), edge light.
+// IOSH's card: the first of the live cards (QS is live too since 4 Oct 2026).
+const FIRST_LIVE = '.cbg-course--live >> nth=0';
 const cardState = (page: Page, sel: string) =>
   page.locator(sel).evaluate((card) => {
     const scale = (t: string) => (t === 'none' ? 1 : new DOMMatrix(t).a);
@@ -134,7 +136,7 @@ test.describe('laptop, full motion', () => {
     await expect.poll(() => pins(page)).toBe(1);
     await scrollToY(page, (await pinRange(page)).top);
     await expect(page.locator('.cbg-gallery__track')).toHaveClass(/cbg-done/, { timeout: 5000 });
-    const sel = '.cbg-course--live';
+    const sel = FIRST_LIVE;
     await page.mouse.move(5, 5);
     const rest = await cardState(page, sel);
     expect(rest.zoom).toBe(1);
@@ -180,12 +182,12 @@ test.describe('laptop, full motion', () => {
   test('keyboard focus on the live card zooms its photo and runs the rule, and survives a re-pin', async ({ page }) => {
     await openHome(page);
     await expect.poll(() => pins(page)).toBe(1);
-    await page.locator('.cbg-course--live a').focus();
+    await page.locator(FIRST_LIVE).locator('a').focus();
     await page.setViewportSize({ width: LAPTOP.width, height: LAPTOP.height - 20 }); // ScrollTrigger refreshes: unpins, pins again
     await page.waitForTimeout(600);
-    await expect(page.locator('.cbg-course--live a')).toBeFocused(); // put back after the re-pin
-    await expect.poll(async () => (await cardState(page, '.cbg-course--live')).zoom).toBeGreaterThan(1.04);
-    await expect.poll(async () => (await cardState(page, '.cbg-course--live')).rule).toBeCloseTo(1, 2);
+    await expect(page.locator(FIRST_LIVE).locator('a')).toBeFocused(); // put back after the re-pin
+    await expect.poll(async () => (await cardState(page, FIRST_LIVE)).zoom).toBeGreaterThan(1.04);
+    await expect.poll(async () => (await cardState(page, FIRST_LIVE)).rule).toBeCloseTo(1, 2);
   });
 
   test('route change: the gallery sets up again with one pin and no errors', async ({ page }) => {
@@ -252,19 +254,21 @@ test('a laptop screen too short for the pinned panel keeps the grid: no pin, eve
   expect(off).toBe(0);
 });
 
-test('coming-soon cards are not links; the live card is one link over its whole area', async ({ page }) => {
+test('coming-soon cards are not links; each live card is one link over its whole area', async ({ page }) => {
   await page.setViewportSize(LAPTOP);
   await page.emulateMedia({ reducedMotion: 'reduce' }); // a still grid, so points are stable
   await openHome(page);
-  expect(await page.locator('.cbg-course--soon').count()).toBe(5);
+  expect(await page.locator('.cbg-course--soon').count()).toBe(4);
   expect(await page.locator('.cbg-course--soon a, .cbg-course--soon button').count()).toBe(0);
-  const live = page.locator('.cbg-course--live');
-  await live.scrollIntoViewIfNeeded();
-  const href = await live.locator('h3').evaluate((h) => {
-    const r = h.getBoundingClientRect();
-    return document.elementFromPoint(r.left + 10, r.top + r.height / 2)?.closest('a')?.getAttribute('href');
-  });
-  expect(href).toBe('/course/101-iosh-level3-certificate');
+  const hrefs = [];
+  for (const live of await page.locator('.cbg-course--live').all()) {
+    await live.scrollIntoViewIfNeeded();
+    hrefs.push(await live.locator('h3').evaluate((h) => {
+      const r = h.getBoundingClientRect();
+      return document.elementFromPoint(r.left + 10, r.top + r.height / 2)?.closest('a')?.getAttribute('href');
+    }));
+  }
+  expect(hrefs).toEqual(['/course/101-iosh-level3-certificate', '/course/102-quantity-surveying']);
 });
 
 test('reduced motion: no pin, no zoom, no tilt; the strip stands still', async ({ page }) => {
@@ -273,11 +277,11 @@ test('reduced motion: no pin, no zoom, no tilt; the strip stands still', async (
   await openHome(page);
   await page.waitForTimeout(500);
   expect(await pins(page)).toBe(0);
-  const card = page.locator('.cbg-course--live');
+  const card = page.locator(FIRST_LIVE);
   await card.scrollIntoViewIfNeeded();
   await card.hover();
   await page.waitForTimeout(300);
-  const s = await cardState(page, '.cbg-course--live');
+  const s = await cardState(page, FIRST_LIVE);
   expect(s.zoom).toBe(1);
   expect(s.tilt).toBe('none');
   const strip = await page.evaluate(() => ({

@@ -1,5 +1,5 @@
 import type { Enhancer } from './setup';
-import { fullMotion } from './tokens';
+import { clamp01, frameDir, fullMotion, loadOrder, progress, smooth } from './tokens';
 
 // The home hero's exploding building (SPEC section 5.1.1; approved prototype "effect A", 3 Oct 2026).
 // [data-cbg-explode] carries the frames' base URL and count. While the page scrolls through the tall
@@ -8,23 +8,6 @@ import { fullMotion } from './tokens';
 // tilt, letters open (transforms only, so nothing reflows). The mouse tilts the building a little.
 // Reduced motion: nothing runs; the poster (the assembled building) and the whole headline stay.
 // The poster <picture> stays under the canvas, so a slow or failed frame never leaves a hole.
-
-export const smooth = (x: number) => x * x * (3 - 2 * x);
-export const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
-
-// Scroll progress through the pinned stretch: 0 when the section's top reaches the stage's sticky top,
-// 1 when the stage is about to be released.
-export const progress = (top: number, stickyTop: number, span: number) => clamp01((stickyTop - top) / Math.max(1, span));
-
-// Phones (and small windows) get the 640px frames, larger screens the 960px ones.
-export const frameDir = (w: number, h: number, dpr: number) => (Math.min(w, h) * dpr < 1100 ? 's' : 'l');
-
-// Frame 0 first, then every 8th, 4th, 2nd, then the rest: a coarse pass the scroll can already use.
-export function loadOrder(n: number): number[] {
-  const order: number[] = [];
-  for (const step of [8, 4, 2, 1]) for (let i = 0; i < n; i += step) if (!order.includes(i)) order.push(i);
-  return order;
-}
 
 // One word's pose at explosion e (0..1, already smoothed): li = its line, c = the middle line index,
 // k = its place among m words on the line. "far" is the muted word ("classroom"), which eases back a

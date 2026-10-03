@@ -1,12 +1,38 @@
-# Card only: this course has no page on course.link yet, so its home page card shows "Coming soon" and
-# is not a link. Source: Maasoom's workbook "CBG - Course List for Web Development.xlsx" (all courses
-# are delivered online). To give it a page, add the page sections (see HOW_TO_ADD_A_COURSE.md), then
-# set status: live now and add a cta.
-slug: quantity-surveying
+# Quantity Surveying course page copy. The source copy deck is docs/copy-deck/courses/quantity-surveying.md.
+# Edit the wording here; the site is built from this file.
+# Rules: plain British English, no em-dashes, nothing invented. Section ids are stable.
+# Run `npm run content:check` after editing.
+#
+# Sources (in priority order):
+#   - Maasoom's Drive: "CBG_QS_LMS_Landing_Page_Copy" (the wording) and "CBG_QS_Syllabus_8-Modules"
+#     (modules, sessions, assignments, certificate rules; rebuilt into 8 modules on 3 Oct 2026)
+#   - the live course page /course/102-quantity-surveying (same copy as the Drive doc)
+#   - the Entri course page, ONLY for learner reviews, placement stories and faculty photos
+#
+# Left out on purpose (not shown to students):
+#   - the Drive doc's character counts, "Module mapping", SEO, Pricing and "Points for Maasoom to confirm"
+#   - "Who it is for" and "Eligibility" (the page is for enrolled students; FAQ 1 still covers it)
+#   - "What You Will Learn" (the units section shows each module's aims and sessions instead)
+#   - Start Here and Course Completion as units (they stay in the native Course Content list)
+#   - CV Session 2 as a numbered session (the syllabus treats it as a tutoring session under M08_01)
+#   - bonus, field-guides and payments (IOSH-only sections)
+#   - Entri's ratings, placement counts, video testimonials and company logos; reviews that mention
+#     Entri; faculty employers (left out in the Drive copy too)
+#   - Elavenil E's photo: Entri shows a generic avatar for her, so her quote shows initials
+#   - certificate sample images: the only samples (on the Entri page) carry Entri branding
+#   - Navanya Ramesh P's review (it mentions Entri); she stays in placements
+#
+# Illustrative, for Maasoom to approve: the hero take-off quantities (an example, and labelled so).
 
+slug: quantity-surveying
+uniqueId: "102"
+path: /course/102-quantity-surveying
+
+# The card for this course on the home page ("Your courses").
 card:
   title: Quantity Surveying
-  status: coming soon
+  status: live now
+  tag: Live online · 8 months · Middle East projects
   line: Online quantity surveying training covering BOQ preparation, billing, tendering, FIDIC contracts and project scheduling, with live Middle East construction projects.
   meta:
     - 8 months
@@ -17,3 +43,444 @@ card:
   languages: [Malayalam, Telugu, Tamil]
   image: course-qs
   order: 2
+  cta:
+    label: Open course
+    href: /course/102-quantity-surveying
+
+hero:
+  eyebrow: CBG Training Institute · Live online
+  # Not the course title and subtitle again: course.link's own header shows those right above this block.
+  # From the Drive copy's "About the course".
+  heading: The whole QS job in 8 modules
+  subhead: Quantity surveyors keep construction projects on budget. They measure the work, price it, manage the contract and track every change through to handover. You learn it in the order you meet it on a real project, then put it to work on live projects from the Middle East.
+  # The picture under the CTA: build-scrub (the scroll-played drawing-to-building footage).
+  visual: build-scrub
+  # The poster frame (a name from src/images.json) and its alt text.
+  image: qs-hero-poster
+  imageAlt: A finished two-storey villa at dusk, its windows lit, standing on the gold lines of its own floor plan
+  # Key facts. `count` is the number that counts up.
+  facts:
+    - value: "8"
+      label: months
+      count: 8
+    - value: "8"
+      label: modules
+      count: 8
+    - value: "55"
+      label: technical hours
+      count: 55
+    - value: "11"
+      label: assignments
+      count: 11
+    - value: "3"
+      label: certificates
+      count: 3
+  # Scrolls to Course Content and opens its first item (Start Here).
+  cta:
+    label: Start here
+    action: start-here
+    href: "#course_content"
+  # The footage frames (public/qs-hero/, 48 frames) and the example take-off beside it.
+  # ILLUSTRATIVE quantities for a small two-storey villa, for Maasoom to approve. `at` is when each
+  # row counts up (0..1 of the scrub).
+  scrub:
+    frames: qs-hero
+    count: 48
+    label: Example take-off
+    takeoff:
+      - { item: Excavation, qty: 180, unit: m³, at: 0.2 }
+      - { item: Concrete, qty: 95, unit: m³, at: 0.38 }
+      - { item: Reinforcement, qty: 9500, unit: kg, at: 0.55 }
+      - { item: Blockwork, qty: 620, unit: m², at: 0.72 }
+      - { item: Plaster, qty: 1300, unit: m², at: 0.9 }
+    total: Ready to price in the BOQ
+
+included:
+  heading: One course, live projects and career support
+  intro: Everything below is part of your course, from your first class to your job search.
+  cards:
+    - title: Live projects from the Middle East.
+      body: Real project work from CBG's engineering services division, including a full civil and fit-out BOQ.
+      featured: true
+    - title: 11 practical assignments.
+      body: From AutoCAD takeoffs to BOQs, BBS, rate analysis, estimates, RA bills, variations, cash flow and scheduling, each reviewed by CBG faculty, plus two CV submissions.
+    - title: Software skills.
+      body: Excel, AutoCAD, PlanSwift and Primavera P6.
+    - title: Industry interaction.
+      body: A session with experienced quantity surveyors on how the industry works day to day.
+    - title: Personal mentorship.
+      body: A mentor to guide you and take up anything you need with CBG.
+    - title: CV and interview preparation.
+      body: Two CV sessions, line-by-line CV reviews until your CV is final, CBG's AI CV builder (cvbuilder.carbonblueglobal.com), HR interview preparation and mock interviews.
+    - title: Placement assistance.
+      body: Relevant job openings and interview support for eligible learners. CBG has supported 500+ placements across Saudi Arabia, the UAE, India, the Maldives and Africa.
+
+units:
+  heading: "Your learning path: 8 modules, 39 sessions"
+  intro: After the Start Here orientation, the 8 modules run in the order you meet the work on a real project, starting with the basics and building step by step, with assignments along the way.
+  # The building drawing labels each floor "<n> sessions".
+  hoursLabel: sessions
+  hoursShort: sessions
+  units:
+    - code: M01
+      title: QS Foundations
+      glh: 5
+      outcomes:
+        - Understand the QS role, the main construction components and the project workflow
+        - Use Excel and AutoCAD for QS tasks
+      sessions:
+        - { id: "1.1", title: Introduction to QS }
+        - { id: "1.2", title: Basics of Civil Engineering }
+        - { id: "1.3", title: Construction Workflow }
+        - { id: "1.4", title: Excel for QS }
+        - { id: "1.5", title: AutoCAD for QS }
+    - code: M02
+      title: Measurement and BOQ
+      glh: 11
+      outcomes:
+        - Measure works to POMI
+        - Take off quantities manually and in PlanSwift
+        - Prepare complete BOQs and bar bending schedules
+      sessions:
+        - { id: "2.1", title: POMI Part 1 }
+        - { id: "2.2", title: POMI Part 2 }
+        - { id: "2.3", title: BOQ Preparation Part 1 }
+        - { id: "2.4", title: BOQ Preparation Part 2 }
+        - { id: "2.5", title: "BOQ Preparation Part 3: Specifications" }
+        - { id: "2.6", title: BOQ Preparation Part 4 }
+        - { id: "2.7", title: PlanSwift Part 1 }
+        - { id: "2.8", title: PlanSwift Part 2 }
+        - { id: "2.9", title: Interior Fit-Out BOQ }
+        - { id: "2.10", title: Roadworks BOQ }
+        - { id: "2.11", title: Bar Bending Schedule (BBS) }
+    - code: M03
+      title: Estimating and Cost Planning
+      glh: 3
+      outcomes:
+        - Build unit rates from first principles
+        - Prepare estimates and detailed budgets
+        - Apply value engineering
+      sessions:
+        - { id: "3.1", title: Rate Analysis }
+        - { id: "3.2", title: Estimates }
+        - { id: "3.3", title: Value Engineering }
+    - code: M04
+      title: Tendering and Contracts
+      glh: 4
+      outcomes:
+        - Explain the tender process
+        - Compare contract types and FIDIC forms
+        - Use contract conditions, work orders and purchase orders
+      sessions:
+        - { id: "4.1", title: Tendering }
+        - { id: "4.2", title: Contracts and FIDIC }
+        - { id: "4.3", title: GCC and SCC }
+        - { id: "4.4", title: Work Orders and Purchase Orders }
+    - code: M05
+      title: Post-Contract Billing
+      glh: 4
+      outcomes:
+        - Prepare RA bills, final bills and certificates of payment
+        - Value and log variations
+        - Adjust provisional sums and prime cost items
+      sessions:
+        - { id: "5.1", title: RA Bill Preparation }
+        - { id: "5.2", title: Final Bill and COP }
+        - { id: "5.3", title: Variations and Extra Items }
+        - { id: "5.4", title: Provisional Sums and Prime Cost }
+    - code: M06
+      title: Cost Control and Planning
+      glh: 7
+      outcomes:
+        - Forecast cash flow and prepare cost reports
+        - Schedule projects in Primavera P6
+        - Manage manpower, materials and machinery
+      sessions:
+        - { id: "6.1", title: Cash Flow }
+        - { id: "6.2", title: Cost Reports }
+        - { id: "6.3", title: Project Scheduling }
+        - { id: "6.4", title: Primavera P6 Part 1 }
+        - { id: "6.5", title: Primavera P6 Part 2 }
+        - { id: "6.6", title: Primavera P6 Part 3 }
+        - { id: "6.7", title: 3M Management }
+    - code: M07
+      title: Closeout and Live Project
+      glh: 3
+      outcomes:
+        - Close out and hand over a project
+        - Apply the full QS workflow to a real Middle East live project
+      sessions:
+        - { id: "7.1", title: Project Closeout and Handover }
+        - { id: "7.2", title: Middle East Live Project }
+        - { id: "7.3", title: Industry Interaction }
+    - code: M08
+      title: Career Launch
+      glh: 2
+      outcomes:
+        - Prepare a high-impact QS CV and LinkedIn profile
+        - Get ready for HR and technical interviews
+        - Use CBG's placement assistance
+      sessions:
+        - { id: "8.1", title: "CV Session 1: CV and LinkedIn" }
+        - { id: "8.2", title: Interviews and Placement }
+
+# Rebar X-ray: the bar bending schedule topic (Module 2, session 2.11). `at` is each label's point
+# [x, y] in source pixels of the 1536 x 1024 photos, picked against the Higgsfield pair (4 Oct 2026).
+xray:
+  heading: See the steel. Measure every bar.
+  intro: Concrete hides its reinforcement, but a quantity surveyor still has to count and measure every bar in it. In Module 2 you learn to read the structural drawing and prepare a bar bending schedule (BBS), from bar shapes and lap and development length to bend deduction and cutting length.
+  image: qs-xray-concrete
+  xray: qs-xray-steel
+  imageAlt: A reinforced concrete column and footing; where the scan passes, the steel bars inside the concrete show through
+  labels:
+    - { text: Main bars, at: [667, 354] }
+    - { text: Stirrups, at: [798, 491] }
+    - { text: Lap length, at: [818, 727] }
+    - { text: Development length, at: [666, 817] }
+    - { text: Cutting length, at: [866, 869] }
+  caption: "Assignment A04: a BBS for a footing and a column from a structural drawing."
+
+how-classes-run:
+  heading: How your classes run
+  items:
+    - title: 8 months, live online.
+      body: 55 hours of technical sessions plus 3 hours of HR and CV sessions, taught live by CBG faculty so you can ask questions as you go.
+    - title: Classes on alternate days.
+      body: Your batch timetable is shared when you join.
+    - title: Recorded sessions.
+      body: Revisit topics at your own pace.
+    - title: Help between classes.
+      body: A WhatsApp doubt-clearance line for each topic, and one-to-one sessions with faculty on request. Your mentor can take any unresolved issue to CBG for you.
+    - title: What you need.
+      body: A laptop or PC with a stable internet connection. You will use Excel, AutoCAD, PlanSwift and Primavera P6, so make sure you can run them before the topics that use them.
+  timetable:
+    label: Batch days
+    text: Monday, Wednesday and Friday, or Tuesday, Thursday and Saturday.
+
+assessment:
+  heading: How your work is assessed
+  intro: You learn by doing. Each assignment and CV submission has its own deadline, and CBG faculty review your work and return feedback within 15 working days.
+  assessments:
+    - label: A01 to A11
+      title: 11 practical assignments
+      points:
+        - From AutoCAD takeoffs to BOQs, BBS, rate analysis, estimates, RA bills, variations, cash flow and scheduling
+        - Due 3 to 21 days after the class, in the format the brief asks for
+        - XLSX for BOQs and billing, DWG plus PDF for AutoCAD, XER plus PDF for Primavera
+    - label: CV1 and CV2
+      title: 2 CV submissions
+      points:
+        - CV1 within 7 days of CV Session 1, CV2 within 7 days of CV Session 2 (PDF or DOCX)
+        - CBG reviews your CV line by line
+        - The review and revision loop continues until your CV is final
+
+certificates:
+  heading: "Three CBG certificates: one for the course, two for live projects"
+  intro: Earn a Course Completion Certificate and two Live Project Certificates.
+  # No sample images: the only samples (on the Entri page) carry Entri branding.
+  certs:
+    - title: Course Completion Certificate
+      body: Your CBG certificate for completing the Quantity Surveying course.
+    - title: Two Live Project Certificates
+      body: For your work on Middle East live projects, preparing civil and fit-out BOQs from live project drawings, guided by CBG faculty.
+
+trainers:
+  heading: "Your faculty: people who do the job"
+  intro: Practising quantity surveyors, cost and contracts professionals with experience across Qatar, the UAE, Saudi Arabia, Oman and India.
+  # Photos are files in brand/assets/trainers/ (named from the spelling on the Entri page).
+  trainers:
+    - name: Shafeer PP
+      role: Commercial and QS professional
+      photo: shafeer-p-p.jpg
+      bio: FIDIC-trained commercial and QS professional with 22+ years across the UAE, Qatar, India, Saudi Arabia and Oman.
+    - name: Swapna Saji
+      role: QS and Planning Manager, Dubai
+      photo: swapna-saji.jpg
+      bio: QS and Planning Manager in Dubai with 25+ years, from civil engineer to senior QS and planning roles.
+    - name: Subul Abdul Assis
+      role: Member of RICS
+      bio: Member of the Royal Institution of Chartered Surveyors (RICS), with 19 years across Qatar, the UAE and India.
+    - name: Maneesh VS
+      role: Contracts manager
+      photo: maneesh-vs.jpg
+      bio: Contracts manager with 18+ years of experience.
+    - name: Mini Pramod
+      role: Senior contracts and costing manager
+      photo: mini-pramod.jpg
+      bio: Senior contracts and costing manager with 14+ years on residential, commercial and plotted development projects.
+    - name: Reenu Cherian
+      role: Quantity surveyor
+      photo: reenu-cherian.jpg
+      bio: Quantity surveyor with 12+ years of experience.
+    - name: Jubair KV
+      role: CBG trainer
+      photo: jubair-kv.jpg
+      bio: CBG trainer with 11+ years across the UAE, Qatar, Saudi Arabia and India.
+    - name: Nadira Farhath
+      role: Cost estimator
+      photo: nadira-farhath.jpg
+      bio: Cost estimator with 10+ years of experience.
+    - name: Rinsha V
+      role: CBG trainer · UPDA-certified (Qatar)
+      photo: rinsha-v.jpg
+      bio: UPDA-certified (Qatar) CBG trainer with 8 years across the UAE, Qatar and India.
+    - name: Shazia Hafsath
+      role: Quantity surveyor
+      bio: Quantity surveyor with 8+ years on projects in India, the UAE and Qatar.
+    - name: Fathwin Muhammed
+      role: Quantity surveyor, Dubai
+      bio: Quantity surveyor with 7+ years in Dubai, UAE.
+    - name: Shuhaida Shamsudin
+      role: Quantity surveyor
+      photo: shuhaida-shamsudin.jpg
+      bio: Quantity surveyor with 4+ years of experience.
+    - name: Nidha Fazli
+      role: Quantity surveyor and CBG trainer
+      photo: nidha-fazli.jpg
+      bio: Certified quantity surveyor and trainer at CBG.
+
+# Written learner reviews, quoted WORD FOR WORD (typos included; never edit a quote). Only reviews whose
+# text does not mention Entri. Photos are files in brand/assets/students/.
+testimonials:
+  heading: "In their words: learners on the course"
+  intro: What learners say about the classes, the faculty and the support.
+  quotes:
+    - name: Abhirami P A
+      role: Placed at 3EG Consultant LLC
+      photo: abhirami-p-a.jpg
+      text: The support I received from this course reduced my fear of finding a job in another country. Their guidance and resources were instrumental in boosting my confidence for the job search abroad.
+    - name: Seneeta Luiz
+      role: Placed at Grid Engineering Consultancy Pvt
+      photo: seneeta-luiz.jpg
+      text: QS course has played a crucial role in helping me understand what quantity surveying is all about. The accessibility of the course materials. Whether on my computer or mobile device, I could easily access the lessons, which made learning convenient and flexible. I was impressed with the quality of content and the user-friendly interface. Also the course modules are well-organized and cover a wide range of topics relevant to quantity surveying.
+    - name: Jebin J
+      photo: jebin-j.jpg
+      text: It's good to be teaching a class. whenever I have any doubts they will solve them immediately. By the end of this class you will be able to read and understand the entire concept of quality surveyor. This will make interview questions easier not only india but also abroad.
+  smallPrint: Quoted word for word, as the learners wrote them.
+
+# Placement stories: name and role as shown on the Entri page; `company` only where the company logo
+# there clearly reads as a name (no logos on this page). Photos are files in brand/assets/students/.
+placements:
+  heading: "Placement stories: where learners went next"
+  intro: Learners from this course and the roles they were placed in, with the company where we know it.
+  people:
+    - { name: Muhammad Fazil, role: Civil Engineer, company: NEOM, photo: muhammad-fazil.jpg }
+    - { name: Abdul Zayan, role: Cost Auditor, company: Sobha Constructions, photo: abdul-zayan.jpg }
+    - { name: Nikhil Babu, role: Quantity Surveyor, company: Kalliyath TMT, photo: nikhil-babu.jpg }
+    - { name: Anaswara V, role: Junior Planning Engineer, company: Sobha Constructions, photo: anaswara-v.jpg }
+    # Entri shows the company name in the role line for Ankitha, so it is kept there, with no company.
+    - { name: Ankitha S Kumar, role: Lee Builders, photo: ankitha-s-kumar.jpg }
+    - { name: Noble Sam Louis, role: Design Assistant, company: AXYZ, photo: noble-sam-louis.jpg }
+    - { name: Danvin A K, role: Site Engineer, company: KMT Construction, photo: danvin-a-k.jpg }
+    - { name: Adithya Jagadeesh, role: Quantity Surveyor, company: Alghanim International, photo: adithya-jagadeesh.jpg }
+    - { name: Revathy T A, role: Project Manager, company: Theriyil Associates, photo: revathy-t-a.jpg }
+    - { name: Basim Sidan K, role: Jr Engineer, company: Aztec Middle East Contracting LLC, photo: basim-sidan-k.jpg }
+    - { name: Ajmal C P, role: Planning Engineer, company: Wade Adams, photo: ajmal-c-p.jpg }
+    - { name: Arunkrishna R, role: Detailing Engineer, company: Cadmus Steel, photo: arunkrishna-r.jpg }
+    - { name: Pranav Yadav, role: Junior Quantity Surveyor, company: Parsons, photo: pranav-yadav.jpg }
+    - { name: Arunima, role: Quantity Surveyor, company: Morrow Homes, photo: arunima.jpg }
+    - { name: Malavika, role: Quantity Surveyor, company: R&R Builders, photo: malavika.jpg }
+    - { name: Yahya N Z, role: Sale Support Engineer, company: SECON, photo: yahya-n-z.jpg }
+    - { name: Adish Prakash K, role: Quality Controller, company: KK Group, photo: adish-prakash-k.jpg }
+    - { name: Tijo Joseph, role: Site Engineer, company: PEMS Engineering Consultants, photo: tijo-joseph.jpg }
+    - { name: Keerthana K, role: Jr Quantity Surveyor, company: Krishvi, photo: keerthana-k.jpg }
+    - { name: Arya V, role: Procurement Engineer, company: Axiom International, photo: arya-v.jpg }
+    - { name: Noorah, role: QS and Project Support, company: The Toolkit, photo: noorah.jpg }
+    - { name: Navanya Ramesh P, role: Quantity Surveyor, company: Al Doseri Contracting, photo: navanya-ramesh-p.jpg }
+    - { name: Karthika Adarsh, role: "Site's Coordinator", company: Philco Contracting L.L.C, photo: karthika-adarsh.jpg }
+    - { name: Rahiba Yoonus, role: Draughtman, company: Firas Engg. Consultancy, photo: rahiba-yoonus.jpg }
+    - { name: Laya Varghese, role: Estimation Executive Engineer, company: Green Interio Fusion Pvt Ltd, photo: laya-varghese.jpg }
+    - { name: Riza Rahim, role: Quantity Surveyor, company: Julfar Contracting, photo: riza-rahim.jpg }
+    - { name: Blessy Maria Alexander, role: Technical Engineer, company: Buildeasy, photo: blessy-maria-alexander.jpg }
+    - { name: Allen Issac, role: Estimation Engineer, company: Mark Comprehensive L.L.C, photo: allen-issac.jpg }
+    - { name: Keerthi B, role: Planning and Estimation Engineer, company: Vardhaki Architects & Engineers, photo: keerthi-b.jpg }
+    - { name: Dijin D J, role: Civil Engineer, company: Rooh Global Traders, photo: dijin-d-j.jpg }
+    - { name: Najah Ahmed Mohamed, role: Quantity Surveyor, company: AIM, photo: najah-ahmed-mohamed.jpg }
+    - { name: Nikhil Jayachandran, role: Junior Civil Quantity Surveyor, photo: nikhil-jayachandran.jpg }
+    - { name: Palepgu Agnivesh Rajiv Chathurvedi, role: QS Engineer, company: Teramor, photo: palepgu-agnivesh-rajiv-chathurvedi.jpg }
+    - { name: Kilaru Pawan, role: Senior Project Engineer, company: Vertex, photo: kilaru-pawan.jpg }
+    - { name: Guthikonda Sindhu, role: Junior Engineer, company: Vasavi Atlantis, photo: guthikonda-sindhu.jpg }
+    - { name: K Naveen Aashish, role: Planning Engineer, company: Gina Engineering Company (P) Ltd, photo: k-naveen-aashish.jpg }
+    - { name: Merin George, role: Procurement Engineer, company: Golden Wood, photo: merin-george.jpg }
+    - { name: Thangadurai K, role: Quantity Surveyor, company: NSH, photo: thangadurai-k.jpg }
+    - { name: Dinesh Kumar, role: Quantity Surveyor, company: Kaylim Holdings Pte Ltd, photo: dinesh-kumar.jpg }
+    - { name: Anju Prakash, role: Facade Draughtsman Trainee, company: Latinem Private Limited, photo: anju-prakash.jpg }
+    - { name: Ashmina C K, role: Quantity Surveyor, company: Johns Systems, photo: ashmina-c-k.jpg }
+    - { name: Aaliya Fathima T K, role: Quantity Surveyor, company: Cochin Building Contracting LLC, photo: aaliya-fathima-t-k.jpg }
+    - { name: Shahan Shaj, role: Senior executive quality (QC), company: Godrej Properties, photo: shahan-shaj.jpg }
+    - { name: Shaiju Shaji, role: Junior Civil Engineer, photo: shaiju-shaji.jpg }
+    - { name: Shamsiya Shukoor, role: Estimation Engineer, company: Advanced Land Drying LLC, photo: shamsiya-shukoor.jpg }
+    - { name: Ajay Aravind, role: Civil Engineer, company: Galfar, photo: ajay-aravind.jpg }
+    - { name: Shanhan, role: Planning Engineer, company: Abu Dhabi Precast, photo: shanhan.jpg }
+    - { name: N S Gopika, role: Estimation Engineer, company: Eallisto, photo: n-s-gopika.jpg }
+    - { name: Raja J, role: Quantity Surveyor, company: SJM Projects, photo: raja-j.jpg }
+    - { name: Satheesh Kumar, role: Manager, company: Madura Traders, photo: satheesh-kumar.jpg }
+    - { name: Kanipandi G, role: Senior Project Engineer, company: Aqwat, photo: kanipandi-g.jpg }
+    - { name: Vijayraj M, role: Project Engineer, company: K&K, photo: vijayraj-m.jpg }
+    - { name: Tamil Mani Govinthan, role: Site Engineer, company: Bharat Petroleum, photo: tamil-mani-govinthan.jpg }
+    - { name: Aravindhan P, role: Junior Engineer, company: Ashoka Buildcon Limited, photo: aravindhan-p.jpg }
+    - { name: Kabilan Krishnamoorthy, role: Site Engineer, company: HSL, photo: kabilan-krishnamoorthy.jpg }
+    - { name: R Karthick, role: Site Engineer, photo: r-karthick.jpg }
+    - { name: S Santhoshkumar, role: Senior Engineer, company: Bygging India, photo: s-santhoshkumar.jpg }
+    - { name: Sudharshan K S, role: Site Engineer, company: JNR Construction, photo: sudharshan-k-s.jpg }
+    - { name: Sam Anil, role: Senior Engineer, company: Adani Renewables, photo: sam-anil.jpg }
+  note: "CBG has supported 500+ placements across Saudi Arabia, the UAE, India, the Maldives and Africa. Placement assistance is not a job guarantee: results depend on your effort, interviews and the market."
+
+careers:
+  heading: Where it can take you
+  intro: The course prepares you for roles such as these.
+  roles:
+    - Quantity Surveyor
+    - Estimation or Tendering Engineer
+    - Billing Engineer
+    - Cost Engineer
+    - Contracts Engineer
+    - Planning Engineer
+    - Procurement Engineer
+
+faq:
+  heading: Student FAQ
+  items:
+    - q: Who is this course for?
+      a: Civil engineering graduates, freshers and working professionals, such as site engineers, who want a career in quantity surveying, estimation, billing or cost control. You need a background in civil engineering, good numeracy and basic computer skills.
+    - q: What does a quantity surveyor do?
+      a: A quantity surveyor manages the cost and contract side of a construction project. That means measuring quantities, preparing BOQs and estimates, pricing work, preparing bills and payment certificates, valuing variations and keeping the project within budget, working closely with architects, engineers and contractors.
+    - q: Can a civil engineer become a quantity surveyor?
+      a: Yes. Civil engineers already understand construction, materials and site execution, which makes the move into quantity surveying a natural one. This course adds the measurement, commercial and contract skills on top.
+    - q: How long is the course and when are classes held?
+      a: "The course runs for 8 months: 55 hours of technical sessions plus 3 hours of HR and CV sessions. Classes are on alternate days, in Monday, Wednesday and Friday or Tuesday, Thursday and Saturday batches. Your batch timetable is shared when you join."
+    - q: How is the course structured?
+      a: "After a Start Here orientation, the course runs through 8 modules in the order you meet the work on a real project: QS Foundations; Measurement and BOQ; Estimating and Cost Planning; Tendering and Contracts; Post-Contract Billing; Cost Control and Planning; Closeout and Live Project; and Career Launch. It starts with the basics, including Excel and AutoCAD, and builds step by step, with assignments along the way so you learn by doing."
+    - q: Are the classes live or recorded?
+      a: "Classes are taught live online by CBG faculty, so you can ask questions as you go. Recorded sessions let you revisit topics."
+    - q: What software do I need?
+      a: A laptop or PC with a stable internet connection. You will use Excel, AutoCAD, PlanSwift and Primavera P6 during the course, so make sure you can run them before the topics that use them. Message CBG if you need help getting set up.
+    - q: How are assignments submitted and evaluated?
+      a: There are 11 assignments plus 2 CV submissions, each with its own deadline (3 to 21 days after the class). Submit them in the format the brief asks for, for example XLSX for BOQs and billing, DWG plus PDF for AutoCAD and XER plus PDF for Primavera. CBG faculty review your work and return feedback within 15 working days.
+    - q: What certificates will I receive?
+      a: "Three CBG certificates: a Course Completion Certificate and two Live Project Certificates."
+    - q: What are the live projects?
+      a: Real project work from CBG's engineering services division in the Middle East. You prepare civil and fit-out BOQs from live project drawings, guided by CBG faculty, and earn two Live Project Certificates.
+    - q: Do you offer placement assistance?
+      a: "Yes. Learners who complete the course, keep at least 75% live attendance, finish their assignments and pass the mock interviews receive relevant job openings and interview support. CBG has supported 500+ placements across Saudi Arabia, the UAE, India, the Maldives and Africa. Placement assistance is not a job guarantee: results depend on your effort, interviews and the market."
+    - q: How does the CV review work?
+      a: CV session 1 shows you how to build a high-impact CV and gives you access to CBG's AI CV builder (cvbuilder.carbonblueglobal.com). You submit your first CV within 7 days, attend CV session 2, then submit a revised CV within 7 days. CBG reviews it line by line, and the review and revision loop continues until your CV is final.
+    - q: What if I get stuck between classes?
+      a: Each topic has a WhatsApp doubt-clearance line, and you can request a one-to-one session with faculty. Your mentor can take any unresolved issue to CBG for you.
+    - q: How do I enrol?
+      a: Enrolment is by invitation. Message CBG on WhatsApp at +974 7048 5638 and our team will guide you through the next steps.
+
+help:
+  heading: Stuck on anything? Message us.
+  whatsapp:
+    label: WhatsApp
+    number: "+974 7048 5638"
+    href: https://wa.me/97470485638
+  email:
+    label: Email
+    address: info@carbonblueglobal.com
+    href: mailto:info@carbonblueglobal.com
+  # Logo files in brand/assets/, used as supplied, with their alt text.
+  logos:
+    - file: cbg-mark-512.png
+      alt: CBG Training Institute

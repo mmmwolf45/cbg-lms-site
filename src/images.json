@@ -548,6 +548,201 @@
       ]
     }
   },
+  "trainer-jubair-kv": {
+    "width": 224,
+    "height": 224,
+    "variants": {
+      "avif": [
+        {
+          "w": 224,
+          "file": "img/trainer-jubair-kv-224.avif",
+          "bytes": 3528
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-jubair-kv-112.avif",
+          "bytes": 1445
+        }
+      ],
+      "webp": [
+        {
+          "w": 224,
+          "file": "img/trainer-jubair-kv-224.webp",
+          "bytes": 4204
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-jubair-kv-112.webp",
+          "bytes": 1842
+        }
+      ],
+      "jpg": [
+        {
+          "w": 224,
+          "file": "img/trainer-jubair-kv-224.jpg",
+          "bytes": 5923
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-jubair-kv-112.jpg",
+          "bytes": 2493
+        }
+      ]
+    }
+  },
+  "trainer-maneesh-vs": {
+    "width": 200,
+    "height": 200,
+    "variants": {
+      "avif": [
+        {
+          "w": 200,
+          "file": "img/trainer-maneesh-vs-200.avif",
+          "bytes": 2379
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-maneesh-vs-112.avif",
+          "bytes": 1310
+        }
+      ],
+      "webp": [
+        {
+          "w": 200,
+          "file": "img/trainer-maneesh-vs-200.webp",
+          "bytes": 2452
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-maneesh-vs-112.webp",
+          "bytes": 1326
+        }
+      ],
+      "jpg": [
+        {
+          "w": 200,
+          "file": "img/trainer-maneesh-vs-200.jpg",
+          "bytes": 4011
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-maneesh-vs-112.jpg",
+          "bytes": 2036
+        }
+      ]
+    }
+  },
+  "trainer-mini-pramod": {
+    "width": 200,
+    "height": 200,
+    "variants": {
+      "avif": [
+        {
+          "w": 200,
+          "file": "img/trainer-mini-pramod-200.avif",
+          "bytes": 3109
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-mini-pramod-112.avif",
+          "bytes": 1320
+        }
+      ],
+      "webp": [
+        {
+          "w": 200,
+          "file": "img/trainer-mini-pramod-200.webp",
+          "bytes": 3122
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-mini-pramod-112.webp",
+          "bytes": 1378
+        }
+      ],
+      "jpg": [
+        {
+          "w": 200,
+          "file": "img/trainer-mini-pramod-200.jpg",
+          "bytes": 4621
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-mini-pramod-112.jpg",
+          "bytes": 2040
+        }
+      ]
+    }
+  },
+  "trainer-nadira-farhath": {
+    "width": 200,
+    "height": 200,
+    "variants": {
+      "avif": [
+        {
+          "w": 200,
+          "file": "img/trainer-nadira-farhath-200.avif",
+          "bytes": 2693
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-nadira-farhath-112.avif",
+          "bytes": 1393
+        }
+      ],
+      "webp": [
+        {
+          "w": 200,
+          "file": "img/trainer-nadira-farhath-200.webp",
+          "bytes": 3216
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-nadira-farhath-112.webp",
+          "bytes": 1788
+        }
+      ],
+      "jpg": [
+        {
+          "w": 200,
+          "file": "img/trainer-nadira-farhath-200.jpg",
+          "bytes": 4928
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-nadira-farhath-112.jpg",
+          "bytes": 2429
+        }
+      ]
+    }
+  },
+  "trainer-nidha-fazli": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/trainer-nidha-fazli-80.avif",
+          "bytes": 887
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/trainer-nidha-fazli-80.webp",
+          "bytes": 1004
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/trainer-nidha-fazli-80.jpg",
+          "bytes": 1495
+        }
+      ]
+    }
+  },
   "trainer-ramshad-kk": {
     "width": 224,
     "height": 224,
@@ -586,6 +781,2061 @@
           "w": 112,
           "file": "img/trainer-ramshad-kk-112.jpg",
           "bytes": 2172
+        }
+      ]
+    }
+  },
+  "trainer-reenu-cherian": {
+    "width": 200,
+    "height": 200,
+    "variants": {
+      "avif": [
+        {
+          "w": 200,
+          "file": "img/trainer-reenu-cherian-200.avif",
+          "bytes": 2062
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-reenu-cherian-112.avif",
+          "bytes": 1214
+        }
+      ],
+      "webp": [
+        {
+          "w": 200,
+          "file": "img/trainer-reenu-cherian-200.webp",
+          "bytes": 2134
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-reenu-cherian-112.webp",
+          "bytes": 1252
+        }
+      ],
+      "jpg": [
+        {
+          "w": 200,
+          "file": "img/trainer-reenu-cherian-200.jpg",
+          "bytes": 3693
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-reenu-cherian-112.jpg",
+          "bytes": 2001
+        }
+      ]
+    }
+  },
+  "trainer-rinsha-v": {
+    "width": 224,
+    "height": 224,
+    "variants": {
+      "avif": [
+        {
+          "w": 224,
+          "file": "img/trainer-rinsha-v-224.avif",
+          "bytes": 4085
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-rinsha-v-112.avif",
+          "bytes": 1477
+        }
+      ],
+      "webp": [
+        {
+          "w": 224,
+          "file": "img/trainer-rinsha-v-224.webp",
+          "bytes": 5568
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-rinsha-v-112.webp",
+          "bytes": 2108
+        }
+      ],
+      "jpg": [
+        {
+          "w": 224,
+          "file": "img/trainer-rinsha-v-224.jpg",
+          "bytes": 6956
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-rinsha-v-112.jpg",
+          "bytes": 2637
+        }
+      ]
+    }
+  },
+  "trainer-shafeer-p-p": {
+    "width": 224,
+    "height": 224,
+    "variants": {
+      "avif": [
+        {
+          "w": 224,
+          "file": "img/trainer-shafeer-p-p-224.avif",
+          "bytes": 3924
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-shafeer-p-p-112.avif",
+          "bytes": 1475
+        }
+      ],
+      "webp": [
+        {
+          "w": 224,
+          "file": "img/trainer-shafeer-p-p-224.webp",
+          "bytes": 5176
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-shafeer-p-p-112.webp",
+          "bytes": 1908
+        }
+      ],
+      "jpg": [
+        {
+          "w": 224,
+          "file": "img/trainer-shafeer-p-p-224.jpg",
+          "bytes": 6484
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-shafeer-p-p-112.jpg",
+          "bytes": 2425
+        }
+      ]
+    }
+  },
+  "trainer-shuhaida-shamsudin": {
+    "width": 200,
+    "height": 200,
+    "variants": {
+      "avif": [
+        {
+          "w": 200,
+          "file": "img/trainer-shuhaida-shamsudin-200.avif",
+          "bytes": 3304
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-shuhaida-shamsudin-112.avif",
+          "bytes": 1748
+        }
+      ],
+      "webp": [
+        {
+          "w": 200,
+          "file": "img/trainer-shuhaida-shamsudin-200.webp",
+          "bytes": 4366
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-shuhaida-shamsudin-112.webp",
+          "bytes": 2512
+        }
+      ],
+      "jpg": [
+        {
+          "w": 200,
+          "file": "img/trainer-shuhaida-shamsudin-200.jpg",
+          "bytes": 6256
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-shuhaida-shamsudin-112.jpg",
+          "bytes": 2918
+        }
+      ]
+    }
+  },
+  "trainer-swapna-saji": {
+    "width": 200,
+    "height": 200,
+    "variants": {
+      "avif": [
+        {
+          "w": 200,
+          "file": "img/trainer-swapna-saji-200.avif",
+          "bytes": 3195
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-swapna-saji-112.avif",
+          "bytes": 1525
+        }
+      ],
+      "webp": [
+        {
+          "w": 200,
+          "file": "img/trainer-swapna-saji-200.webp",
+          "bytes": 3614
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-swapna-saji-112.webp",
+          "bytes": 1910
+        }
+      ],
+      "jpg": [
+        {
+          "w": 200,
+          "file": "img/trainer-swapna-saji-200.jpg",
+          "bytes": 5218
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-swapna-saji-112.jpg",
+          "bytes": 2513
+        }
+      ]
+    }
+  },
+  "student-aaliya-fathima-t-k": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-aaliya-fathima-t-k-80.avif",
+          "bytes": 913
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-aaliya-fathima-t-k-80.webp",
+          "bytes": 1116
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-aaliya-fathima-t-k-80.jpg",
+          "bytes": 1564
+        }
+      ]
+    }
+  },
+  "student-abdul-zayan": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-abdul-zayan-80.avif",
+          "bytes": 930
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-abdul-zayan-80.webp",
+          "bytes": 1158
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-abdul-zayan-80.jpg",
+          "bytes": 1628
+        }
+      ]
+    }
+  },
+  "student-abhirami-p-a": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-abhirami-p-a-80.avif",
+          "bytes": 949
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-abhirami-p-a-80.webp",
+          "bytes": 1162
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-abhirami-p-a-80.jpg",
+          "bytes": 1619
+        }
+      ]
+    }
+  },
+  "student-adish-prakash-k": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-adish-prakash-k-80.avif",
+          "bytes": 1061
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-adish-prakash-k-80.webp",
+          "bytes": 1350
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-adish-prakash-k-80.jpg",
+          "bytes": 1781
+        }
+      ]
+    }
+  },
+  "student-adithya-jagadeesh": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-adithya-jagadeesh-80.avif",
+          "bytes": 909
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-adithya-jagadeesh-80.webp",
+          "bytes": 1082
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-adithya-jagadeesh-80.jpg",
+          "bytes": 1629
+        }
+      ]
+    }
+  },
+  "student-ajay-aravind": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-ajay-aravind-80.avif",
+          "bytes": 918
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-ajay-aravind-80.webp",
+          "bytes": 1174
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-ajay-aravind-80.jpg",
+          "bytes": 1618
+        }
+      ]
+    }
+  },
+  "student-ajmal-c-p": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-ajmal-c-p-80.avif",
+          "bytes": 973
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-ajmal-c-p-80.webp",
+          "bytes": 1056
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-ajmal-c-p-80.jpg",
+          "bytes": 1579
+        }
+      ]
+    }
+  },
+  "student-allen-issac": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-allen-issac-80.avif",
+          "bytes": 1017
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-allen-issac-80.webp",
+          "bytes": 1340
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-allen-issac-80.jpg",
+          "bytes": 1744
+        }
+      ]
+    }
+  },
+  "student-anaswara-v": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-anaswara-v-80.avif",
+          "bytes": 879
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-anaswara-v-80.webp",
+          "bytes": 1124
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-anaswara-v-80.jpg",
+          "bytes": 1637
+        }
+      ]
+    }
+  },
+  "student-anju-prakash": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-anju-prakash-80.avif",
+          "bytes": 884
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-anju-prakash-80.webp",
+          "bytes": 926
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-anju-prakash-80.jpg",
+          "bytes": 1422
+        }
+      ]
+    }
+  },
+  "student-ankitha-s-kumar": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-ankitha-s-kumar-80.avif",
+          "bytes": 959
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-ankitha-s-kumar-80.webp",
+          "bytes": 1192
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-ankitha-s-kumar-80.jpg",
+          "bytes": 1555
+        }
+      ]
+    }
+  },
+  "student-aravindhan-p": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-aravindhan-p-80.avif",
+          "bytes": 858
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-aravindhan-p-80.webp",
+          "bytes": 956
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-aravindhan-p-80.jpg",
+          "bytes": 1460
+        }
+      ]
+    }
+  },
+  "student-arunima": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-arunima-80.avif",
+          "bytes": 1027
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-arunima-80.webp",
+          "bytes": 1254
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-arunima-80.jpg",
+          "bytes": 1654
+        }
+      ]
+    }
+  },
+  "student-arunkrishna-r": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-arunkrishna-r-80.avif",
+          "bytes": 812
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-arunkrishna-r-80.webp",
+          "bytes": 942
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-arunkrishna-r-80.jpg",
+          "bytes": 1456
+        }
+      ]
+    }
+  },
+  "student-arya-v": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-arya-v-80.avif",
+          "bytes": 903
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-arya-v-80.webp",
+          "bytes": 972
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-arya-v-80.jpg",
+          "bytes": 1498
+        }
+      ]
+    }
+  },
+  "student-ashmina-c-k": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-ashmina-c-k-80.avif",
+          "bytes": 1486
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-ashmina-c-k-80.webp",
+          "bytes": 2126
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-ashmina-c-k-80.jpg",
+          "bytes": 2206
+        }
+      ]
+    }
+  },
+  "student-basim-sidan-k": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-basim-sidan-k-80.avif",
+          "bytes": 1100
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-basim-sidan-k-80.webp",
+          "bytes": 1346
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-basim-sidan-k-80.jpg",
+          "bytes": 1693
+        }
+      ]
+    }
+  },
+  "student-blessy-maria-alexander": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-blessy-maria-alexander-80.avif",
+          "bytes": 904
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-blessy-maria-alexander-80.webp",
+          "bytes": 1022
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-blessy-maria-alexander-80.jpg",
+          "bytes": 1505
+        }
+      ]
+    }
+  },
+  "student-danvin-a-k": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-danvin-a-k-80.avif",
+          "bytes": 996
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-danvin-a-k-80.webp",
+          "bytes": 1158
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-danvin-a-k-80.jpg",
+          "bytes": 1621
+        }
+      ]
+    }
+  },
+  "student-dijin-d-j": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-dijin-d-j-80.avif",
+          "bytes": 972
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-dijin-d-j-80.webp",
+          "bytes": 1274
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-dijin-d-j-80.jpg",
+          "bytes": 1710
+        }
+      ]
+    }
+  },
+  "student-dinesh-kumar": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-dinesh-kumar-80.avif",
+          "bytes": 922
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-dinesh-kumar-80.webp",
+          "bytes": 1206
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-dinesh-kumar-80.jpg",
+          "bytes": 1659
+        }
+      ]
+    }
+  },
+  "student-guthikonda-sindhu": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-guthikonda-sindhu-80.avif",
+          "bytes": 954
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-guthikonda-sindhu-80.webp",
+          "bytes": 1150
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-guthikonda-sindhu-80.jpg",
+          "bytes": 1603
+        }
+      ]
+    }
+  },
+  "student-jebin-j": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-jebin-j-80.avif",
+          "bytes": 1584
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-jebin-j-80.webp",
+          "bytes": 2266
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-jebin-j-80.jpg",
+          "bytes": 2350
+        }
+      ]
+    }
+  },
+  "student-k-naveen-aashish": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-k-naveen-aashish-80.avif",
+          "bytes": 1234
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-k-naveen-aashish-80.webp",
+          "bytes": 1754
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-k-naveen-aashish-80.jpg",
+          "bytes": 2015
+        }
+      ]
+    }
+  },
+  "student-kabilan-krishnamoorthy": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-kabilan-krishnamoorthy-80.avif",
+          "bytes": 888
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-kabilan-krishnamoorthy-80.webp",
+          "bytes": 1040
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-kabilan-krishnamoorthy-80.jpg",
+          "bytes": 1512
+        }
+      ]
+    }
+  },
+  "student-kanipandi-g": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-kanipandi-g-80.avif",
+          "bytes": 1081
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-kanipandi-g-80.webp",
+          "bytes": 1394
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-kanipandi-g-80.jpg",
+          "bytes": 1727
+        }
+      ]
+    }
+  },
+  "student-karthika-adarsh": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-karthika-adarsh-80.avif",
+          "bytes": 901
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-karthika-adarsh-80.webp",
+          "bytes": 1040
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-karthika-adarsh-80.jpg",
+          "bytes": 1524
+        }
+      ]
+    }
+  },
+  "student-keerthana-k": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-keerthana-k-80.avif",
+          "bytes": 909
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-keerthana-k-80.webp",
+          "bytes": 1184
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-keerthana-k-80.jpg",
+          "bytes": 1646
+        }
+      ]
+    }
+  },
+  "student-keerthi-b": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-keerthi-b-80.avif",
+          "bytes": 1034
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-keerthi-b-80.webp",
+          "bytes": 1332
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-keerthi-b-80.jpg",
+          "bytes": 1698
+        }
+      ]
+    }
+  },
+  "student-kilaru-pawan": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-kilaru-pawan-80.avif",
+          "bytes": 916
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-kilaru-pawan-80.webp",
+          "bytes": 1022
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-kilaru-pawan-80.jpg",
+          "bytes": 1495
+        }
+      ]
+    }
+  },
+  "student-laya-varghese": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-laya-varghese-80.avif",
+          "bytes": 1007
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-laya-varghese-80.webp",
+          "bytes": 1192
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-laya-varghese-80.jpg",
+          "bytes": 1754
+        }
+      ]
+    }
+  },
+  "student-malavika": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-malavika-80.avif",
+          "bytes": 921
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-malavika-80.webp",
+          "bytes": 1096
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-malavika-80.jpg",
+          "bytes": 1591
+        }
+      ]
+    }
+  },
+  "student-merin-george": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-merin-george-80.avif",
+          "bytes": 987
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-merin-george-80.webp",
+          "bytes": 1208
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-merin-george-80.jpg",
+          "bytes": 1697
+        }
+      ]
+    }
+  },
+  "student-muhammad-fazil": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-muhammad-fazil-80.avif",
+          "bytes": 828
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-muhammad-fazil-80.webp",
+          "bytes": 990
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-muhammad-fazil-80.jpg",
+          "bytes": 1466
+        }
+      ]
+    }
+  },
+  "student-n-s-gopika": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-n-s-gopika-80.avif",
+          "bytes": 928
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-n-s-gopika-80.webp",
+          "bytes": 1106
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-n-s-gopika-80.jpg",
+          "bytes": 1591
+        }
+      ]
+    }
+  },
+  "student-najah-ahmed-mohamed": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-najah-ahmed-mohamed-80.avif",
+          "bytes": 790
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-najah-ahmed-mohamed-80.webp",
+          "bytes": 994
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-najah-ahmed-mohamed-80.jpg",
+          "bytes": 1517
+        }
+      ]
+    }
+  },
+  "student-navanya-ramesh-p": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-navanya-ramesh-p-80.avif",
+          "bytes": 1371
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-navanya-ramesh-p-80.webp",
+          "bytes": 2078
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-navanya-ramesh-p-80.jpg",
+          "bytes": 2081
+        }
+      ]
+    }
+  },
+  "student-nikhil-babu": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-nikhil-babu-80.avif",
+          "bytes": 847
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-nikhil-babu-80.webp",
+          "bytes": 972
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-nikhil-babu-80.jpg",
+          "bytes": 1460
+        }
+      ]
+    }
+  },
+  "student-nikhil-jayachandran": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-nikhil-jayachandran-80.avif",
+          "bytes": 901
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-nikhil-jayachandran-80.webp",
+          "bytes": 1100
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-nikhil-jayachandran-80.jpg",
+          "bytes": 1576
+        }
+      ]
+    }
+  },
+  "student-noble-sam-louis": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-noble-sam-louis-80.avif",
+          "bytes": 921
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-noble-sam-louis-80.webp",
+          "bytes": 1096
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-noble-sam-louis-80.jpg",
+          "bytes": 1563
+        }
+      ]
+    }
+  },
+  "student-noorah": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-noorah-80.avif",
+          "bytes": 994
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-noorah-80.webp",
+          "bytes": 1320
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-noorah-80.jpg",
+          "bytes": 1785
+        }
+      ]
+    }
+  },
+  "student-palepgu-agnivesh-rajiv-chathurvedi": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-palepgu-agnivesh-rajiv-chathurvedi-80.avif",
+          "bytes": 738
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-palepgu-agnivesh-rajiv-chathurvedi-80.webp",
+          "bytes": 926
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-palepgu-agnivesh-rajiv-chathurvedi-80.jpg",
+          "bytes": 1420
+        }
+      ]
+    }
+  },
+  "student-pranav-yadav": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-pranav-yadav-80.avif",
+          "bytes": 901
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-pranav-yadav-80.webp",
+          "bytes": 1202
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-pranav-yadav-80.jpg",
+          "bytes": 1615
+        }
+      ]
+    }
+  },
+  "student-r-karthick": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-r-karthick-80.avif",
+          "bytes": 979
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-r-karthick-80.webp",
+          "bytes": 1058
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-r-karthick-80.jpg",
+          "bytes": 1516
+        }
+      ]
+    }
+  },
+  "student-rahiba-yoonus": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-rahiba-yoonus-80.avif",
+          "bytes": 945
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-rahiba-yoonus-80.webp",
+          "bytes": 962
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-rahiba-yoonus-80.jpg",
+          "bytes": 1355
+        }
+      ]
+    }
+  },
+  "student-raja-j": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-raja-j-80.avif",
+          "bytes": 855
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-raja-j-80.webp",
+          "bytes": 960
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-raja-j-80.jpg",
+          "bytes": 1397
+        }
+      ]
+    }
+  },
+  "student-revathy-t-a": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-revathy-t-a-80.avif",
+          "bytes": 1036
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-revathy-t-a-80.webp",
+          "bytes": 1284
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-revathy-t-a-80.jpg",
+          "bytes": 1677
+        }
+      ]
+    }
+  },
+  "student-riza-rahim": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-riza-rahim-80.avif",
+          "bytes": 1063
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-riza-rahim-80.webp",
+          "bytes": 1446
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-riza-rahim-80.jpg",
+          "bytes": 1754
+        }
+      ]
+    }
+  },
+  "student-s-santhoshkumar": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-s-santhoshkumar-80.avif",
+          "bytes": 884
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-s-santhoshkumar-80.webp",
+          "bytes": 954
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-s-santhoshkumar-80.jpg",
+          "bytes": 1477
+        }
+      ]
+    }
+  },
+  "student-sam-anil": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-sam-anil-80.avif",
+          "bytes": 1286
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-sam-anil-80.webp",
+          "bytes": 1730
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-sam-anil-80.jpg",
+          "bytes": 1940
+        }
+      ]
+    }
+  },
+  "student-satheesh-kumar": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-satheesh-kumar-80.avif",
+          "bytes": 1646
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-satheesh-kumar-80.webp",
+          "bytes": 2224
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-satheesh-kumar-80.jpg",
+          "bytes": 2249
+        }
+      ]
+    }
+  },
+  "student-seneeta-luiz": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-seneeta-luiz-80.avif",
+          "bytes": 999
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-seneeta-luiz-80.webp",
+          "bytes": 1170
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-seneeta-luiz-80.jpg",
+          "bytes": 1595
+        }
+      ]
+    }
+  },
+  "student-shahan-shaj": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-shahan-shaj-80.avif",
+          "bytes": 970
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-shahan-shaj-80.webp",
+          "bytes": 1274
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-shahan-shaj-80.jpg",
+          "bytes": 1656
+        }
+      ]
+    }
+  },
+  "student-shaiju-shaji": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-shaiju-shaji-80.avif",
+          "bytes": 925
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-shaiju-shaji-80.webp",
+          "bytes": 1136
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-shaiju-shaji-80.jpg",
+          "bytes": 1620
+        }
+      ]
+    }
+  },
+  "student-shamsiya-shukoor": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-shamsiya-shukoor-80.avif",
+          "bytes": 925
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-shamsiya-shukoor-80.webp",
+          "bytes": 1158
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-shamsiya-shukoor-80.jpg",
+          "bytes": 1653
+        }
+      ]
+    }
+  },
+  "student-shanhan": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-shanhan-80.avif",
+          "bytes": 1190
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-shanhan-80.webp",
+          "bytes": 1494
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-shanhan-80.jpg",
+          "bytes": 1819
+        }
+      ]
+    }
+  },
+  "student-sudharshan-k-s": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-sudharshan-k-s-80.avif",
+          "bytes": 990
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-sudharshan-k-s-80.webp",
+          "bytes": 1228
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-sudharshan-k-s-80.jpg",
+          "bytes": 1592
+        }
+      ]
+    }
+  },
+  "student-tamil-mani-govinthan": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-tamil-mani-govinthan-80.avif",
+          "bytes": 796
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-tamil-mani-govinthan-80.webp",
+          "bytes": 916
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-tamil-mani-govinthan-80.jpg",
+          "bytes": 1388
+        }
+      ]
+    }
+  },
+  "student-thangadurai-k": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-thangadurai-k-80.avif",
+          "bytes": 1159
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-thangadurai-k-80.webp",
+          "bytes": 1610
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-thangadurai-k-80.jpg",
+          "bytes": 2063
+        }
+      ]
+    }
+  },
+  "student-tijo-joseph": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-tijo-joseph-80.avif",
+          "bytes": 809
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-tijo-joseph-80.webp",
+          "bytes": 890
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-tijo-joseph-80.jpg",
+          "bytes": 1415
+        }
+      ]
+    }
+  },
+  "student-vijayraj-m": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-vijayraj-m-80.avif",
+          "bytes": 851
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-vijayraj-m-80.webp",
+          "bytes": 910
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-vijayraj-m-80.jpg",
+          "bytes": 1433
+        }
+      ]
+    }
+  },
+  "student-yahya-n-z": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-yahya-n-z-80.avif",
+          "bytes": 1018
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-yahya-n-z-80.webp",
+          "bytes": 1238
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-yahya-n-z-80.jpg",
+          "bytes": 1681
+        }
+      ]
+    }
+  },
+  "qs-hero-poster": {
+    "width": 1920,
+    "height": 1080,
+    "variants": {
+      "avif": [
+        {
+          "w": 1920,
+          "file": "img/qs-hero-poster-1920.avif",
+          "bytes": 42540
+        },
+        {
+          "w": 1280,
+          "file": "img/qs-hero-poster-1280.avif",
+          "bytes": 21842
+        },
+        {
+          "w": 768,
+          "file": "img/qs-hero-poster-768.avif",
+          "bytes": 9388
+        }
+      ],
+      "webp": [
+        {
+          "w": 1920,
+          "file": "img/qs-hero-poster-1920.webp",
+          "bytes": 72246
+        },
+        {
+          "w": 1280,
+          "file": "img/qs-hero-poster-1280.webp",
+          "bytes": 34734
+        },
+        {
+          "w": 768,
+          "file": "img/qs-hero-poster-768.webp",
+          "bytes": 14156
+        }
+      ],
+      "jpg": [
+        {
+          "w": 1920,
+          "file": "img/qs-hero-poster-1920.jpg",
+          "bytes": 97110
+        },
+        {
+          "w": 1280,
+          "file": "img/qs-hero-poster-1280.jpg",
+          "bytes": 47203
+        },
+        {
+          "w": 768,
+          "file": "img/qs-hero-poster-768.jpg",
+          "bytes": 19306
+        }
+      ]
+    }
+  },
+  "qs-xray-concrete": {
+    "width": 1536,
+    "height": 1024,
+    "variants": {
+      "avif": [
+        {
+          "w": 1536,
+          "file": "img/qs-xray-concrete-1536.avif",
+          "bytes": 68031
+        },
+        {
+          "w": 1024,
+          "file": "img/qs-xray-concrete-1024.avif",
+          "bytes": 35030
+        },
+        {
+          "w": 768,
+          "file": "img/qs-xray-concrete-768.avif",
+          "bytes": 20993
+        }
+      ],
+      "webp": [
+        {
+          "w": 1536,
+          "file": "img/qs-xray-concrete-1536.webp",
+          "bytes": 113792
+        },
+        {
+          "w": 1024,
+          "file": "img/qs-xray-concrete-1024.webp",
+          "bytes": 58946
+        },
+        {
+          "w": 768,
+          "file": "img/qs-xray-concrete-768.webp",
+          "bytes": 34822
+        }
+      ],
+      "jpg": [
+        {
+          "w": 1536,
+          "file": "img/qs-xray-concrete-1536.jpg",
+          "bytes": 134399
+        },
+        {
+          "w": 1024,
+          "file": "img/qs-xray-concrete-1024.jpg",
+          "bytes": 66601
+        },
+        {
+          "w": 768,
+          "file": "img/qs-xray-concrete-768.jpg",
+          "bytes": 39243
+        }
+      ]
+    }
+  },
+  "qs-xray-steel": {
+    "width": 1536,
+    "height": 1024,
+    "variants": {
+      "avif": [
+        {
+          "w": 1536,
+          "file": "img/qs-xray-steel-1536.avif",
+          "bytes": 77309
+        },
+        {
+          "w": 1024,
+          "file": "img/qs-xray-steel-1024.avif",
+          "bytes": 40882
+        },
+        {
+          "w": 768,
+          "file": "img/qs-xray-steel-768.avif",
+          "bytes": 25144
+        }
+      ],
+      "webp": [
+        {
+          "w": 1536,
+          "file": "img/qs-xray-steel-1536.webp",
+          "bytes": 143096
+        },
+        {
+          "w": 1024,
+          "file": "img/qs-xray-steel-1024.webp",
+          "bytes": 76534
+        },
+        {
+          "w": 768,
+          "file": "img/qs-xray-steel-768.webp",
+          "bytes": 46238
+        }
+      ],
+      "jpg": [
+        {
+          "w": 1536,
+          "file": "img/qs-xray-steel-1536.jpg",
+          "bytes": 166336
+        },
+        {
+          "w": 1024,
+          "file": "img/qs-xray-steel-1024.jpg",
+          "bytes": 83989
+        },
+        {
+          "w": 768,
+          "file": "img/qs-xray-steel-768.jpg",
+          "bytes": 49817
         }
       ]
     }
