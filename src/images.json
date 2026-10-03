@@ -464,6 +464,78 @@
       ]
     }
   },
+  "band-desk": {
+    "width": 2560,
+    "height": 1702,
+    "variants": {
+      "avif": [
+        {
+          "w": 2560,
+          "file": "img/band-desk-2560.avif",
+          "bytes": 115787
+        },
+        {
+          "w": 2048,
+          "file": "img/band-desk-2048.avif",
+          "bytes": 86032
+        },
+        {
+          "w": 1536,
+          "file": "img/band-desk-1536.avif",
+          "bytes": 57247
+        },
+        {
+          "w": 1024,
+          "file": "img/band-desk-1024.avif",
+          "bytes": 31214
+        }
+      ],
+      "webp": [
+        {
+          "w": 2560,
+          "file": "img/band-desk-2560.webp",
+          "bytes": 165936
+        },
+        {
+          "w": 2048,
+          "file": "img/band-desk-2048.webp",
+          "bytes": 128474
+        },
+        {
+          "w": 1536,
+          "file": "img/band-desk-1536.webp",
+          "bytes": 86632
+        },
+        {
+          "w": 1024,
+          "file": "img/band-desk-1024.webp",
+          "bytes": 50178
+        }
+      ],
+      "jpg": [
+        {
+          "w": 2560,
+          "file": "img/band-desk-2560.jpg",
+          "bytes": 269240
+        },
+        {
+          "w": 2048,
+          "file": "img/band-desk-2048.jpg",
+          "bytes": 194436
+        },
+        {
+          "w": 1536,
+          "file": "img/band-desk-1536.jpg",
+          "bytes": 123897
+        },
+        {
+          "w": 1024,
+          "file": "img/band-desk-1024.jpg",
+          "bytes": 64774
+        }
+      ]
+    }
+  },
   "trainer-ali-orkkatteri": {
     "width": 224,
     "height": 224,

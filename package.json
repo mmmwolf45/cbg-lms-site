@@ -11,6 +11,7 @@
     "content:check": "tsx scripts/content-check.ts",
     "images": "tsx scripts/images.ts",
     "explode-frames": "tsx scripts/explode-frames.ts",
+    "band-objects": "tsx scripts/band-objects.ts",
     "scrub-frames": "tsx scripts/scrub-frames.ts",
     "test:e2e": "playwright test",
     "check:size": "tsx scripts/check-size.ts"

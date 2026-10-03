@@ -203,9 +203,20 @@ describe('home course cards', () => {
 describe('home band', () => {
   it('shows only once its image is built', () => {
     expect(html.includes('id="cbg-band"')).toBe(bandBuilt);
-    const out = home({ ...h, band: { image: 'closing-plate' } }, courses);
+    const out = home({ ...h, band: { image: 'closing-plate', alt: 'A desk' } }, courses);
     expect(sectionHtml(out, 'band')).toMatch(/data-cbg-parallax[^]*closing-plate-1536\.avif/);
-    expect(home({ ...h, band: { image: 'not-built-yet' } }, courses)).not.toContain('id="cbg-band"');
+    expect(home({ ...h, band: { image: 'not-built-yet', alt: 'A desk' } }, courses)).not.toContain('id="cbg-band"');
     expect(home({ ...h, band: undefined }, courses)).not.toContain('id="cbg-band"');
+  });
+
+  it('is the floating desk: one labelled picture, three sized cut-outs that react to the pointer', () => {
+    const band = sectionHtml(html, 'band');
+    expect(band).toContain(`role="img" aria-label="${h.band!.alt}"`);
+    expect(band).toContain('data-cbg-desk');
+    for (const name of ['plans', 'laptop', 'helmet']) {
+      expect(band).toMatch(new RegExp(`cbg-desk__obj--${name}" data-cbg-desk-object data-depth="[0-9.]+" data-spin="[yz]"`));
+      expect(band).toMatch(new RegExp(`band-desk/${name}-[0-9]+[.]avif [0-9]+w`));
+    }
+    expect(band.match(/<img [^>]*width="\d+" height="\d+" alt=""/g)!.length).toBe(4); // the photo and three cut-outs, all sized
   });
 });

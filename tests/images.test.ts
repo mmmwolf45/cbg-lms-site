@@ -6,6 +6,7 @@ import images from '../src/images.json';
 const OPTIONAL: Record<string, number> = {
   'course-iosh': 60, 'course-qs': 60, 'course-mep': 60, 'course-structural': 60, 'course-bim': 60, 'course-interior': 60,
   'band-classroom': 150,
+  'band-desk': 260,
   'qs-hero-poster': 180, 'qs-xray-concrete': 200, 'qs-xray-steel': 200,
 };
 // QS learner photos: one student-<slug> per .jpg in brand/assets/students.

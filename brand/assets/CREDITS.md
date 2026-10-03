@@ -23,5 +23,7 @@
 | hero-explode/poster.png | First frame of explode-a.mp4 (scripts/explode-frames.ts) | CBG |
 | qs-hero/build.mp4, plan.png, villa.png, poster.png | Generated with Higgsfield for CBG, 4 Oct 2026: GPT Image 2.5 keyframes, Wan 3.0 first/last-frame video; poster is the last frame | CBG |
 | photos/qs-xray-concrete.png, photos/qs-xray-steel.png | Generated with Higgsfield for CBG, 4 Oct 2026: GPT Image 2.5, steel version edited from the concrete image | CBG |
+| photos/band-desk.png | band-classroom.png with the laptop, hard hat and plans removed: GPT Image 2.5 edit on Higgsfield, upscaled to 4K (4 Oct 2026) | CBG |
+| band-objects/plans.png, laptop.png, helmet.png | Isolated from band-classroom.png onto transparent backgrounds with GPT Image 2.5 on Higgsfield (4 Oct 2026) | CBG |
 
 Add a row for every image you add: stock photos with the Pexels / Unsplash URL and photographer, AI images with the tool and date.

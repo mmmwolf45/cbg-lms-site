@@ -34,7 +34,8 @@ const homeShape = {
   'how-it-works': { heading: s, steps: [titled] },
   // A full-width photo band. `image` is a name from src/images.json; the band is left out until
   // `npm run images` has built it.
-  'band?': { image: s },
+  // `alt`: the band is one picture to screen readers (the desk scene); its objects are decorative layers.
+  'band?': { image: s, alt: s },
   courses: { heading: s, intro: s },
   support: { heading: s, body: s, whatsapp, emails: [email] },
   about: { heading: s, body: s, 'highlight?': s, logos, link },
