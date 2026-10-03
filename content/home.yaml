@@ -22,7 +22,10 @@
 
 hero:
   eyebrow: Carbon Blue Global Training Institute
-  heading: Welcome to your CBG classroom
+  # "CBG" left the headline on 3 Oct 2026: the CBG mark stands behind the building instead, and the
+  # last word ("classroom") carries the gold.
+  heading: Welcome to your classroom
+  subhead: Your courses, live class links and study materials, all in one place.
   primaryCta:
     label: Log in
     action: login
@@ -31,7 +34,7 @@ hero:
     number: "+974 7048 5638"
     href: https://wa.me/97470485638
   # Alt text of the hero picture: the first frame of the exploding-building footage (the floors then
-  # lift apart as the page scrolls). The subhead was dropped on 3 Oct 2026 with the new hero.
+  # lift apart as the page scrolls).
   imageAlt: A modern office building at dusk, every floor lit, its floors about to lift apart
 
 # Under the hero. The numbers of courses and languages are counted from content/courses/*.yaml when the

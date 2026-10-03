@@ -56,4 +56,12 @@ describe('exploding-building hero', () => {
     expect(html.match(/cbg-w--dim/g)).toHaveLength(1);
     expect(words('Hello <b> & you')).not.toContain('<b>'); // escaped
   });
+
+  it('without CBG: Welcome / to your / classroom, the last word in gold', () => {
+    const html = words('Welcome to your classroom');
+    expect(html.match(/cbg-explode__line/g)).toHaveLength(3);
+    expect(html.match(/cbg-w--gold/g)).toHaveLength(1);
+    expect(html).toMatch(/cbg-w--gold"><span class="cbg-l">c<\/span>/);
+    expect(html).not.toContain('cbg-w--dim');
+  });
 });

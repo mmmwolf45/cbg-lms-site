@@ -30,7 +30,7 @@ export function loadOrder(n: number): number[] {
 // k = its place among m words on the line. "far" is the muted word ("classroom"), which eases back a
 // little but stays sharp (no blur or fade: it read as out of focus, 3 Oct 2026). Units: em and degrees.
 export function wordPose(e: number, li: number, c: number, k: number, m: number, far: boolean) {
-  const dy = ((li - c) * 0.46 - 0.1) * e; // lines separate, biased upward (keeps the last line off the buttons)
+  const dy = ((li - c) * 0.32 - 0.2) * e; // lines separate, biased upward (the last line stays clear of the subtitle)
   const dx = (m > 1 ? (k - (m - 1) / 2) * 0.28 : li % 2 ? 0.1 : -0.1) * e; // words drift apart
   const rot = (li - c) * (li % 2 ? -1.6 : 1.6) * e;
   const scale = far ? 1 - 0.07 * e : li === 0 ? 1 + 0.03 * e : 1;
@@ -53,6 +53,7 @@ function run(section: HTMLElement): () => void {
   const film = section.querySelector<HTMLElement>('.cbg-explode__film');
   const canvas = section.querySelector<HTMLCanvasElement>('.cbg-explode__canvas');
   const words = [...section.querySelectorAll<HTMLElement>('.cbg-w')];
+  const chip = section.querySelector<HTMLElement>('.cbg-explode__chip');
   const ctx = canvas?.getContext('2d');
   if (!pin || !stage || !film || !canvas || !ctx || !words.length) return () => {};
 
@@ -149,6 +150,8 @@ function run(section: HTMLElement): () => void {
   const pose = (e: number) => {
     if (Math.abs(e - lastE) < 0.001) return;
     lastE = e;
+    // The chip steps aside as the first line rises into its place; it returns on scroll up.
+    if (chip) chip.style.opacity = e > 0.001 ? (1 - Math.min(1, e * 1.8)).toFixed(3) : '';
     const c = (lines.length - 1) / 2;
     lines.forEach((L, li) =>
       L.words.forEach((wi, k) => {
@@ -201,6 +204,7 @@ function run(section: HTMLElement): () => void {
     if (raf) win.cancelAnimationFrame(raf);
     frames.forEach((f) => f && (f.onload = f.onerror = null));
     clear();
+    if (chip) chip.style.opacity = '';
     film.style.transform = '';
     canvas.classList.remove('is-on');
     canvas.width = canvas.height = 960;

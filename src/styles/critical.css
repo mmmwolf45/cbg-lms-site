@@ -47,8 +47,10 @@ html.cbg-route-home .cbg-explode__film{position:absolute;inset:0}
 html.cbg-route-home :is(.cbg-explode__poster,.cbg-explode__canvas){position:absolute;left:50%;top:50%;height:min(94%,118vw);width:auto;aspect-ratio:1;max-width:none;transform:translate(-50%,-52%)}
 html.cbg-route-home .cbg-explode__poster img{display:block;width:100%;height:100%}
 html.cbg-route-home .cbg-explode__canvas{opacity:0}
-html.cbg-route-home .cbg-explode__headline{position:absolute;inset:0 0 8% 0;display:grid;place-items:center;padding:0 16px}
-html.cbg-route-home .cbg-explode__title{margin:0;text-align:center;font:800 min(clamp(4rem,13vw,12rem),calc((100vw - 32px)/6.1))/.9 "Plus Jakarta Sans",cbg-pjs-fb,sans-serif;letter-spacing:-.05em}
+html.cbg-route-home .cbg-explode__mark{position:absolute;left:50%;top:50%;height:min(78%,96vw);width:auto;aspect-ratio:1;max-width:none;transform:translate(-50%,-54%);opacity:.04}
+html.cbg-route-home .cbg-explode__sub{position:absolute;left:0;right:0;margin:0 auto;padding:0 16px;max-width:72ch;text-align:center;bottom:calc(max(24px,calc(50% - min(47%,59vw) + 12px)) + 66px);font:400 clamp(1.0625rem,1.5vw,1.25rem)/1.45 "Source Sans 3",sans-serif}
+html.cbg-route-home .cbg-explode__headline{position:absolute;inset:0 0 15% 0;display:grid;place-items:center;padding:0 16px}
+html.cbg-route-home .cbg-explode__title{margin:0;text-align:center;font:800 min(clamp(4rem,13vw,12rem),calc((100vw - 32px)/6.1),calc((100svh - 56px)*.2))/.9 "Plus Jakarta Sans",cbg-pjs-fb,sans-serif;letter-spacing:-.05em}
 html.cbg-route-home .cbg-explode__line{display:block;white-space:nowrap}
 html.cbg-js.cbg-route-home .cbg-explode__words:not(.is-ready){visibility:hidden}
 html.cbg-route-home .cbg-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
@@ -56,3 +58,4 @@ html.cbg-route-home .cbg-explode__chip{position:absolute;left:50%;top:max(14px,c
 html.cbg-route-home .cbg-explode__btns{position:absolute;left:0;right:0;bottom:max(24px,calc(50% - min(47%,59vw) + 12px));display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:0 16px}
 html.cbg-route-home .cbg-explode__btns .cbg-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 24px;border:1px solid transparent;border-radius:999px;font:700 1rem/1 "Plus Jakarta Sans",cbg-pjs-fb,sans-serif;white-space:nowrap}
 html.cbg-route-home .cbg-explode__btns svg{width:18px;height:18px}
+html.cbg-route-home .cbg-explode__btns .cbg-btn--ghost{border-color:rgba(255,255,255,.16)}

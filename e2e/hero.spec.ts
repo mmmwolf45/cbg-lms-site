@@ -53,16 +53,31 @@ async function openHome(page: Page) {
 test.describe('laptop, full motion', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
 
+  test('the subtitle sits between the headline and the buttons, the faint mark behind the building', async ({ page }) => {
+    await localPages(page);
+    await openHome(page);
+    const [title, sub, btns] = await Promise.all(['.cbg-explode__title', '.cbg-explode__sub', '.cbg-explode__btns'].map((s) => page.locator(s).boundingBox()));
+    expect(sub!.y).toBeGreaterThan(title!.y + title!.height);
+    expect(sub!.y + sub!.height).toBeLessThanOrEqual(btns!.y);
+    await expect(page.locator('.cbg-explode__sub')).toHaveText('Your courses, live class links and study materials, all in one place.');
+    const mark = page.locator('.cbg-explode__mark');
+    await expect.poll(() => mark.evaluate((i: HTMLImageElement) => i.complete && i.naturalWidth)).toBe(900);
+    expect(await mark.evaluate((i) => getComputedStyle(i).opacity)).toBe('0.04');
+    expect(await page.locator('.cbg-explode__canvas').evaluate((c) => getComputedStyle(c).mixBlendMode)).toBe('lighten');
+  });
+
   test('one real h1 in three fixed lines; chip above, buttons below, Log in clickable', async ({ page }) => {
     await localPages(page);
     await openHome(page);
     // Screen readers get the sentence once (the split copy is aria-hidden).
-    await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('Welcome to your CBG classroom');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('Welcome to your classroom');
     await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
     await expect(page.locator('.cbg-explode__line')).toHaveCount(3);
     const [chip, title, btns] = await Promise.all(['.cbg-explode__chip', '.cbg-explode__title', '.cbg-explode__btns'].map((s) => page.locator(s).boundingBox()));
     expect(chip!.y + chip!.height).toBeLessThan(title!.y);
     expect(btns!.y).toBeGreaterThan(title!.y + title!.height);
+    // The ghost button keeps its outline (a first-paint rule once made it transparent).
+    expect(await page.locator('.cbg-explode__btns .cbg-btn--ghost').evaluate((b) => getComputedStyle(b).borderTopColor)).not.toBe('rgba(0, 0, 0, 0)');
     const login = page.locator('.cbg-explode__btns [data-cbg-action="login"]');
     const b = (await login.boundingBox())!;
     expect(await page.evaluate(([x, y]) => !!document.elementFromPoint(x!, y!)?.closest('[data-cbg-action="login"]'), [b.x + b.width / 2, b.y + b.height / 2])).toBe(true);
@@ -93,6 +108,9 @@ test.describe('laptop, full motion', () => {
     expect(end.stageTop).toBe(56); // held under the navbar
     expect(end.moved).toBeGreaterThan(3); // the headline came apart
     expect(end.firstLineY).toBeLessThan(start.firstLineY);
+    expect(await page.locator('.cbg-explode__chip').evaluate((c) => getComputedStyle(c).opacity)).toBe('0'); // the chip stepped aside
+    const gap = await page.evaluate(() => document.querySelector('.cbg-explode__sub')!.getBoundingClientRect().top - Math.max(...[...document.querySelectorAll('.cbg-w')].map((w) => w.getBoundingClientRect().bottom)));
+    expect(gap).toBeGreaterThan(0); // "classroom" never lands on the subtitle
     expect(start.frame).toBe(0);
     expect(end.frame).toBe(47); // the last frame is on the canvas: the building fully apart
     await scrollHero(page, 0);

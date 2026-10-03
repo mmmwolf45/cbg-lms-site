@@ -11,7 +11,8 @@
 
 ## [hero] Welcome
 - **Eyebrow:** CBG Training Institute · IOSH Approved Study Centre 1003
-- **Headline:** Welcome to your CBG classroom
+- **Headline:** Welcome to your classroom
+- **Subhead:** Your courses, live class links and study materials, all in one place.
 - **Primary CTA:** Log in → the course.link login. If logged in: "Go to my courses" → the user's courses.
 - **Secondary CTA:** Need help? → WhatsApp +974 7048 5638
 - **Visual idea:** navy band with the CBG mark and an engineered line-drawing motif (site grid, blueprint lines) that draws on load.

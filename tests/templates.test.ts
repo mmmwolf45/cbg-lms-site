@@ -68,8 +68,15 @@ describe('home block', () => {
     const words = (x: string) => x.replace(/<[^>]+>/g, ' ').replace(/ (?=\S) /g, ' ').split(/\s+/).filter(Boolean);
     expect(words(split.replace(/<\/span><span class="cbg-l">/g, ''))).toEqual(h.hero.heading.split(' '));
     expect(split.match(/cbg-explode__line/g)).toHaveLength(3); // Welcome / to your CBG / classroom
-    expect(split).toContain('<span class="cbg-w cbg-w--gold"><span class="cbg-l">C</span>');
-    expect(split).toContain('cbg-w--dim');
+    // "Welcome / to your / classroom": the last word carries the gold (the CBG mark sits behind the building).
+    expect(split).toMatch(/cbg-w--gold"><span class="cbg-l">c<\/span>/);
+    expect(split).not.toContain('cbg-w--dim');
+  });
+
+  it('puts the subtitle and the faint CBG mark in the hero', () => {
+    const hero = sectionHtml(html, 'hero');
+    expect(hero).toContain(`<p class="cbg-explode__sub">${h.hero.subhead}</p>`);
+    expect(hero).toMatch(/<img class="cbg-explode__mark" src="https:\/\/[^"]+\/brand\/cbg-mark-900\.webp" width="900" height="900" alt=""/);
   });
 
   it('speaks for the whole institute: IOSH appears only on the IOSH course card', () => {

@@ -10,8 +10,9 @@
    screen taller and the stage is sticky, so it holds while the frames play; otherwise it is one screen,
    showing the assembled building and the whole headline. */
 .cbg-hero.cbg-section { padding: 0; }
-/* Poster scale; on phones capped so the widest line ("to your CBG", about 5.9em) fits. */
-.cbg-explode { --cbg-h1: min(clamp(4rem, 13vw, 12rem), calc((100vw - 32px) / 6.1)); }
+/* Poster scale, capped by width (the widest line must fit a phone) and by height (three lines must fit
+   between the chip and the subtitle on short laptop screens). */
+.cbg-explode { --cbg-h1: min(clamp(4rem, 13vw, 12rem), calc((100vw - 32px) / 6.1), calc((100svh - 56px) * 0.2)); }
 .cbg-explode__stage { position: relative; height: calc(100svh - 56px); min-height: 520px; overflow: hidden; perspective: 1400px; }
 @media (prefers-reduced-motion: no-preference) {
   html.cbg-js .cbg-explode { height: calc(150svh - 56px); }
@@ -25,12 +26,20 @@
   -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
   mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
 }
+/* The CBG mark, very faint, behind the building (approved at 4%, in colour). The footage and poster use
+   lighten, so the mark shows through the navy sky and the gaps between floors while the lit building
+   stays in front. All three share the film's stacking context (its tilt), so the blend reaches the mark. */
+.cbg-explode__mark {
+  position: absolute; left: 50%; top: 50%; height: min(78%, 96vw); width: auto; aspect-ratio: 1; max-width: none;
+  transform: translate(-50%, -54%); opacity: 0.04;
+}
+.cbg-explode__poster, .cbg-explode__canvas { mix-blend-mode: lighten; }
 .cbg-explode__poster { display: block; }
 .cbg-explode__poster img { width: 100%; height: 100%; object-fit: cover; }
 .cbg-explode__canvas { display: block; opacity: 0; transition: opacity var(--cbg-dur) var(--cbg-ease); }
 .cbg-explode__canvas.is-on { opacity: 1; }
-/* Centred without a transform on its box: insetting the bottom by 8% puts the centre at 46%. */
-.cbg-explode__headline { position: absolute; inset: 0 0 8% 0; display: grid; place-items: center; padding: 0 16px; pointer-events: none; }
+/* Centred without a transform on its box: insetting the bottom by 15% puts the centre at 42.5%. */
+.cbg-explode__headline { position: absolute; inset: 0 0 15% 0; display: grid; place-items: center; padding: 0 16px; pointer-events: none; }
 .cbg-explode__title {
   margin: 0; max-width: 100%; text-align: center; color: var(--cbg-text-1);
   font: 800 var(--cbg-h1) / 0.9 var(--cbg-font-display); letter-spacing: -0.05em;
@@ -49,6 +58,14 @@ html.cbg-js .cbg-explode__words:not(.is-ready) { visibility: hidden; }
   position: absolute; left: 50%; top: max(14px, calc(50% - min(48.9%, 61.4vw) - 30px)); transform: translateX(-50%);
   white-space: nowrap; background: rgba(8, 18, 38, 0.6);
 }
+/* The subtitle: under the headline, just above the buttons; it stays still while the headline moves. */
+.cbg-explode__sub {
+  position: absolute; left: 0; right: 0; margin: 0 auto; padding: 0 16px; max-width: 72ch; text-align: center;
+  bottom: calc(max(24px, calc(50% - min(47%, 59vw) + 12px)) + 66px);
+  font: 400 clamp(1.0625rem, 1.5vw, 1.25rem) / 1.45 var(--cbg-font-body); color: var(--cbg-text-2);
+  text-shadow: 0 0 2px rgba(8, 18, 38, 0.9), 0 0 22px rgba(8, 18, 38, 0.95);
+}
+.cbg-explode__chip { transition: opacity 0.2s linear; }
 .cbg-explode__btns {
   position: absolute; left: 0; right: 0; bottom: max(24px, calc(50% - min(47%, 59vw) + 12px));
   justify-content: center; padding: 0 16px;
