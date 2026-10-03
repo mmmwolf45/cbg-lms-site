@@ -28,6 +28,9 @@ jobs:
       - run: npm run build
       # The local course.link mock is for development only.
       - run: rm -rf dist/preview
+      # Keep the last builds' hashed JS/CSS: a browser holding a manifest from before this deploy
+      # (cached up to 10 minutes) must still find the files it names (scripts/keep-previous.ts).
+      - run: npx tsx scripts/keep-previous.ts
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
