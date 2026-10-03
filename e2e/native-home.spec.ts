@@ -8,6 +8,18 @@ const BUNDLE_CSS = '**/cbg-lms-site/cbg.*.css';
 const htmlClass = (page: Page) => page.evaluate(() => document.documentElement.className);
 const style = (page: Page, sel: string, prop: string) =>
   page.locator(sel).first().evaluate((el, p) => getComputedStyle(el).getPropertyValue(p), prop);
+// The page is dark: navy canvas colour on <html>, see-through body, the still gradient on body::before
+// (the moving canvas goes over it). Stock course.link paints a white body instead.
+const pageDark = (page: Page) =>
+  page.evaluate(
+    ([dark]) => {
+      const html = getComputedStyle(document.documentElement).backgroundColor;
+      const body = getComputedStyle(document.body).backgroundColor;
+      const layer = getComputedStyle(document.body, '::before').backgroundImage;
+      return html === dark && body === 'rgba(0, 0, 0, 0)' && layer.includes('radial-gradient');
+    },
+    [DARK],
+  );
 // Only the main CSS sets backdrop-filter, so this tells us it has been applied.
 const mainCssApplied = (page: Page) => style(page, '#navbar', 'backdrop-filter');
 
@@ -46,7 +58,7 @@ test.describe('home route, bundle loaded', () => {
     await expect.poll(() => mainCssApplied(page)).toContain('blur');
     expect(await htmlClass(page)).toContain('cbg-route-home');
 
-    expect(await style(page, 'body', 'background-color')).toBe(DARK);
+    expect(await pageDark(page)).toBe(true);
     expect((await paint(page, '#navbar')).bgLum).toBeLessThan(0.02);
 
     for (const sel of [LOGIN, REGISTER]) {
@@ -84,7 +96,7 @@ test('course route shares the dark chrome', async ({ page }) => {
   await page.goto('/course/preview-101');
   await expect.poll(() => htmlClass(page)).toBe('cbg-js cbg-route-course');
   await expect.poll(() => mainCssApplied(page)).toContain('blur');
-  expect(await style(page, 'body', 'background-color')).toBe(DARK);
+  expect(await pageDark(page)).toBe(true);
   expect((await paint(page, '#navbar')).bgLum).toBeLessThan(0.02);
   expect(await style(page, LOGIN, 'background-color')).toBe('rgba(0, 0, 0, 0)');
 });
@@ -100,12 +112,12 @@ test('critical CSS alone keeps home dark until the fail-safe, then the page is s
 
   expect(await htmlClass(page)).toBe('cbg-js cbg-route-home');
   expect(await mainCssApplied(page)).toBe('none');
-  expect(await style(page, 'body', 'background-color')).toBe(DARK);
+  expect(await pageDark(page)).toBe(true);
   expect((await paint(page, '#navbar')).bgLum).toBeLessThan(0.02);
   expect((await paint(page, LOGIN)).ratio).toBeGreaterThanOrEqual(4.5);
 
   await expect.poll(() => htmlClass(page), { timeout: 6000 }).toBe('cbg-off');
-  expect(await style(page, 'body', 'background-color')).not.toBe(DARK);
+  expect(await pageDark(page)).toBe(false);
   expect(await style(page, '#navbar', 'background-color')).toBe('rgb(255, 255, 255)');
   await page.unrouteAll({ behavior: 'ignoreErrors' });
 });

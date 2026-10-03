@@ -20,6 +20,8 @@ Build fully custom, animated, dark pages for CBG's student site on course.link (
 
 **Look:** The Generalist's restraint (dark canvas, white text in three strengths, one rare accent, two-tone headlines, chips, hairlines), translated into CBG navy-black and gold. There's more motion than The Generalist, but it should feel engineered and calm, never bouncy. Full rationale: `docs/intent/cbg-lms-site.md`.
 
+**Page background (3 Oct 2026, "Flow on scroll"):** on home and course pages the canvas is a navy gradient, darker at the edges. A still version (fixed `body::before`, critical.css) is the first paint and the fallback; `src/motion/flow.ts` draws flowing navy and blue waves on a fixed WebGL canvas over it (about a third of screen resolution, about 1.4 KB). Scroll position is its clock, so it moves only while the page scrolls and stays still under reduced motion. Body, our block roots, the course header band and the course wrapper are see-through; panels (enrol card, logo panels, cards) keep their own fills. Muted text keeps at least 4.5:1 against the brightest pixel (measured 4.8:1).
+
 ### Capability map
 The work splits into modules that can be built and checked separately. Module ids are stable.
 

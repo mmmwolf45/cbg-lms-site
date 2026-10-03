@@ -146,9 +146,10 @@
 .cbg-tasks__title { margin-bottom: var(--cbg-s4); font-size: 1.125rem; font-weight: 700; }
 .cbg-quads {
   display: grid; grid-template-columns: 1fr 1fr; gap: 1px; overflow: hidden;
-  border: 1px solid var(--cbg-line); border-radius: var(--cbg-r-card); background: var(--cbg-line);
+  border: 1px solid var(--cbg-line); border-radius: var(--cbg-r-card);
 }
-.cbg-quads li { display: flex; flex-direction: column; gap: var(--cbg-s3); min-height: 148px; padding: 20px; background: var(--cbg-bg); }
+/* See-through tiles over the page gradient, hairlines drawn as in .cbg-facts (components.css). */
+.cbg-quads li { display: flex; flex-direction: column; gap: var(--cbg-s3); min-height: 148px; padding: 20px; box-shadow: 1px 0 0 var(--cbg-line), 0 1px 0 var(--cbg-line), 1px 1px 0 var(--cbg-line); }
 /* An odd number of tasks: the last tile spans the row (no empty cell showing the line colour). */
 .cbg-quads li:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .cbg-quads__name { display: block; font: 600 1rem / 1.3 var(--cbg-font-display); color: var(--cbg-text-1); }

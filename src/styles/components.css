@@ -85,10 +85,12 @@
 /* Facts: a hairline grid of big numbers */
 .cbg-facts {
   display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; overflow: hidden;
-  border: 1px solid var(--cbg-line); border-radius: var(--cbg-r-card); background: var(--cbg-line);
+  border: 1px solid var(--cbg-line); border-radius: var(--cbg-r-card);
 }
 @media (min-width: 640px) { .cbg-facts { grid-template-columns: repeat(3, 1fr); } }
-.cbg-fact { padding: var(--cbg-s4) var(--cbg-s5); background: var(--cbg-bg); }
+/* See-through cells over the page gradient: each draws the hairline in the 1px gap to its right and below
+   (the container clips the ones at its edges). */
+.cbg-fact { padding: var(--cbg-s4) var(--cbg-s5); box-shadow: 1px 0 0 var(--cbg-line), 0 1px 0 var(--cbg-line), 1px 1px 0 var(--cbg-line); }
 .cbg-fact b { display: block; font: 800 2rem / 1.1 var(--cbg-font-display); letter-spacing: -0.02em; color: var(--cbg-text-1); }
 .cbg-fact span { font-size: var(--cbg-fs-small); color: var(--cbg-text-3); }
 .cbg-fact--text b { font-size: 1.0625rem; padding-top: 10px; }

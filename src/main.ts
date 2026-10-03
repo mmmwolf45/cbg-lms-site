@@ -11,6 +11,7 @@ import './styles/native-overrides.css';
 import { routeOf, type Route } from './pages';
 import { watchRoutes } from './router';
 import { failOpen, failed, setupMotion, type Enhancer } from './motion/setup';
+import { flowBackground } from './motion/flow';
 
 export type Teardown = () => void;
 export type Setups = Record<Route, () => Teardown>;
@@ -90,6 +91,11 @@ function start() {
       const go = pageSwitcher(setups, root);
       go(location.pathname);
       watchRoutes(go, undefined, (path) => setRouteClass(root, path));
+    } catch (err) {
+      warn(err);
+    }
+    try {
+      flowBackground(); // decorative: if it fails, the still gradient stays
     } catch (err) {
       warn(err);
     }

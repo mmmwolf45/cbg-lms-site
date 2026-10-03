@@ -131,9 +131,49 @@ html:is(.cbg-route-home, .cbg-route-course) {
   scrollbar-color: rgba(255, 255, 255, 0.22) var(--cbg-bg);
 }
 
-html:is(.cbg-route-home, .cbg-route-course) body {
+/* The page background: the canvas colour on <html>, a still gradient on a fixed body::before layer
+   (z-index -1 sits above the root background and below everything in the page), and body, our blocks,
+   the course header band and the course wrapper see-through. src/motion/flow.ts draws the moving version
+   on a canvas over the still one. Also in critical.css, so the first paint already has it. */
+html:is(.cbg-route-home, .cbg-route-course) {
   background: var(--cbg-bg);
 }
+html:is(.cbg-route-home, .cbg-route-course) body {
+  background: transparent;
+}
+html:is(.cbg-route-home, .cbg-route-course) body::before {
+  content: "";
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100lvh; /* the tallest viewport (phone address bar hidden), so no gap as the bar moves */
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 28% 12%, rgba(32, 55, 105, 0.55), transparent 60%),
+    radial-gradient(140% 120% at 50% 40%, #0A1830 0%, #081226 45%, #040A17 100%);
+}
+html:is(.cbg-route-home, .cbg-route-course) [data-cbg] {
+  background: transparent;
+}
+/* The moving version (src/motion/flow.ts): same layer as body::before, later in the page so above it.
+   It fades in after its first frame; on other routes it is hidden and never drawn. */
+.cbg-flow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100lvh;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s var(--cbg-ease);
+}
+.cbg-flow.is-on { opacity: 1; }
+html:not(.cbg-route-home):not(.cbg-route-course) .cbg-flow { display: none; }
 
 html:is(.cbg-route-home, .cbg-route-course) #navbar {
   background: rgba(8, 18, 38, 0.72); /* --cbg-bg at 72% */
@@ -225,16 +265,17 @@ html.cbg-route-home:has([data-cbg="home"]) #courses {
 /* 1b. course.link's course page adds `<style data-rh>body{background:white!important}</style>`
    (react-helmet), which beats rule 1. Our selector is more specific, so our !important wins. */
 html.cbg-route-course body {
-  background: var(--cbg-bg) !important;
+  background: transparent !important;
 }
 
-/* 8. Header band: navy-black with a faint blueprint grid, painted over the inline theme colour. */
+/* 8. Header band: a faint blueprint grid over the page gradient. The inline theme colour is a
+   background-color, which only an !important of ours can clear. */
 html.cbg-route-course #course-header-bg {
+  background-color: transparent !important;
   background-image:
     repeating-linear-gradient(0deg, rgba(148, 172, 220, 0.06) 0 1px, transparent 1px 48px),
     repeating-linear-gradient(90deg, rgba(148, 172, 220, 0.06) 0 1px, transparent 1px 48px),
-    radial-gradient(70% 90% at 85% 0%, var(--cbg-glow), transparent 70%),
-    linear-gradient(var(--cbg-bg-2), var(--cbg-bg-2));
+    radial-gradient(70% 90% at 85% 0%, var(--cbg-glow), transparent 70%);
 }
 
 html.cbg-route-course #course-header-bg > [aria-hidden="true"] {
@@ -315,9 +356,10 @@ html.cbg-route-course #course-header :has(> #widget2) {
   overflow: clip;
 }
 
-/* 12. Main wrapper W: dark, and course.link's colour variables redefined for everything inside. */
+/* 12. Main wrapper W: see-through (the page gradient shows), and course.link's colour variables
+   redefined dark for everything inside. */
 html.cbg-route-course #react-root > div:has(#course_content) {
-  background: var(--cbg-bg);
+  background: transparent;
   color: var(--cbg-text-2);
   --background: var(--cbg-bg);
   --foreground: var(--cbg-text-1);

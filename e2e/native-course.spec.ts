@@ -10,6 +10,16 @@ const BUNDLE_CSS = '**/cbg-lms-site/cbg.*.css';
 const COURSE = '/course/preview-101';
 const SCREENS = 'test-results/screens';
 
+// The page is dark: navy canvas colour on <html>, see-through body, the still gradient on body::before.
+const pageDark = (page: Page) =>
+  page.evaluate(
+    ([dark]) =>
+      getComputedStyle(document.documentElement).backgroundColor === dark &&
+      getComputedStyle(document.body).backgroundColor === 'rgba(0, 0, 0, 0)' &&
+      getComputedStyle(document.body, '::before').backgroundImage.includes('radial-gradient'),
+    [DARK],
+  );
+
 const HEADER = '#course-header-bg';
 const WRAPPER = '#react-root > div:has(#course_content)';
 const CARD = 'div:has(> #course_content) + div';
@@ -87,7 +97,7 @@ test.describe('course route at 1440, bundle loaded', () => {
     await expect.poll(() => mainCssApplied(page)).toContain('blur');
     expect(await htmlClass(page)).toContain('cbg-route-course');
 
-    expect(await style(page, 'body', 'background-color')).toBe(DARK);
+    expect(await pageDark(page)).toBe(true);
     for (const sel of [HEADER, WRAPPER, CARD, '#navbar']) expect(await bgLum(page, sel), sel).toBeLessThan(0.02);
     expect(await style(page, CARD, 'position')).toBe('sticky');
     expect(await style(page, CARD, 'top')).toBe('72px');
@@ -136,7 +146,7 @@ test('course route on a phone: dark, readable, highlights list included', async 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(COURSE);
   await expect.poll(() => mainCssApplied(page)).toContain('blur');
-  expect(await style(page, 'body', 'background-color')).toBe(DARK);
+  expect(await pageDark(page)).toBe(true);
   for (const sel of [HEADER, WRAPPER]) expect(await bgLum(page, sel), sel).toBeLessThan(0.02);
   for (const sel of [TEXT.title, TEXT.subtitle, TEXT.stat, '#highlights h4', '#highlights li', TEXT.sectionTitle, TEXT.lesson]) {
     await expectAllReadable(page, sel);
@@ -156,7 +166,7 @@ test('critical CSS alone keeps the course page dark and readable until the fail-
 
   expect(await htmlClass(page)).toBe('cbg-js cbg-route-course');
   expect(await mainCssApplied(page)).toBe('none');
-  expect(await style(page, 'body', 'background-color')).toBe(DARK);
+  expect(await pageDark(page)).toBe(true);
   for (const sel of [HEADER, WRAPPER, CARD]) expect(await bgLum(page, sel), sel).toBeLessThan(0.02);
   for (const sel of [TEXT.title, TEXT.cardTitle, TEXT.heading, TEXT.sectionTitle, TEXT.sectionCount, TEXT.lesson]) {
     expect((await paint(page, sel)).ratio, sel).toBeGreaterThanOrEqual(4.5);
@@ -187,5 +197,5 @@ test('home route is not touched by the course-only rules', async ({ page }) => {
   expect(await style(page, '#t20-card', 'background-color')).toBe('rgba(0, 0, 0, 0)');
   expect(await style(page, '#course_content h4', 'font-weight')).not.toBe('800');
   // And the shared chrome on home is as before.
-  expect(await style(page, 'body', 'background-color')).toBe(DARK);
+  expect(await pageDark(page)).toBe(true);
 });
