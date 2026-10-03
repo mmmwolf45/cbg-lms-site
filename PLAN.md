@@ -9,7 +9,7 @@
 - [x] T11-T12 home block · [x] T13 native home · [x] T14 motion · [x] T15 hero · [x] T16 interactions · [x] T17 e2e · [x] T18-T19 course blocks · [x] T20 native course
 - [x] T21 Start here + FAQ · [x] T22 Hazard Scan · [x] T23 hand · [x] T24 80-hour build · [x] T25 small motions · [x] T26 course suite (in quality/e2e specs, live checks)
 - [x] Pre-launch code review + over-engineering review, all must/should-fix items done
-- [ ] Go-live (docs/go-live.md): Maasoom's go · [ ] Logged-in check (test student account) · [x] T27-T28 template + HOW_TO_ADD_A_COURSE.md
+- [x] Go-live 3 Oct (loader, home, IOSH course) · [x] Home redesign live 3 Oct (all courses, gallery, photos) · [ ] Logged-in check (test student account) · [x] T27-T28 template + HOW_TO_ADD_A_COURSE.md
 - Hazard labels drafted for trainer sign-off: `docs/hazard-labels.md`
 
 ## Overview
