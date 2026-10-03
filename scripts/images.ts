@@ -44,7 +44,9 @@ const jobs: Job[] = [
   ...['course-iosh', 'course-qs', 'course-mep', 'course-structural', 'course-bim', 'course-interior'].map((name) => ({
     name, src: `${PHOTOS}/${name}.png`, widths: [800, 480], q: photo, budgetKB: 60, optional: true,
   })),
-  { name: 'band-classroom', src: `${PHOTOS}/band-classroom.png`, widths: [1536, 1024], q: photo, budgetKB: 150, optional: true },
+  // Full-bleed band: a large laptop screen needs about 2560 device pixels across (1707 CSS px at 1.5x).
+  // The source is a 2x AI upscale (3 Oct 2026); phones still pick 1536 or 1024 from the srcset.
+  { name: 'band-classroom', src: `${PHOTOS}/band-classroom.png`, widths: [2560, 2048, 1536, 1024], q: photo, budgetKB: 260, optional: true },
   ...trainers.map((f) => ({
     name: `trainer-${f.replace('.jpg', '')}`, src: `${TRAINERS}/${f}`, widths: [224, 112], q: face, budgetKB: 20, square: true, crop: FACE[f],
   })),

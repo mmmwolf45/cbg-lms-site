@@ -15,6 +15,6 @@
 | photos/course-iosh.png | Generated with ChatGPT for CBG (3 Oct 2026); prompt in docs/art-direction.md | CBG |
 | photos/course-bim.png | Generated with ChatGPT for CBG (3 Oct 2026); prompt in docs/art-direction.md | CBG |
 | photos/course-interior.png | Generated with ChatGPT for CBG (3 Oct 2026); prompt in docs/art-direction.md | CBG |
-| photos/band-classroom.png | Generated with ChatGPT for CBG (3 Oct 2026); prompt in docs/art-direction.md | CBG |
+| photos/band-classroom.png | Generated with ChatGPT for CBG (3 Oct 2026), upscaled 2x to 3072 x 2048 (3 Oct 2026); prompt in docs/art-direction.md | CBG |
 
 Add a row for every image you add: stock photos with the Pexels / Unsplash URL and photographer, AI images with the tool and date.

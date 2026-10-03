@@ -441,43 +441,73 @@
     }
   },
   "band-classroom": {
-    "width": 1536,
-    "height": 1024,
+    "width": 2560,
+    "height": 1707,
     "variants": {
       "avif": [
         {
+          "w": 2560,
+          "file": "img/band-classroom-2560.avif",
+          "bytes": 103941
+        },
+        {
+          "w": 2048,
+          "file": "img/band-classroom-2048.avif",
+          "bytes": 79737
+        },
+        {
           "w": 1536,
           "file": "img/band-classroom-1536.avif",
-          "bytes": 50487
+          "bytes": 55350
         },
         {
           "w": 1024,
           "file": "img/band-classroom-1024.avif",
-          "bytes": 29317
+          "bytes": 31820
         }
       ],
       "webp": [
         {
+          "w": 2560,
+          "file": "img/band-classroom-2560.webp",
+          "bytes": 181602
+        },
+        {
+          "w": 2048,
+          "file": "img/band-classroom-2048.webp",
+          "bytes": 138438
+        },
+        {
           "w": 1536,
           "file": "img/band-classroom-1536.webp",
-          "bytes": 82234
+          "bytes": 97626
         },
         {
           "w": 1024,
           "file": "img/band-classroom-1024.webp",
-          "bytes": 48788
+          "bytes": 56672
         }
       ],
       "jpg": [
         {
+          "w": 2560,
+          "file": "img/band-classroom-2560.jpg",
+          "bytes": 267191
+        },
+        {
+          "w": 2048,
+          "file": "img/band-classroom-2048.jpg",
+          "bytes": 195247
+        },
+        {
           "w": 1536,
           "file": "img/band-classroom-1536.jpg",
-          "bytes": 116235
+          "bytes": 126675
         },
         {
           "w": 1024,
           "file": "img/band-classroom-1024.jpg",
-          "bytes": 63361
+          "bytes": 67159
         }
       ]
     }
