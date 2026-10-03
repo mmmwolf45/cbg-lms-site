@@ -82,6 +82,22 @@ export function setupMotion(doc: Document = document, enhancers: Enhancer[] = []
   run();
   doc.fonts?.ready.then(() => off.signal.aborted || refreshSoon());
 
+  // The page changes height under us: a Course Content section opened or closed, a late image or font in
+  // course.link's own sections. Scroll-linked triggers (the thread, the gallery pin, the 80-hour build)
+  // measured the old layout and would run late or early, so re-measure when the document height changes.
+  // The baseline is retaken after every refresh, so a refresh's own pin spacing never starts another.
+  const height = () => doc.documentElement.scrollHeight;
+  let measured = height();
+  const remeasured = () => (measured = height());
+  ScrollTrigger.addEventListener('refresh', remeasured);
+  const sizes =
+    typeof ResizeObserver === 'undefined'
+      ? undefined
+      : new ResizeObserver(() => {
+          if (Math.abs(height() - measured) > 1) refreshSoon();
+        });
+  sizes?.observe(doc.body);
+
   const changed = () => {
     const now = doc.querySelectorAll(ROOT);
     return now.length !== roots.length || roots.some((r) => !r.isConnected);
@@ -103,6 +119,8 @@ export function setupMotion(doc: Document = document, enhancers: Enhancer[] = []
   return () => {
     off.abort();
     watcher.disconnect();
+    sizes?.disconnect();
+    ScrollTrigger.removeEventListener('refresh', remeasured);
     clearTimeout(refreshTimer);
     clearTimeout(watchTimer);
     mm?.revert();
