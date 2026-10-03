@@ -46,6 +46,7 @@ The pasted block and the CSS/JS on GitHub Pages must match. Old block + new CSS 
 3. Maasoom clicks Save (home) or Publish changes (course) straight away.
 4. Live check. Visitors who loaded the page inside the window may see a mismatched page until their next load (at most about 10 minutes). Prefer quiet hours.
 If only CSS/JS changed (no block HTML change), a push alone is enough.
+Each deploy keeps the previous two builds' hashed JS/CSS on Pages (scripts/keep-previous.ts, listed in assets.json), so a browser still holding a manifest from before the deploy loads the matching older files instead of a 404 that would trip the loader's fail-safe.
 
 ## Rollback
 - Design/motion bug: revert the commit and push (live in about 20 minutes because of caching), or clear the All Pages Custom Script for an instant return to stock course.link.
