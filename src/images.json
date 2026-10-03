@@ -1,90 +1,42 @@
 {
-  "hero-structure": {
-    "width": 1536,
-    "height": 1024,
+  "hero-explode-poster": {
+    "width": 960,
+    "height": 960,
     "variants": {
       "avif": [
         {
-          "w": 1536,
-          "file": "img/hero-structure-1536.avif",
-          "bytes": 54502
+          "w": 960,
+          "file": "img/hero-explode-poster-960.avif",
+          "bytes": 40754
         },
         {
-          "w": 1024,
-          "file": "img/hero-structure-1024.avif",
-          "bytes": 28939
+          "w": 640,
+          "file": "img/hero-explode-poster-640.avif",
+          "bytes": 22202
         }
       ],
       "webp": [
         {
-          "w": 1536,
-          "file": "img/hero-structure-1536.webp",
-          "bytes": 97594
+          "w": 960,
+          "file": "img/hero-explode-poster-960.webp",
+          "bytes": 76420
         },
         {
-          "w": 1024,
-          "file": "img/hero-structure-1024.webp",
-          "bytes": 50764
+          "w": 640,
+          "file": "img/hero-explode-poster-640.webp",
+          "bytes": 41888
         }
       ],
       "jpg": [
         {
-          "w": 1536,
-          "file": "img/hero-structure-1536.jpg",
-          "bytes": 124855
+          "w": 960,
+          "file": "img/hero-explode-poster-960.jpg",
+          "bytes": 99918
         },
         {
-          "w": 1024,
-          "file": "img/hero-structure-1024.jpg",
-          "bytes": 61635
-        }
-      ]
-    }
-  },
-  "hero-structure-phone": {
-    "width": 900,
-    "height": 675,
-    "crop": {
-      "left": 171,
-      "top": 0,
-      "width": 1365,
-      "height": 1024
-    },
-    "variants": {
-      "avif": [
-        {
-          "w": 900,
-          "file": "img/hero-structure-phone-900.avif",
-          "bytes": 28633
-        },
-        {
-          "w": 600,
-          "file": "img/hero-structure-phone-600.avif",
-          "bytes": 15138
-        }
-      ],
-      "webp": [
-        {
-          "w": 900,
-          "file": "img/hero-structure-phone-900.webp",
-          "bytes": 49450
-        },
-        {
-          "w": 600,
-          "file": "img/hero-structure-phone-600.webp",
-          "bytes": 24730
-        }
-      ],
-      "jpg": [
-        {
-          "w": 900,
-          "file": "img/hero-structure-phone-900.jpg",
-          "bytes": 59287
-        },
-        {
-          "w": 600,
-          "file": "img/hero-structure-phone-600.jpg",
-          "bytes": 29026
+          "w": 640,
+          "file": "img/hero-explode-poster-640.jpg",
+          "bytes": 50443
         }
       ]
     }

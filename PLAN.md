@@ -306,6 +306,16 @@ Cover: create the YAML, add the id to the pages map, build, paste the two blocks
 
 ---
 
+## Phase D: Exploding-building hero (3 Oct 2026)
+Idea: docs/ideas/3d-exploded-hero.md (the line-art version was replaced by photoreal footage). Prototype approved: effect A, "classroom" sharp.
+- [x] D1 Frames: `scripts/explode-frames.ts` (ffmpeg + sharp), 48 AVIF frames at 960 and 640 plus poster, budget gate, CREDITS. Verify: sizes within budget, frames decode in Chromium.
+- [x] D2 Template: hero markup (pin, sticky stage, poster, canvas, chip, sr-only h1 plus split words, buttons); subhead dropped from the hero. Verify: content check, template tests.
+- [x] D3 Styles: poster-scale headline, sticky stage, phone layout, reduced motion and no-JS states. Verify: screenshots 1440 and 390.
+- [x] D4 Motion: `src/motion/explode.ts` (progressive frames, canvas blend, scroll, tilt, headline A), replaces blueprint.ts in the home chunk. Verify: unit tests for the pure maths; size budget.
+- [x] D5 Tests and regressions: e2e hero spec rewritten; full mock suite; phone flash and state diagnostics; CLS; frame-time check.
+- [ ] D6 Ship: push, stage the home block in Chrome, Maasoom saves, live check.
+- [ ] D7 Cleanup after D6 is live: delete public/img/hero-structure-* (kept so the old block keeps its photo until the new one is saved), the old hero critical-CSS rule (next loader re-paste) and brand/assets/photos/hero-structure.png if unused.
+
 ## Before every go-live
 1. performance-optimization pass against SPEC section 8.
 2. code-review-and-quality, then ponytail-review.

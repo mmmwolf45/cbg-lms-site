@@ -23,7 +23,6 @@
 hero:
   eyebrow: Carbon Blue Global Training Institute
   heading: Welcome to your CBG classroom
-  subhead: Your courses, live class links and study materials, all in one place.
   primaryCta:
     label: Log in
     action: login
@@ -31,8 +30,9 @@ hero:
     label: Need help?
     number: "+974 7048 5638"
     href: https://wa.me/97470485638
-  # Alt text of the hero photo.
-  imageAlt: A steel-frame building under construction at dusk, its lower floors lit, with a tower crane beside it
+  # Alt text of the hero picture: the first frame of the exploding-building footage (the floors then
+  # lift apart as the page scrolls). The subhead was dropped on 3 Oct 2026 with the new hero.
+  imageAlt: A modern office building at dusk, every floor lit, its floors about to lift apart
 
 # Under the hero. The numbers of courses and languages are counted from content/courses/*.yaml when the
 # site is built; only their labels are here. "Online": every course is delivered online (course workbook).

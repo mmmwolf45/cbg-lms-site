@@ -35,9 +35,9 @@ const odd = trainers.filter((f) => !f.endsWith('.jpg'));
 if (odd.length || !trainers.length) throw new Error(`expected only .jpg trainer photos in ${TRAINERS}, found: ${odd.join(', ') || 'none'}`);
 
 const jobs: Job[] = [
-  { name: 'hero-structure', src: `${PHOTOS}/hero-structure.png`, widths: [1600, 1024], q: photo, budgetKB: 250 },
-  { name: 'hero-structure-phone', src: `${PHOTOS}/hero-structure.png`, widths: [900, 600], q: photo, budgetKB: 120,
-    crop: { left: 171, top: 0, width: 1365, height: 1024 } },
+  // Home hero poster: the first frame of the exploding-building footage (scripts/explode-frames.ts writes
+  // the source). It is the hero's <picture>: what shows before the frames load, and without JS.
+  { name: 'hero-explode-poster', src: 'brand/assets/hero-explode/poster.png', widths: [960, 640], q: photo, budgetKB: 80 },
   { name: 'hazard-worksite', src: `${PHOTOS}/hazard-worksite.png`, widths: [1536, 1024, 768], q: photo, budgetKB: 250 },
   { name: 'closing-plate', src: `${PHOTOS}/closing-plate.png`, widths: [1536, 800], q: gradient, budgetKB: 150 },
   // Home course cards (3:2 sources, shown cropped to 4:3) and the home band. Optional until supplied.

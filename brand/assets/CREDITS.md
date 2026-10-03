@@ -16,5 +16,8 @@
 | photos/course-bim.png | Generated with ChatGPT for CBG (3 Oct 2026); prompt in docs/art-direction.md | CBG |
 | photos/course-interior.png | Generated with ChatGPT for CBG (3 Oct 2026); prompt in docs/art-direction.md | CBG |
 | photos/band-classroom.png | Generated with ChatGPT for CBG (3 Oct 2026), upscaled 2x to 3072 x 2048 (3 Oct 2026); prompt in docs/art-direction.md | CBG |
+| hero-explode/keyframe-assembled.png, keyframe-exploded.png | Generated with GPT Image 2.5 on Higgsfield for CBG (3 Oct 2026); prompts in docs/ideas/3d-exploded-hero.md | CBG |
+| hero-explode/explode-a.mp4, explode-b.mp4 | Generated with MiniMax H3 on Higgsfield for CBG (3 Oct 2026), from the two keyframes | CBG |
+| hero-explode/poster.png | First frame of explode-a.mp4 (scripts/explode-frames.ts) | CBG |
 
 Add a row for every image you add: stock photos with the Pexels / Unsplash URL and photographer, AI images with the tool and date.

@@ -140,7 +140,7 @@ The home page has no `h1` today. The hero headline becomes the page's `h1`.
 
 | Section | Layout | Motion | Phone (390px) |
 |---|---|---|---|
-| `hero` | Eyebrow chip; `h1` set in two tones ("Welcome to your" white / "CBG classroom" dimmed, with gold on "CBG"). Wording unchanged. Subhead, two CTAs, and the **Blueprint to built** visual. | **Blueprint to built:** gold blueprint lines of a structure draw in (about 2s), then the matching photo fades in under them (about 0.8s). Lines settle to low opacity. On laptop, the mouse moves the line layer and the photo layer by different amounts (12px at most) for depth. | Visual sits above the copy at 4:3. Same draw-in, no mouse parallax. |
+| `hero` | **Exploding building (3 Oct 2026, replaces Blueprint to built):** chip above; a very large centred `h1` ("Welcome to / your CBG / classroom", poster scale, about 13vw) over a photoreal building; Log in / Need help? below. The subhead is no longer shown (the approved prototype has none). Details: section 5.1.1. | The hero holds (sticky) for half a screen of scrolling while 48 frames of the building come apart floor by floor; the headline comes apart with it (lines separate, words drift and tilt, letters open; "classroom" stays sharp). Mouse: the building tilts in 3D (7deg/4deg at most). Reduced motion: the assembled building and the whole headline, still | Same, frames at 640px; headline wraps to three lines |
 | `facts` | Three facts on a hairline: number of courses and of languages (counted from the course files at build time), and "Online / every course" | Counters count up once in view | Three narrow columns |
 | `disciplines` | The course titles (from the cards) on one strip, gold rules between; decorative, `aria-hidden` | Moves only with scroll (CSS scroll-driven animation): drifts left by a quarter of the screen while the strip crosses the screen, never on a timed loop. Still (wrapped, centred) under reduced motion or where the browser lacks scroll-driven animations | Same |
 | `how-it-works` | Three numbered steps (01, 02, 03) | The **gold thread** links the step numbers and draws as you scroll; each number lights gold when the thread reaches it. | Vertical, thread at the left edge |
@@ -149,6 +149,13 @@ The home page has no `h1` today. The hero headline becomes the page's `h1`.
 | `support` | Heading, body, WhatsApp button, one email link (info@) in a frosted-glass card | Reveal only | Full-width buttons |
 | `about` | Text, CBG mark (on a plain dark area), link. No IOSH content on the home page: it lives on the IOSH course page | Reveal only | Logos stack |
 | `footer-note` | Small print | None | Same |
+
+#### 5.1.1 Hero: the exploding building
+- **Footage:** `brand/assets/hero-explode/explode-a.mp4` (MiniMax H3 on Higgsfield, 2K, from `keyframe-assembled.png` to `keyframe-exploded.png`, 3 Oct 2026). `scripts/explode-frames.ts` (ffmpeg + sharp) cuts its first 5.2s into 48 square frames around the building: AVIF at 960px (about 2.4 MB) and 640px (about 1.3 MB); a screen whose smaller side is under 1100 device pixels gets the 640px set (so 2x phones and small laptop windows do; 3x phones get 960) in `public/img/hero-explode/`, plus a first-frame poster (AVIF/WebP/JPEG). Budget gate: 2.6 MB and 1.6 MB.
+- **Loading:** the poster is the hero's `<picture>` (eager, high priority, width and height set: the LCP and the no-JS view). The script then loads frame 1, every 8th, every 4th, every 2nd, then the rest, and draws the nearest loaded frame, blending neighbours. If AVIF can't decode, the poster stays.
+- **Scroll:** `.cbg-explode` is `calc(150svh - 56px)` tall; its stage is `position: sticky` under course.link's 56px navbar. Progress 0..1 across the extra half screen maps to frames 0..47.
+- **Headline (effect A from the prototype):** one real `h1` for screen readers; an `aria-hidden` copy split into words and letters (built by the template) carries the motion, transforms only, so nothing reflows.
+- **Without JS / fail-safe:** the poster and the whole headline, stacked, no sticky stretch.
 
 **Hero CTAs:**
 - **Log in:** course.link's login is a popup opened by the navbar's Login button; there is no login URL. With JS, our button clicks the native Login button. Without JS, it's a link to `#navbar`, and the text beside it says the Login button is at the top right.

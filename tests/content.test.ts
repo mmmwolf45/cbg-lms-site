@@ -32,8 +32,8 @@ describe('content schema', () => {
 
   it('rejects an em-dash anywhere', () => {
     const d = home();
-    d.hero.subhead = `Your courses ${EM_DASH} all in one place.`;
-    expect(() => validateHome(d)).toThrow(/hero\.subhead: contains an em-dash/);
+    d.hero.eyebrow = `Carbon Blue ${EM_DASH} Training Institute`;
+    expect(() => validateHome(d)).toThrow(/hero\.eyebrow: contains an em-dash/);
     const c = course();
     c.faq.items[3].a += EM_DASH;
     expect(() => validateCourse(c)).toThrow(/faq\.items\[3\]\.a: contains an em-dash/);

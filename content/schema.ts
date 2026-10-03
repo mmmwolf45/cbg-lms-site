@@ -24,7 +24,8 @@ const titled = { title: s, body: s } as const;
 const logos = [{ file: s, alt: s }] as const;
 
 const homeShape = {
-  hero: { eyebrow: s, heading: s, subhead: s, primaryCta: cta, secondaryCta: whatsapp, imageAlt: s },
+  // No subhead since the exploding-building hero (3 Oct 2026): the approved design has none.
+  hero: { eyebrow: s, heading: s, primaryCta: cta, secondaryCta: whatsapp, imageAlt: s },
   // Three facts under the hero. The course and language numbers are counted from content/courses/*.yaml
   // at build time (every course file; the languages listed on the cards, each counted once), so only
   // their labels live here. `delivery` is shown as written.

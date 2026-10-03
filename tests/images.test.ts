@@ -9,8 +9,7 @@ const OPTIONAL: Record<string, number> = {
 };
 const BUDGET: Record<string, number> = {
   ...OPTIONAL,
-  'hero-structure': 250,
-  'hero-structure-phone': 120,
+  'hero-explode-poster': 80,
   'hazard-worksite': 250,
   'closing-plate': 150,
   'trainer-ali-orkkatteri': 20,
@@ -28,8 +27,11 @@ describe('image manifest (T10)', () => {
     expect(names.filter((n) => !(n in BUDGET))).toEqual([]);
   });
 
-  it('records the phone crop in source px', () =>
-    expect(images['hero-structure-phone'].crop).toEqual({ left: 171, top: 0, width: 1365, height: 1024 }));
+  it('builds the hero poster square, at the frame sizes', () => {
+    const p = images['hero-explode-poster'];
+    expect([p.width, p.height]).toEqual([960, 960]);
+    expect(p.variants.avif.map((v) => v.w)).toEqual([960, 640]);
+  });
 
   it.each(entries)('%s has avif, webp and jpg at the same widths, files on disk', (_, e) => {
     const widths = e.variants.avif.map((v) => v.w);
@@ -47,4 +49,21 @@ describe('image manifest (T10)', () => {
     for (const v of e.variants.avif)
       expect(statSync(`public/${v.file}`).size, v.file).toBeLessThanOrEqual(BUDGET[name] * 1024);
   });
+});
+
+// The exploding-building hero's frames (scripts/explode-frames.ts, SPEC section 5.1.1).
+import { FRAMES, OUT, SIZES, frameName } from '../scripts/explode-frames';
+
+describe('hero explode frames', () => {
+  for (const [dir, s] of Object.entries(SIZES)) {
+    it(`${dir}: all ${FRAMES} frames exist, within ${s.budgetKB} KB in all`, () => {
+      let bytes = 0;
+      for (let i = 0; i < FRAMES; i++) {
+        const file = `${OUT}/${dir}/${frameName(i)}`;
+        expect(existsSync(file), file).toBe(true);
+        bytes += statSync(file).size;
+      }
+      expect(bytes).toBeLessThanOrEqual(s.budgetKB * 1024);
+    });
+  }
 });

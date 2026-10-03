@@ -3,57 +3,58 @@
 [data-cbg="home"] { position: relative; padding-bottom: var(--cbg-s7); overflow: clip; }
 [data-cbg="home"] :where(ul) { list-style: none; padding: 0; }
 
-/* Hero: photo above the copy on phones, copy left and photo right from 1024px */
-.cbg-hero { position: relative; isolation: isolate; }
-.cbg-hero.cbg-section { padding-top: 0; }
-.cbg-hero::before {
-  content: ""; position: absolute; z-index: -1; inset: 0 0 -10% 20%; pointer-events: none;
-  background: radial-gradient(55% 60% at 70% 30%, var(--cbg-glow), transparent 75%);
-}
-.cbg-hero__grid { display: grid; gap: var(--cbg-s5); }
-.cbg-hero__copy { position: relative; z-index: 1; }
-/* The eyebrow wraps on phones, so the pill becomes a rounded label there */
-.cbg-hero .cbg-chip { display: inline-block; padding: 6px 14px; min-height: 0; border-radius: 14px; font-size: 0.8125rem; text-wrap: balance; }
-.cbg-hero .cbg-display { margin: var(--cbg-s5) 0 var(--cbg-s4); }
-.cbg-hero .cbg-display .cbg-dim { display: block; }
-.cbg-hero .cbg-lead { margin-bottom: var(--cbg-s6); text-wrap: balance; }
-
-/* The photo has no hard edge: its sides dissolve into the canvas through a mask */
-.cbg-hero__visual {
-  position: relative; order: -1; aspect-ratio: 4 / 3; margin: 0 calc(-1 * var(--cbg-gutter));
-  --cbg-fade: linear-gradient(to top, transparent, #000 32%), linear-gradient(to bottom, transparent, #000 10%);
-  -webkit-mask-image: var(--cbg-fade); -webkit-mask-composite: source-in;
-  mask-image: var(--cbg-fade); mask-composite: intersect;
-}
-.cbg-hero__media, .cbg-hero__media img, .cbg-hero__lines { width: 100%; height: 100%; }
-.cbg-hero__media img { object-fit: cover; }
-/* Blueprint lines (src/motion/blueprint.ts fills the svg; its viewBox matches the photo's crop, and
-   xMidYMid slice matches object-fit: cover, so they sit on the steel). Clipped like the photo. */
-.cbg-hero__lines { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.cbg-hero__lines line { fill: none; stroke: var(--cbg-gold); }
-/* Until the lines have drawn, the photo waits in the dark: a filter, never opacity (it is the LCP image).
-   Full motion with JS only; reduced motion, no JS and cbg-off show it lit. Mirrors DARK in blueprint.ts. */
+/* Hero: the exploding building (SPEC section 5.1.1, src/motion/explode.ts). A full-screen stage under
+   course.link's 56px navbar: the footage (poster picture, canvas over it) is a square centred on the
+   stage, its edges dissolving into the page; the giant headline sits over the building's middle floors,
+   the chip above the building and the buttons below it. With JS and motion allowed the section is half a
+   screen taller and the stage is sticky, so it holds while the frames play; otherwise it is one screen,
+   showing the assembled building and the whole headline. */
+.cbg-hero.cbg-section { padding: 0; }
+/* Poster scale; on phones capped so the widest line ("to your CBG", about 5.9em) fits. */
+.cbg-explode { --cbg-h1: min(clamp(4rem, 13vw, 12rem), calc((100vw - 32px) / 6.1)); }
+.cbg-explode__stage { position: relative; height: calc(100svh - 56px); min-height: 520px; overflow: hidden; perspective: 1400px; }
 @media (prefers-reduced-motion: no-preference) {
-  html.cbg-js .cbg-hero__visual:not(.cbg-done) .cbg-hero__media { filter: brightness(0.35) saturate(0.7); }
+  html.cbg-js .cbg-explode { height: calc(150svh - 56px); }
+  html.cbg-js .cbg-explode__stage { position: sticky; top: 56px; }
 }
-@media (min-width: 640px) and (max-width: 1023px) { .cbg-hero__visual { aspect-ratio: 3 / 2; } }
-
-@media (min-width: 1024px) {
-  .cbg-hero.cbg-section { padding-top: var(--cbg-s7); }
-  /* The hero's wrap keeps its left edge on the site column but opens to the block's right edge,
-     so the photo runs off the screen on the right and slides under the copy on the left. */
-  .cbg-hero > .cbg-wrap {
-    max-width: none; padding-right: 0;
-    padding-left: max(var(--cbg-gutter), calc((100% - var(--cbg-col-site)) / 2 + var(--cbg-gutter)));
-  }
-  .cbg-hero__grid { grid-template-columns: minmax(0, min(36rem, 50%)) minmax(0, 1fr); align-items: center; gap: var(--cbg-s7); }
-  .cbg-hero .cbg-chip { border-radius: var(--cbg-r-pill); font-size: var(--cbg-fs-label); }
-  .cbg-hero__visual {
-    order: 0; aspect-ratio: 3 / 2; margin: 0 0 0 -30%;
-    --cbg-fade: linear-gradient(to right, transparent, #000 40%), linear-gradient(to top, transparent, #000 28%),
-      linear-gradient(to bottom, transparent, #000 14%);
-  }
+.cbg-explode__film { position: absolute; inset: 0; transform-style: preserve-3d; pointer-events: none; }
+/* Absolutely centred, never grid-centred: a grid row would size to the canvas's 960px intrinsic height. */
+.cbg-explode__poster, .cbg-explode__canvas {
+  position: absolute; left: 50%; top: 50%; height: min(94%, 118vw); width: auto; aspect-ratio: 1; max-width: none;
+  transform: translate(-50%, -52%);
+  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
 }
+.cbg-explode__poster { display: block; }
+.cbg-explode__poster img { width: 100%; height: 100%; object-fit: cover; }
+.cbg-explode__canvas { display: block; opacity: 0; transition: opacity var(--cbg-dur) var(--cbg-ease); }
+.cbg-explode__canvas.is-on { opacity: 1; }
+/* Centred without a transform on its box: insetting the bottom by 8% puts the centre at 46%. */
+.cbg-explode__headline { position: absolute; inset: 0 0 8% 0; display: grid; place-items: center; padding: 0 16px; pointer-events: none; }
+.cbg-explode__title {
+  margin: 0; max-width: 100%; text-align: center; color: var(--cbg-text-1);
+  font: 800 var(--cbg-h1) / 0.9 var(--cbg-font-display); letter-spacing: -0.05em;
+}
+.cbg-explode__words { display: block; text-shadow: 0 0 2px rgba(8, 18, 38, 0.85), 0 0 34px rgba(8, 18, 38, 0.9); }
+.cbg-explode__line { display: block; white-space: nowrap; }
+/* Hidden until the display font is ready, then faded in (explode.ts adds .is-ready; also in critical.css). */
+html.cbg-js .cbg-explode__words:not(.is-ready) { visibility: hidden; }
+.cbg-explode__words.is-ready { animation: cbg-fade-in var(--cbg-dur) var(--cbg-ease) both; }
+@keyframes cbg-fade-in { from { opacity: 0; } }
+.cbg-w { display: inline-block; white-space: nowrap; transform-origin: 50% 60%; }
+.cbg-l { display: inline-block; }
+.cbg-w--gold { color: var(--cbg-gold); }
+.cbg-w--dim { color: var(--cbg-text-3); }
+.cbg-explode__chip {
+  position: absolute; left: 50%; top: max(14px, calc(50% - min(48.9%, 61.4vw) - 30px)); transform: translateX(-50%);
+  white-space: nowrap; background: rgba(8, 18, 38, 0.6);
+}
+.cbg-explode__btns {
+  position: absolute; left: 0; right: 0; bottom: max(24px, calc(50% - min(47%, 59vw) + 12px));
+  justify-content: center; padding: 0 16px;
+}
+.cbg-explode__btns .cbg-btn--ghost { background: rgba(8, 18, 38, 0.6); }
+.cbg-explode__btns .cbg-btn { flex: 0 0 auto; } /* side by side on phones too, as in the prototype */
 
 /* Facts: three numbers on a hairline, under the hero */
 .cbg-home-facts.cbg-section { padding-top: var(--cbg-s7); }

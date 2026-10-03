@@ -56,15 +56,20 @@ describe('home block', () => {
   });
 
   it('carries the motion hooks from the markup contract', () => {
-    for (const hook of ['data-cbg-hero', 'data-cbg-thread', 'data-cbg-gallery', 'data-cbg-action="login"', 'class="cbg-hero__lines"'])
+    for (const hook of ['data-cbg-hero', 'data-cbg-thread', 'data-cbg-gallery', 'data-cbg-action="login"', 'data-cbg-explode'])
       expect(html).toContain(hook);
     expect(html).not.toContain('data-cbg-ticks');
   });
 
-  it('splits the hero heading without changing its words', () => {
+  it('keeps the hero heading readable once (sr-only) and splits a hidden copy into the same words', () => {
     const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/)![1];
-    expect(h1.replace(/<[^>]+>/g, '')).toBe(h.hero.heading);
-    expect(h1).toContain('<span class="cbg-gold">CBG</span>');
+    expect(h1).toContain(`<span class="cbg-sr-only">${h.hero.heading}</span>`);
+    const split = h1.match(/<span class="cbg-explode__words" aria-hidden="true">([\s\S]*)<\/span>$/)![1];
+    const words = (x: string) => x.replace(/<[^>]+>/g, ' ').replace(/ (?=\S) /g, ' ').split(/\s+/).filter(Boolean);
+    expect(words(split.replace(/<\/span><span class="cbg-l">/g, ''))).toEqual(h.hero.heading.split(' '));
+    expect(split.match(/cbg-explode__line/g)).toHaveLength(3); // Welcome / to your CBG / classroom
+    expect(split).toContain('<span class="cbg-w cbg-w--gold"><span class="cbg-l">C</span>');
+    expect(split).toContain('cbg-w--dim');
   });
 
   it('speaks for the whole institute: IOSH appears only on the IOSH course card', () => {
