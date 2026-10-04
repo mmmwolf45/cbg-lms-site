@@ -6,3 +6,7 @@ playwright-report/
 desktop.ini
 .DS_Store
 review/
+.claude/settings.local.json
+lab/out*/
+lab/shots/
+.playwright-cli/

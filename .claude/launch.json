@@ -4,8 +4,22 @@
     {
       "name": "mock",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "serve"],
+      "runtimeArgs": [
+        "run",
+        "serve"
+      ],
       "port": 4173
+    },
+    {
+      "name": "lab",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "tsx",
+        "lab/serve.ts",
+        "lab/out",
+        "4310"
+      ],
+      "port": 4310
     }
   ]
 }
