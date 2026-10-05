@@ -24,7 +24,7 @@ mkdirSync(`${OUT}/site`);
 for (const f of readdirSync('dist')) {
   if (/^cbg[.-].*\.(js|css)$/.test(f) || f === 'manifest.json') cpSync(`dist/${f}`, `${OUT}/site/${f}`);
 }
-for (const d of ['brand', 'hero-explode', 'sky', 'site-orbit']) if (existsSync(`dist/${d}`)) cpSync(`dist/${d}`, `${OUT}/site/${d}`, { recursive: true });
+for (const d of ['brand', 'hero-explode', 'sky']) if (existsSync(`dist/${d}`)) cpSync(`dist/${d}`, `${OUT}/site/${d}`, { recursive: true });
 
 // The lab itself.
 if (!PLAIN) {

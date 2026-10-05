@@ -61,9 +61,6 @@ const jobs: Job[] = [
   // The floating desk's empty-desk photo (4 Oct 2026; a 4K upscale of the AI edit). The objects on it are
   // separate cut-outs with transparency: scripts/band-objects.ts.
   { name: 'band-desk', src: `${PHOTOS}/band-desk.png`, widths: [2560, 2048, 1536, 1024], q: photo, budgetKB: 260, optional: true },
-  // The band's poster: the first frame of the orbit footage (scripts/orbit-frames.ts writes the source). The
-  // no-JS and reduced-motion view, and what shows under the canvas until the frames arrive. Lazy.
-  { name: 'site-orbit-poster', src: 'brand/assets/site-orbit/poster.png', widths: [1920, 1280, 768], q: photo, budgetKB: 220 },
   ...trainers.map((f) => ({
     name: `trainer-${f.replace('.jpg', '')}`, src: `${TRAINERS}/${f}`, widths: [224, 112], q: face, budgetKB: 20, square: true, crop: FACE[f],
   })),

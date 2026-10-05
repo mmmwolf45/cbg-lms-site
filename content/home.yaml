@@ -60,11 +60,12 @@ how-it-works:
     - title: Join your live classes and keep going.
       body: Classes run live on Google Meet. After each class, the slides and new study materials are waiting for you here.
 
-# A full-width band between the steps and the course cards: a night construction site that turns half
-# way round with the scroll (6 Oct 2026, src/motion/site-orbit.ts). Without JS or with reduced motion: its
-# first frame, still.
+# A full-width photo between the steps and the course cards: the floating desk (4 Oct 2026). `image`
+# is the empty-desk photo (brand/assets/photos/band-desk.png, built by `npm run images`); the plans,
+# laptop and hard hat are separate cut-outs on it (scripts/band-objects.ts).
 band:
-  alt: A concrete building under construction at night with a tower crane, seen from one side and then the other
+  image: band-desk
+  alt: A laptop, rolled construction drawings and a white hard hat on a steel desk, in front of a lit construction site at night
 
 courses:
   heading: Your courses

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { homeSections, loadCourseFiles, loadHome, type CardOnly, type CourseFile, type Home } from '../content/schema';
+import images from '../src/images.json';
 import { home } from '../templates/home';
 import { letters } from '../templates/sections/home-disciplines';
 
@@ -15,7 +16,9 @@ const sectionHtml = (out: string, id: string) => {
 };
 const soon = (title: string, order: number, extra: Partial<CardOnly['card']> = {}): CardOnly =>
   ({ slug: title.toLowerCase(), card: { title, status: 'coming soon', order, ...extra } });
-const rendered = homeSections.filter((id) => id !== 'band' || !!h.band);
+// The band shows only once `npm run images` has built its photo.
+const bandBuilt = !!h.band && h.band.image in images;
+const rendered = homeSections.filter((id) => id !== 'band' || bandBuilt);
 
 // Every string in a content object, replaced by fn(path) so we can trace where it lands.
 function mapStrings<T>(v: T, fn: (s: string) => string): T {
@@ -207,12 +210,22 @@ describe('home course cards', () => {
 });
 
 describe('home band', () => {
-  it('is one labelled picture: the poster (decorative inside it) under the canvas, frames named on the Pages base', () => {
-    const band = sectionHtml(html, 'band');
-    expect(band).toContain(`data-cbg-orbit="https://mmmwolf45.github.io/cbg-lms-site/site-orbit/" data-cbg-frames="64"`);
-    expect(band).toContain(`<div class="cbg-orbit__stage" role="img" aria-label="${h.band!.alt}">`);
-    expect(band).toMatch(/<picture class="cbg-orbit__poster">.*<img [^>]*alt="" loading="lazy"/);
-    expect(band).toContain('<canvas class="cbg-orbit__canvas" aria-hidden="true"></canvas>');
+  it('shows only once its image is built', () => {
+    expect(html.includes('id="cbg-band"')).toBe(bandBuilt);
+    const out = home({ ...h, band: { image: 'closing-plate', alt: 'A desk' } }, courses);
+    expect(sectionHtml(out, 'band')).toMatch(/data-cbg-parallax[^]*closing-plate-1536\.avif/);
+    expect(home({ ...h, band: { image: 'not-built-yet', alt: 'A desk' } }, courses)).not.toContain('id="cbg-band"');
     expect(home({ ...h, band: undefined }, courses)).not.toContain('id="cbg-band"');
+  });
+
+  it('is the floating desk: one labelled picture, three sized cut-outs that react to the pointer', () => {
+    const band = sectionHtml(html, 'band');
+    expect(band).toContain(`role="img" aria-label="${h.band!.alt}"`);
+    expect(band).toContain('data-cbg-desk');
+    for (const name of ['plans', 'laptop', 'helmet']) {
+      expect(band).toMatch(new RegExp(`cbg-desk__obj--${name}" data-cbg-desk-object data-depth="[0-9.]+" data-spin="[yz]"`));
+      expect(band).toMatch(new RegExp(`band-desk/${name}-[0-9]+[.]avif [0-9]+w`));
+    }
+    expect(band.match(/<img [^>]*width="\d+" height="\d+" alt=""/g)!.length).toBe(4); // the photo and three cut-outs, all sized
   });
 });
