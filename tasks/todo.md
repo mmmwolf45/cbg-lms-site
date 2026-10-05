@@ -19,7 +19,7 @@ Artifact: https://claude.ai/artifact/BvV7rLeof8U4tPTnaWw8vk (private). Local: pr
 All sections hold 60 fps on this PC's GPU at 1440 and 390 in every preset (lab/probe-gpu.mjs).
 
 ## Stage B: port the pick (after Maasoom chooses)
-- [ ] B0 Budget decision: a full iteration adds about 22 to 27 KB of lab JS (gzipped) against 8 KB of headroom on the 60 KB home budget. Pick fewer fx, or approve a raise (e.g. to 75 KB).
+- [x] B0 Budget decision (6 Oct 2026, Maasoom): ship his pick exactly: theme plain, sky waves, band scrub, logo globe (cobe). JS budget raised to about 68 KB for the home page; film-scrub frames get their own image exception like the hero. Was: a full iteration adds about 22 to 27 KB of lab JS (gzipped) against 8 KB of headroom on the 60 KB home budget. Pick fewer fx, or approve a raise (e.g. to 75 KB).
 - [ ] B1 Update SPEC.md 5.1 with the chosen combination; remove what's replaced (e.g. band-desk).
 - [ ] B2 Port the sky into `src/motion` + `src/styles` (one slice), then build, test and check the size.
 - [ ] B3 Port the strip and carousel track.

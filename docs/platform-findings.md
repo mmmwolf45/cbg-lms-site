@@ -18,6 +18,6 @@ A class added by a script injected at the top of `<head>` (where the Custom Scri
 **Caution for tests:** Playwright's `addInitScript` runs before `<html>` exists, so a class added there is lost. That looks like "hydration strips classes", but it isn't. Probes inject into the HTML response instead.
 
 ## Still unverified
-- Custom Block size limit (optional probe at the Foundation checkpoint, in the IOSH draft).
+- Custom Block size limit, server side. **Client side checked 6 Oct 2026** (dashboard bundle `index-BzO6EfSu.js`, read only): the Custom Block field is a Monaco code editor (`language: "html"`) with no maxLength, character counter or size warning; the only size check in the dashboard is the 10 MB file-upload limit. Blocks are saved as `blocks[].data` with the rest of the page, so any limit would be the server's request or document size. Known to work live: home block 22 KB, IOSH main 28 KB. Untested: the 61 KB QS main block. Probe: paste a large block into the IOSH draft (preview-101) and save; Maasoom clicks Save.
 - Whether Custom Blocks re-render on client-side navigation (no blocks exist yet; check once the home block is pasted).
 - Lesson page structure (needs the test student account).
