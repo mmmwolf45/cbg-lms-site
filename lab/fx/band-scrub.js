@@ -145,5 +145,5 @@ export default function mount(ctx) {
     for (let k = 1; k < order.length; k += 5) await Promise.all(order.slice(k, k + 5).map(load));
   }, { rootMargin: '100% 0px' });
   io.observe(view);
-  window.addEventListener('resize', size, { passive: true });
+  window.addEventListener('resize', () => { size(); paint(cur); }, { passive: true }); // resizing clears the canvas
 }

@@ -1,27 +1,22 @@
 /* The course-names strip (strip.js). Plain: big outlined kinetic names. Blueprint: a star map. */
-@font-face {
-  font-family: lab-strip-pjs; font-weight: 200 800; font-display: swap; /* Plus Jakarta Sans, variable, latin */
-  src: url(https://fonts.gstatic.com/s/plusjakartasans/v12/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yw.woff2) format("woff2");
-}
-
 /* ---- plain ---- */
 .lab-strip-plain { padding: clamp(18px, 2.4vw, 32px) 0; }
 .lab-strip-plain .cbg-marquee__set > span {
   color: transparent; letter-spacing: -0.025em;
-  font: 300 clamp(2.5rem, 6vw, 5.5rem) / 1.12 lab-strip-pjs, var(--cbg-font-display);
+  font: 300 clamp(2.5rem, 6vw, 5.5rem) / 1.12 var(--cbg-font-display);
 }
 .lab-strip-plain .cbg-marquee__set > span::after { width: clamp(32px, 4vw, 56px); margin: 0 clamp(28px, 4vw, 64px); }
 .lab-strip-l {
-  --k: 0; --r: 1; position: relative;
-  font-weight: calc(300 + 260 * var(--k));
-  color: rgb(214 177 96 / calc(var(--k) * var(--r)));
-  -webkit-text-stroke: 1px color-mix(in srgb, #D6B160 calc(var(--k) * 100%), rgb(243 245 249 / calc(0.42 * var(--r))));
+  --k: 0;
+  color: rgb(214 177 96 / var(--k));
+  -webkit-text-stroke: 1px color-mix(in srgb, #D6B160 calc(var(--k) * 100%), rgb(243 245 249 / 0.42));
 }
-.lab-strip-l.is-x { color: transparent; -webkit-text-stroke-color: transparent; }
-.lab-strip-l.is-x::after {
-  content: attr(data-s); position: absolute; left: 50%; top: 0; translate: -50% 0;
-  color: transparent; -webkit-text-stroke: 1px rgba(214, 177, 96, 0.38);
+/* First view: each letter fades and rises 0.35em over 0.9 s, staggered 0.6 s across the name (--d, strip.js). */
+.lab-strip-reveal .lab-strip-l {
+  opacity: 0; transform: translateY(0.35em);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--d), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--d);
 }
+.lab-strip-reveal .is-in > .lab-strip-l { opacity: 1; transform: none; }
 
 /* ---- blueprint: star map ---- */
 .lab-strip-sky { padding: 0; view-timeline-name: --lab-strip; }

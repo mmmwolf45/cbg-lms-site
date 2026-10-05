@@ -58,7 +58,7 @@ export default function mount(ctx) {
   }
   coin.addEventListener('click', () => {
     if (turning?.isActive()) return;
-    turning = ctx.gsap.to(turn, { a: turn.a + 360, duration: 2.4, ease: 'sine.inOut' });
+    turning = ctx.gsap.to(turn, { a: turn.a + 360, duration: 5.5, ease: 'sine.inOut' });
   });
 
   let raf = 0, last = 0, onScreen = false;

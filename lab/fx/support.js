@@ -10,6 +10,8 @@ export default function mount(ctx) {
   if (!bg) return;
   plate.classList.add('lab-support');
   plate.insertAdjacentHTML('beforeend', '<i class="lab-support-beam" aria-hidden="true"><i></i></i>');
+  // the border light runs only while the card is on screen (support.css)
+  new IntersectionObserver(([e]) => plate.classList.toggle('lab-support--on', e.isIntersecting)).observe(plate);
   if (!ctx.fine || ctx.reduced) return;
 
   plate.classList.add('lab-support--fine');
@@ -20,7 +22,7 @@ export default function mount(ctx) {
   const gridEl = spot.firstChild;
   const S = spot.offsetWidth / 2;
 
-  let w = 1, h = 1, px = 0, py = 0, nx = 0.5, ny = 0.5, inside = false, last = 0, raf = 0;
+  let w = 1, h = 1, px = 0, py = 0, nx = 0.5, ny = 0.5, inside = false, last = 0, raf = 0, leftAt = -1e9;
   let x = 0, y = 0, tiltX = 0, tiltY = 0; // smoothed state
 
   function tick(now) {
@@ -28,7 +30,10 @@ export default function mount(ctx) {
     last = now;
     const kp = 1 - Math.exp(-dt * 3.2);              // spotlight: soft trail
     const kt = 1 - Math.exp(-dt * (inside ? 2 : 1.1)); // tilt: heavier still, and slower on the way back
-    x += (px - x) * kp; y += (py - y) * kp;
+    let dx = (px - x) * kp, dy = (py - y) * kp;
+    const d = Math.hypot(dx, dy), max = 800 * dt; // speed cap, as cursor.js
+    if (d > max) { dx *= max / d; dy *= max / d; }
+    x += dx; y += dy;
     const ax = inside ? (0.5 - ny) * 8 : 0, ay = inside ? (nx - 0.5) * 10 : 0; // max 4deg / 5deg
     tiltX += (ax - tiltX) * kt; tiltY += (ay - tiltY) * kt;
     bg.style.transform = `rotateX(${tiltX.toFixed(3)}deg) rotateY(${tiltY.toFixed(3)}deg) scale(1.07)`;
@@ -49,9 +54,10 @@ export default function mount(ctx) {
   plate.addEventListener('pointerenter', (e) => {
     if (e.pointerType !== 'mouse') return;
     track(e);
-    if (!inside) { x = px; y = py; } // the light starts under the pointer, then trails it
+    // the light starts under the pointer, then trails it; if it is still fading out, it glides over instead
+    if (!inside && performance.now() - leftAt > 1400) { x = px; y = py; }
     inside = true; plate.classList.add('is-lit'); kick();
   });
   plate.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') { track(e); kick(); } }, { passive: true });
-  plate.addEventListener('pointerleave', () => { inside = false; plate.classList.remove('is-lit'); kick(); });
+  plate.addEventListener('pointerleave', () => { inside = false; leftAt = performance.now(); plate.classList.remove('is-lit'); kick(); });
 }

@@ -1,7 +1,7 @@
 // Night sky (lab fx). One fixed canvas 2D between the page background and the content: two depth layers of
 // stars that twinkle slowly and drift a little with scroll, a few faint gold constellations, and (pure sky
 // only) a rare, slow shooting star. Stars fade down to 10% behind text, so body text keeps its contrast.
-// sky=waves: today's flow canvas, darkened in sky.css, stars on top. sky=pure: flow hidden, deep sky gradient.
+// sky=waves: today's flow canvas under a still darkening overlay (sky.css), stars on top. sky=pure: flow hidden, deep sky gradient.
 
 const GOLD = '214,177,96';
 // Constellations: points in a unit box, then edges. Plough, Cassiopeia, Orion, Cygnus.
@@ -46,15 +46,43 @@ export default function mount(ctx) {
   const cv = document.createElement('canvas');
   cv.className = 'lab-sky';
   cv.setAttribute('aria-hidden', 'true');
-  document.body.append(cv); // after the flow canvas: same z-index, so above it and below all content
+  // waves: a still overlay darkens the flow (sky.css). A separate layer, not a filter, opacity or canvas
+  // background: those made the compositor re-blend the full screen every frame (26 fps vs 61).
+  const dim = !pure && Object.assign(document.createElement('div'), { className: 'lab-sky-dim' });
+  if (dim) dim.setAttribute('aria-hidden', 'true');
+  document.body.append(...(dim ? [dim, cv] : [cv])); // after the flow canvas: same z-index, so above it and below all content
   const g = cv.getContext('2d');
   const cool = sprite('228,235,250');
   const warm = sprite('238,206,140');
   const text = document.querySelector('[data-cbg]') || document.body;
 
-  let W = 0, H = 0, stars = [], figs = [];
+  let W = 0, H = 0, figs = [], maxScroll = 1;
   let sy = scrollY, rows = [], mAt = -1e9, mY = NaN;
-  let raf = 0, last = 0, shot = null, nextShot = 14 + Math.random() * 16;
+  let raf = 0, last = 0, prev = 0, shot = null, nextShot = 14 + Math.random() * 16;
+
+  // 300 stars once, in a 1440 x 900 reference box (scaled on resize), so a resize never reshuffles the sky;
+  // smaller screens draw the first n.
+  const rnd = seeded(7);
+  const stars = Array.from({ length: 300 }, () => {
+    const near = rnd() < 0.28, hero = rnd() < 0.04;
+    let u = rnd(), v = rnd();
+    if (pure && !near && rnd() < 0.4) { // the faint Milky Way band in sky.css (115deg): crowd far stars along it
+      const along = (rnd() * 2 - 1) * 0.5, off = (rnd() + rnd() + rnd() - 1.5) * 0.09; // in diagonals
+      u = 0.5 + (-0.423 * along + 0.906 * off) * (1698 / 1440); // 1698 = diagonal of 1440 x 900
+      v = 0.5 + (0.906 * along + 0.423 * off) * (1698 / 900);
+    }
+    return {
+      u, v, near,
+      r: hero ? 1.3 + rnd() * 0.3 : near ? 0.6 + rnd() * 0.55 : 0.35 + rnd() * 0.4,
+      a: hero ? 0.95 : near ? 0.5 + rnd() * 0.4 : 0.28 + rnd() * 0.37,
+      warm: rnd() < 0.07,
+      tw: near ? 0.35 : 0.25, // twinkle depth
+      f: (2 * Math.PI) / (4 + rnd() * 5), // a 4 to 9 s period
+      ph: rnd() * 6.3,
+      d: 1,
+    };
+  });
+  let n = 0, nodes = [];
 
   function build() {
     const w = cv.clientWidth, h = cv.clientHeight;
@@ -62,37 +90,18 @@ export default function mount(ctx) {
     W = w; H = h;
     cv.width = Math.round(W * dpr);
     cv.height = Math.round(H * dpr);
-    const rnd = seeded(7);
-    const n = Math.round(Math.min(300, Math.max(110, (W * H) / 4800)));
-    stars = [];
-    for (let i = 0; i < n; i++) {
-      const near = rnd() < 0.28, hero = rnd() < 0.04;
-      let x = rnd() * W, y = rnd() * H;
-      if (pure && !near && rnd() < 0.4) { // the faint Milky Way band in sky.css (115deg): crowd far stars along it
-        const diag = Math.hypot(W, H), along = (rnd() * 2 - 1) * diag * 0.5, off = (rnd() + rnd() + rnd() - 1.5) * 0.09 * diag;
-        x = W / 2 - 0.423 * along + 0.906 * off;
-        y = H / 2 + 0.906 * along + 0.423 * off;
-      }
-      stars.push({
-        x, y, near,
-        r: hero ? 1.3 + rnd() * 0.3 : near ? 0.6 + rnd() * 0.55 : 0.35 + rnd() * 0.4,
-        a: hero ? 0.95 : near ? 0.5 + rnd() * 0.4 : 0.28 + rnd() * 0.37,
-        warm: rnd() < 0.07,
-        tw: near ? 0.35 : 0.25, // twinkle depth
-        f: (2 * Math.PI) / (4 + rnd() * 5), // a 4 to 9 s period
-        ph: rnd() * 6.3,
-        d: 1,
-      });
-    }
-    const size = Math.min(W, H) * (phone ? 0.34 : 0.24);
+    n = Math.round(Math.min(300, Math.max(110, (W * H) / 4800)));
+    for (const s of stars) { s.x = s.u * W; s.y = s.v * H; }
+    const rf = seeded(11), size = Math.min(W, H) * (phone ? 0.34 : 0.24);
+    nodes = [];
     figs = SHAPES.slice(0, phone ? 2 : 4).map(([pts, edges], k) => {
       const [px, py] = phone ? [[.06, .12], [.6, .66]][k] : PLACES[k];
-      const nodes = pts.map(([u, v]) => ({
+      const ns = pts.map(([u, v]) => ({
         x: px * W + u * size, y: py * H + v * size, fixed: true,
-        r: 0.9 + rnd() * 0.35, a: 0.8, warm: rnd() < 0.15, tw: 0.15, f: (2 * Math.PI) / (5 + rnd() * 4), ph: rnd() * 6.3, d: 1,
+        r: 0.9 + rf() * 0.35, a: 0.8, warm: rf() < 0.15, tw: 0.15, f: (2 * Math.PI) / (5 + rf() * 4), ph: rf() * 6.3, d: 1,
       }));
-      stars.push(...nodes);
-      return edges.map(([i, j]) => ({ a: nodes[i], b: nodes[j], d: 1 }));
+      nodes.push(...ns);
+      return edges.map(([i, j]) => ({ a: ns[i], b: ns[j], d: 1 }));
     });
   }
 
@@ -100,6 +109,7 @@ export default function mount(ctx) {
   function measure(now) {
     mAt = now;
     mY = scrollY;
+    maxScroll = Math.max(1, document.documentElement.scrollHeight - innerHeight); // read here, with the other layout reads
     rows = [];
     const walk = document.createTreeWalker(text, NodeFilter.SHOW_TEXT, {
       acceptNode: (n) => (n.data.trim() && !n.parentElement.closest('[class*="sr-only"]') ? 1 : 3), // sr-only text reports a huge box
@@ -120,23 +130,26 @@ export default function mount(ctx) {
     for (const b of rows[Math.floor(py / ROW)] || []) if (x > b[0] && x < b[2] && py > b[1] && py < b[3]) return DIM;
     return 1;
   };
-  // Dims quickly (text is arriving), brightens slowly (a calm return).
-  const settle = (o, target, snap) => { o.d = snap ? target : o.d + (target - o.d) * (target < o.d ? 0.3 : 0.035); };
+  // Time-based damping: dims in about 0.3 s (text is arriving), brightens over about 1.5 s (a calm return).
+  const ease = (dt, tau) => 1 - Math.exp(-dt / tau);
+  const settle = (o, target, snap, dt) => { o.d = snap ? target : o.d + (target - o.d) * ease(dt, target < o.d ? 0.3 : 1.5); };
 
   function draw(ms, snap) {
     const t = ms / 1000;
-    const y = scrollY;
-    if (reduced || ms - mAt > 1500 || (ms - mAt > 120 && y !== mY)) measure(ms);
-    sy = reduced ? 0 : sy + (y - sy) * 0.06;
+    const y = scrollY, dt = Math.min(0.05, (ms - prev) / 1000);
+    prev = ms;
+    if (ms - mAt > 1500 || (ms - mAt > 120 && y !== mY)) measure(ms);
+    sy = reduced ? 0 : sy + (y - sy) * ease(dt, 0.6);
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     g.clearRect(0, 0, W, H);
 
     const span = H + 20;
-    for (const s of stars) {
+    for (let i = 0, all = n + nodes.length; i < all; i++) {
+      const s = i < n ? stars[i] : nodes[i - n];
       const drift = sy * (s.near ? 0.035 : 0.012);
       s.vx = s.x;
       s.vy = s.fixed ? s.y - drift : ((((s.y - drift) % span) + span) % span) - 10;
-      settle(s, behind(s.vx, s.vy), snap);
+      settle(s, behind(s.vx, s.vy), snap, dt);
       const tw = reduced ? 1 - s.tw / 2 : 1 - s.tw * (0.5 + 0.5 * Math.sin(t * s.f + s.ph));
       g.globalAlpha = s.a * tw * s.d;
       const z = s.r * 6;
@@ -144,7 +157,7 @@ export default function mount(ctx) {
     }
 
     // Constellation lines: very faint in plain; a little stronger in blueprint, drawing in as the page scrolls.
-    const progress = sy / Math.max(1, document.documentElement.scrollHeight - innerHeight);
+    const progress = sy / maxScroll;
     g.strokeStyle = `rgb(${GOLD})`;
     g.lineWidth = 1;
     figs.forEach((edges, k) => {
@@ -153,7 +166,7 @@ export default function mount(ctx) {
         const f = Math.min(1, Math.max(0, shown - i));
         if (!f) return;
         const x = e.a.vx + (e.b.vx - e.a.vx) * f, yy = e.a.vy + (e.b.vy - e.a.vy) * f;
-        settle(e, Math.min(e.a.d, e.b.d, behind((e.a.vx + x) / 2, (e.a.vy + yy) / 2)), snap);
+        settle(e, Math.min(e.a.d, e.b.d, behind((e.a.vx + x) / 2, (e.a.vy + yy) / 2)), snap, dt);
         g.globalAlpha = (blueprint ? 0.2 : 0.07) * e.d;
         g.beginPath();
         g.moveTo(e.a.vx, e.a.vy);
@@ -162,12 +175,12 @@ export default function mount(ctx) {
       });
     });
 
-    if (pure && !reduced) shoot(t);
+    if (pure && !reduced) shoot(t, dt);
     g.globalAlpha = 1;
   }
 
   // A shooting star every 25 to 45 s: a long sine ease across 220 to 380 px in 2 to 2.8 s, faint, no flash.
-  function shoot(t) {
+  function shoot(t, dt) {
     if (!shot) {
       if (t < nextShot) return;
       const dir = Math.random() < 0.5 ? 1 : -1, ang = (18 + Math.random() * 14) * (Math.PI / 180);
@@ -184,7 +197,7 @@ export default function mount(ctx) {
     const gr = g.createLinearGradient(hx, hy, hx - shot.dx * tail, hy - shot.dy * tail);
     gr.addColorStop(0, 'rgba(236,240,250,1)');
     gr.addColorStop(1, 'rgba(236,240,250,0)');
-    settle(shot, behind(hx, hy));
+    settle(shot, behind(hx, hy), false, dt);
     g.globalAlpha = 0.5 * fade * shot.d;
     g.strokeStyle = gr;
     g.lineWidth = 1.1;
@@ -196,7 +209,7 @@ export default function mount(ctx) {
 
   const loop = (ms) => {
     raf = requestAnimationFrame(loop);
-    if (phone && ms - last < 32) return; // about 30 fps on phones
+    if (ms - last < 30) return; // 30 fps everywhere: the twinkles take 4 to 9 s, the drift is heavily damped
     last = ms;
     draw(ms, false);
   };
@@ -206,6 +219,7 @@ export default function mount(ctx) {
   build();
   draw(performance.now(), true);
   cv.classList.add('is-on'); // fades in over the old background (sky.css)
+  if (dim) dim.classList.add('is-on');
   addEventListener('resize', reduced ? kick : build, { passive: true });
   if (reduced) { // a still sky: redrawn only so the text dimming follows the page
     addEventListener('scroll', kick, { passive: true });

@@ -148,6 +148,8 @@ async function start() {
   const y = Number(store.get('lab-scroll'));
   if (y) { store.set('lab-scroll', ''); requestAnimationFrame(() => scrollTo(0, y)); }
   ctx.ScrollTrigger?.refresh();
+  // A late web-font swap changes section heights: re-measure the lab's triggers once fonts are in.
+  document.fonts?.ready.then(() => ctx.ScrollTrigger?.refresh());
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);

@@ -73,12 +73,15 @@ export default function mount(ctx) {
 
   function render() {
     for (const b of bodies) {
-      b.el.style.transform = `translate3d(${(b.x - b.bw / 2).toFixed(2)}px, ${(b.y - b.bh / 2).toFixed(2)}px, 0) `
+      // centred by CSS (-50%), so a late image size (bh 0 until it loads) can never shift the object
+      b.el.style.transform = `translate3d(${b.x.toFixed(2)}px, ${b.y.toFixed(2)}px, 0) translate(-50%, -50%) `
         + `rotate(${(b.a + b.spin).toFixed(3)}deg)`;
     }
   }
 
-  new ResizeObserver(layout).observe(panel);
+  const ro = new ResizeObserver(layout);
+  ro.observe(panel);
+  for (const b of bodies) ro.observe(b.el); // heights arrive when the images load
   layout();
   if (ctx.reduced) return; // still, finished composition: no drift, no drag
 

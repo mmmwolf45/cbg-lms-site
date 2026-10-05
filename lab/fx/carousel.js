@@ -43,6 +43,19 @@ ${blueprint ? `<pattern id="lab-carousel-cell" width="28" height="28" patternUni
     : '<circle class="lab-carousel-star" r="3.5"/>';
 
   let nodes = [], lens = [], rows = [], total = 0, phone = false, drawn = -1;
+  let m = 0, v = 0; // the drawn length, two damped stages (tick)
+
+  // Length <-> fractional node index, so a resize keeps the same nodes lit.
+  const at = (p) => {
+    const f = Math.min(1, Math.max(0, p)) * (lens.length - 1), i = Math.floor(f), j = Math.min(i + 1, lens.length - 1);
+    return lens[i] + (lens[j] - lens[i]) * (f - i);
+  };
+  const share = (len) => {
+    let i = 0;
+    while (i < lens.length - 2 && lens[i + 1] <= len) i++;
+    const span = (lens[i + 1] ?? lens[i]) - lens[i];
+    return (i + (span ? Math.min(1, Math.max(0, (len - lens[i]) / span)) : 0)) / Math.max(1, lens.length - 1);
+  };
 
   // Node under each card (offsets ignore the pan's transform and the reveal's lift), one wave per row.
   function layout() {
@@ -52,6 +65,7 @@ ${blueprint ? `<pattern id="lab-carousel-cell" width="28" height="28" patternUni
       x: track.offsetLeft + li.offsetLeft + li.offsetWidth / 2,
       y: track.offsetTop + li.offsetTop + li.offsetHeight + DROP,
     }));
+    const pm = lens.length ? share(m) : 0, pv = lens.length ? share(v) : 0;
     let d = '', s = 1;
     const parts = pts.map((p, i) => {
       const prev = pts[i - 1];
@@ -66,15 +80,19 @@ ${blueprint ? `<pattern id="lab-carousel-cell" width="28" height="28" patternUni
     parts.forEach((part, i) => (part[0] === 'M' ? rows.push([lens[i], lens[i]]) : (rows.at(-1)[1] = lens[i])));
     line.setAttribute('d', d);
     line.style.strokeDasharray = `${total + 1} ${total + 1}`;
-    group.innerHTML = pts.map((p) => `<g transform="translate(${p.x} ${p.y})"><circle class="lab-carousel-halo" r="20" fill="url(#lab-carousel-glow)"/>${glyph}</g>`).join('');
-    nodes = [...group.children];
+    if (nodes.length !== pts.length) { // created once; a resize only moves them, so lit nodes stay lit
+      group.innerHTML = pts.map(() => `<g><circle class="lab-carousel-halo" r="20" fill="url(#lab-carousel-glow)"/>${glyph}</g>`).join('');
+      nodes = [...group.children];
+    }
+    pts.forEach((p, i) => nodes[i].setAttribute('transform', `translate(${p.x} ${p.y})`));
+    m = at(pm); v = at(pv);
     const w = track.offsetLeft + track.scrollWidth, h = pts.at(-1).y + DROP;
     svg.setAttribute('width', w);
     svg.setAttribute('height', h);
     if (grid) for (const [k, v] of Object.entries({ x: -240, y: -48, width: w + 480, height: h + 72 })) grid.setAttribute(k, v);
     phone = getComputedStyle(gallery).overflowX === 'auto';
-    drawn = -1; // new nodes: let the next draw light them
-    if (ctx.reduced) draw(total);
+    drawn = -1; // new lengths: re-check which nodes are reached
+    draw(ctx.reduced ? total : v);
   }
   function draw(len) {
     if (Math.abs(len - drawn) < 0.05) return;
@@ -87,13 +105,10 @@ ${blueprint ? `<pattern id="lab-carousel-cell" width="28" height="28" patternUni
   layout();
   if (ctx.reduced) return;
 
-  // Where the line should reach: a fractional node index from the row's progress, as a length.
-  const at = (p) => {
-    const f = Math.min(1, Math.max(0, p)) * (lens.length - 1), i = Math.floor(f), j = Math.min(i + 1, lens.length - 1);
-    return lens[i] + (lens[j] - lens[i]) * (f - i);
-  };
-  let seen = false, m = 0, v = 0, s = 0, row = 0, rest = 0;
+  // Where the line should reach: a fractional node index from the row's progress, as a length (at).
+  let seen = false, s = 0, row = 0, rest = 0;
   function tick(_, dtMs) {
+    if (!lens.length) return; // empty track: nothing to draw
     const dt = Math.min(dtMs, 50) / 1000, a = 1 - Math.exp(-dt / 0.3);
     const pan = section.classList.contains('is-pan');
     const x = pan ? new DOMMatrixReadOnly(track.style.transform || 'none').m41 : 0;

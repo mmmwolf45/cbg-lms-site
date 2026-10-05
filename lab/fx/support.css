@@ -10,7 +10,9 @@
   background: linear-gradient(to left, rgba(214, 177, 96, 0.95), rgba(214, 177, 96, 0.35) 40%, transparent);
   offset-path: rect(0 auto auto 0 round 24px);
   animation: lab-support-beam 22s linear infinite;
+  animation-play-state: paused;
 }
+.lab-support--on .lab-support-beam > i { animation-play-state: running; }
 @keyframes lab-support-beam { from { offset-distance: 0%; } to { offset-distance: 100%; } }
 @supports not (offset-path: rect(0 auto auto 0)) { .lab-support-beam { display: none; } }
 

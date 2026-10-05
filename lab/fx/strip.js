@@ -1,13 +1,9 @@
 // The course-names strip (#cbg-disciplines, decorative, aria-hidden), lab prototype (lab/README.md).
-// plain: large outlined names; letters near the mouse fill gold and swell in weight (Kinetic Text, driven by
-//   distance instead of :hover so it fades smoothly); each name settles in with a slow left-to-right scramble
-//   the first time it is seen (ScrambleText's "scrambled letters run ahead of the text"). The scroll drift
-//   is still home.css/motion.css's.
+// plain: large outlined names; letters near the mouse fill gold (driven by distance instead of :hover, with
+//   heavy damping, so it fades smoothly; colour only, no layout). Each name rises in letter by letter the
+//   first time it is seen (a CSS transition, strip.css). The scroll drift is still home.css/motion.css's.
 // blueprint: a star map. A star per course (gold for live courses), its name beside it, gold hairlines
 //   joining the stars; drift and line draw-in are CSS scroll-driven animations (strip.css).
-// Scramble glyphs of about the letter's own width, so the settling text never looks crowded.
-const SETS = [[/[iljftIJ1()]/, 'iltfj'], [/[A-Z]/, 'ABCDEFHKNOPRSTUXZ'], [/./, 'abcdeghknopqrsuvxz']];
-const pick = (ch) => { const set = SETS.find(([re]) => re.test(ch))[1]; return set[(Math.random() * set.length) | 0]; };
 const smooth = (t) => (t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t));
 
 export default function mount(ctx) {
@@ -47,7 +43,7 @@ function kinetic(ctx, section, marquee) {
   marquee.classList.add('lab-strip-plain');
   const track = marquee.querySelector('.cbg-marquee__track');
   const words = [...marquee.querySelectorAll('.cbg-marquee__set > span')].map((name) => {
-    const text = name.textContent;
+    const text = name.textContent, n = text.replace(/ /g, '').length;
     name.textContent = '';
     const ls = [];
     for (const ch of text) {
@@ -55,85 +51,59 @@ function kinetic(ctx, section, marquee) {
       const l = document.createElement('span');
       l.className = 'lab-strip-l';
       l.textContent = ch;
+      l.style.setProperty('--d', `${((0.6 * ls.length) / Math.max(1, n - 1)).toFixed(3)}s`); // stagger: 0.6 s across the name
       name.append(l);
-      ls.push({ ch, el: l, k: 0, x: 0, y: 0, at: 0, next: 0, done: true });
+      ls.push({ el: l, k: 0, x: 0, y: 0 });
     }
-    return { name, ls, t0: -1 };
+    return { name, ls };
   });
   if (ctx.reduced) return;
   const letters = words.flatMap((w) => w.ls);
 
-  // Scramble: hidden until seen, then a front of scrambling letters runs left to right and each one settles.
-  for (const w of words) {
-    const D = 1.25 + 0.35 * Math.min(1, w.ls.length / 30);
-    w.ls.forEach((l, i) => {
-      l.done = false;
-      l.at = D * (0.2 + 0.8 * (i / Math.max(1, w.ls.length - 1))) + Math.random() * 0.06;
-      l.el.classList.add('is-x');
-      l.el.style.setProperty('--r', 0);
-    });
-  }
+  // Hidden until seen, then each name rises in letter by letter (strip.css, about 1.5 s in all).
+  marquee.classList.add('lab-strip-reveal');
   const io = new IntersectionObserver((es) => {
     for (const e of es) {
       if (!e.isIntersecting) continue;
       io.unobserve(e.target);
-      words.find((w) => w.name === e.target).t0 = performance.now() / 1000;
-      wake();
+      e.target.classList.add('is-in');
+      if (ctx.fine) setTimeout(measure, 1600); // re-measure once the letters have risen to rest
     }
-  }, { threshold: 0.6 });
+  }, { threshold: 0, rootMargin: '0px 0px -25% 0px' }); // not a ratio: a long name on a phone never reaches one
   words.forEach((w) => io.observe(w.name));
 
   // Letter centres at rest, relative to the track (the drift moves the track, not the letters).
-  const measure = () => {
+  function measure() {
     const t = track.getBoundingClientRect();
     for (const l of letters) {
       const r = l.el.getBoundingClientRect();
       l.x = r.left + r.width / 2 - t.left;
       l.y = r.top + r.height / 2 - t.top;
     }
-  };
-  let px = -1e5, py = -1e5;
-  if (ctx.fine) {
-    document.fonts.ready.then(measure);
-    addEventListener('resize', measure, { passive: true });
-    section.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') { px = e.clientX; py = e.clientY; wake(); } });
-    section.addEventListener('pointerleave', () => { px = py = -1e5; wake(); });
-    section.addEventListener('wheel', wake, { passive: true }); // the strip slides under a still mouse
   }
+  if (!ctx.fine) return;
+  let px = -1e5, py = -1e5;
+  document.fonts.ready.then(measure);
+  addEventListener('resize', measure, { passive: true });
+  section.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') { px = e.clientX; py = e.clientY; wake(); } });
+  section.addEventListener('pointerleave', () => { px = py = -1e5; wake(); });
+  section.addEventListener('wheel', wake, { passive: true }); // the strip slides under a still mouse
 
+  // Gold fill near the mouse: colour only, damped with a 0.6 s time constant; the loop sleeps when settled.
   let raf = 0, last = 0;
   function wake() { if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); } }
   function frame(now) {
-    const dt = Math.min(0.05, (now - last) / 1000), t = now / 1000;
+    const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
     let busy = false;
-    for (const w of words) {
-      if (w.t0 < 0) continue;
-      for (const l of w.ls) {
-        if (l.done) continue;
-        const e = t - w.t0;
-        if (e >= l.at) {
-          // settle: the outline fades up over 0.7s while the scramble glyph goes
-          const r = Math.min(1, (e - l.at) / 0.7);
-          if (l.el.classList.contains('is-x')) l.el.classList.remove('is-x');
-          l.el.style.setProperty('--r', smooth(r).toFixed(3));
-          if (r === 1) l.done = true; else busy = true;
-        } else {
-          busy = true;
-          if (e > l.at - 0.4 && t > l.next) { l.el.dataset.s = pick(l.ch); l.next = t + 0.14 + Math.random() * 0.1; }
-        }
-      }
-    }
-    if (ctx.fine) {
-      const tr = track.getBoundingClientRect(), a = 1 - Math.exp(-dt / 0.22), R = 190;
-      for (const l of letters) {
-        const dx = tr.left + l.x - px, dy = (tr.top + l.y - py) * 1.4;
-        const target = smooth(1 - Math.hypot(dx, dy) / R);
-        if (Math.abs(target - l.k) < 0.002) { if (l.k !== target) { l.k = target; l.el.style.setProperty('--k', target); } continue; }
-        l.k += (target - l.k) * a;
-        l.el.style.setProperty('--k', l.k.toFixed(3));
-        busy = true;
-      }
+    const tr = track.getBoundingClientRect(), a = 1 - Math.exp(-dt / 0.6), R = 190;
+    for (const l of letters) {
+      const dx = tr.left + l.x - px, dy = (tr.top + l.y - py) * 1.4;
+      const target = smooth(1 - Math.hypot(dx, dy) / R);
+      if (Math.abs(target - l.k) < 0.002) { if (l.k !== target) { l.k = target; l.el.style.setProperty('--k', target); } continue; }
+      l.k += (target - l.k) * a;
+      l.el.style.setProperty('--k', l.k.toFixed(3));
+      busy = true;
     }
     raf = busy ? requestAnimationFrame(frame) : 0;
   }

@@ -38,4 +38,7 @@ html[data-lab-theme="blueprint"] .lab-carousel-guide { stroke: rgba(150, 180, 23
   .cbg-course--live:hover .lab-carousel-beam::before { animation-play-state: running; }
 }
 @keyframes lab-carousel-beam { to { offset-distance: 100%; } }
-@media (prefers-reduced-motion: reduce) { .lab-carousel-beam { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .lab-carousel-beam { display: none; }
+  .lab-carousel-star, .lab-carousel-halo, .lab-carousel-line { transition: none; }
+}
