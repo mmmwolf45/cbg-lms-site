@@ -1,7 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
 import { withoutSky } from './no-sky';
+import { noStory, withoutStory } from './no-story';
 
 withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
+withoutStory(); // the card gallery: the courses story's fallback (e2e/no-story.ts, e2e/course-story.spec.ts)
 
 // Home interactions on the mock. The mock has course.link's navbar markup but none of its JS, so clicking
 // the native Login button opens nothing here: we check that our link clicks it.
@@ -352,6 +354,7 @@ test.describe('phone', () => {
 
   test('touch: tapping a coming-soon card does nothing special (no tilt, no navigation)', async ({ browser }) => {
     const ctx = await browser.newContext({ viewport: PHONE, hasTouch: true, isMobile: true, baseURL: 'http://localhost:4173' });
+    await ctx.addInitScript(noStory);
     const page = await ctx.newPage();
     await openHome(page);
     const card = page.locator('.cbg-course--soon').first();
