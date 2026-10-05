@@ -5,13 +5,16 @@
 //           card's own text (and its Open course link) shows beside the scene while its chapter plays.
 // Only with full motion, WebGL2 and no data saver: otherwise nothing here runs and the sections keep
 // their still forms (the band's fallback, the card gallery). The three.js chunk loads when either section
-// is within about two screens; each course scene loads as its chapter approaches.
+// is within about a screen; each course scene loads as its chapter approaches.
 import { all } from './reveal';
 import type { Enhancer } from './setup';
 import { clamp01, fullMotion } from './tokens';
 import type { Stage, StageScene } from '../three';
 
-const NEAR = '200% 0px'; // start loading this far ahead
+// Start loading when a 3D section is within one screen: the band sits about 2.3 screens down, so the
+// download starts while the reader scrolls through the hero, not on arrival (where it would compete with the
+// hero's frames), and still lands with a screen to spare.
+const NEAR = '100% 0px';
 
 function capable(): boolean {
   const nav = navigator as Navigator & { connection?: { saveData?: boolean } };

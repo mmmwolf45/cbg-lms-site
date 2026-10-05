@@ -33,3 +33,8 @@ from `brand/assets/three/props`; licences in `brand/assets/three/CREDITS.md`.
 | `safety-boots` | Pair of safety boots, brown leather toes | 6000 | 52.0 | rebar, navy, slate | 0.41 x 0.30 x 0.39 | Higgsfield Tripo text-to-3D (generated for CBG) |
 | `safety-goggles` | Safety goggles with strap | 6000 | 45.6 | glass, slate | 0.19 x 0.07 x 0.19 | Higgsfield Tripo text-to-3D (generated for CBG) |
 <!-- props:end -->
+
+## site (home band)
+`src/three/scenes/site.ts` downloads no model: the whole night construction site (frame building, tower crane,
+scaffold, fence, lamps, plant, materials) is built in code from boxes and tubes and merged into one mesh per
+palette material. 0 KB of GLB; about 25 draw calls and 14.6k triangles on high, 10k on low.

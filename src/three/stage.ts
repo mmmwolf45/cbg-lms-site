@@ -6,7 +6,7 @@
 // frame-rate independent damp (time constant ~0.3 s), so a fast flick or a skipped frame never makes a scene
 // jump. Rendering stops when the canvas is off screen, the tab is hidden, or nothing is moving.
 import * as THREE from 'three';
-import { BloomEffect, EffectComposer, EffectPass, RenderPass, VignetteEffect } from 'postprocessing';
+import { BloomEffect, EffectComposer, EffectPass, RenderPass } from 'postprocessing';
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
@@ -63,8 +63,8 @@ export function createStage(quality: Quality = detectQuality(), base = ''): Stag
     renderPass = new RenderPass(new THREE.Scene(), new THREE.PerspectiveCamera());
     composer.addPass(renderPass);
     composer.addPass(new EffectPass(new THREE.PerspectiveCamera(),
-      new BloomEffect({ luminanceThreshold: 0.92, luminanceSmoothing: 0.08, intensity: 0.85, mipmapBlur: true, radius: 0.7 }),
-      new VignetteEffect({ darkness: 0.42, offset: 0.32 })));
+      // No vignette: on a transparent canvas it darkens a visible rectangle over the page's sky.
+      new BloomEffect({ luminanceThreshold: 0.92, luminanceSmoothing: 0.08, intensity: 0.85, mipmapBlur: true, radius: 0.7 })));
   }
 
   const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);

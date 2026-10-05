@@ -16,6 +16,17 @@ function watchErrors(page: Page) {
   return errors;
 }
 
+// The card gallery is the fallback of the 3D course story (src/motion/three-sections.ts): these tests run it
+// as a browser without WebGL2 sees it. The story itself: e2e/three.spec.ts.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    const get = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, type: string, ...rest: unknown[]) {
+      return type === 'webgl2' ? null : (get as (...a: unknown[]) => unknown).call(this, type, ...rest);
+    } as typeof get;
+  });
+});
+
 async function openHome(page: Page) {
   await page.goto('/');
   if ((await page.locator('[data-cbg="home"]').count()) === 0) test.skip(true, 'home block not built yet (templates/*)');
@@ -350,6 +361,12 @@ test.describe('phone', () => {
   test('touch: tapping a coming-soon card does nothing special (no tilt, no navigation)', async ({ browser }) => {
     const ctx = await browser.newContext({ viewport: PHONE, hasTouch: true, isMobile: true, baseURL: 'http://localhost:4173' });
     const page = await ctx.newPage();
+    await page.addInitScript(() => { // the gallery fallback, as in beforeEach (a new context needs its own)
+      const get = HTMLCanvasElement.prototype.getContext;
+      HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, type: string, ...rest: unknown[]) {
+        return type === 'webgl2' ? null : (get as (...a: unknown[]) => unknown).call(this, type, ...rest);
+      } as typeof get;
+    });
     await openHome(page);
     const card = page.locator('.cbg-course--soon').first();
     await card.scrollIntoViewIfNeeded();

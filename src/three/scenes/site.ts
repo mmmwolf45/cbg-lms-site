@@ -372,22 +372,7 @@ const site: SceneFactory = async ({ palette: P, quality }) => {
   scene.add(poolMesh);
   owned.push(gravel, fade, groundMat, groundGeo, blobTex, blobMat, blobGeo, poolMat, poolGeo);
 
-  // ---- light: cool sky, warm moon, gold site lights; a tiny gradient sky for the metals to reflect ----
-  const env = canvasTexture(64, (g, s) => {
-    const grad = g.createLinearGradient(0, 0, 0, s);
-    grad.addColorStop(0, '#262b38');
-    grad.addColorStop(0.42, '#4a4c56');
-    grad.addColorStop(0.5, '#a88a58');
-    grad.addColorStop(0.58, '#2a2a30');
-    grad.addColorStop(1, '#121419');
-    g.fillStyle = grad;
-    g.fillRect(0, 0, s, s);
-  });
-  env.mapping = THREE.EquirectangularReflectionMapping;
-  env.colorSpace = THREE.SRGBColorSpace;
-  scene.environment = env;
-  scene.environmentIntensity = 0.5;
-  owned.push(env);
+  // ---- light: cool sky, warm moon, gold site lights (reflections come from the stage's shared env map) ----
   scene.add(new THREE.HemisphereLight(0xb9c8f0, COLOURS.navy, 0.75));
   const moon = new THREE.DirectionalLight(0xffe9c8, 0.95);
   moon.position.set(-30, 40, 22);
@@ -411,12 +396,12 @@ const site: SceneFactory = async ({ palette: P, quality }) => {
     ...LAMPS.map(([x, z, ry]) => [x + Math.cos(ry) * 1.3, LH - 0.2, z - Math.sin(ry) * 1.3] as [number, number, number]),
     [-10.9, 1.85, 16.5],
   ];
-  const haloTex = radial([[0, 'rgba(255,255,255,0.9)'], [0.18, 'rgba(255,255,255,0.35)'], [0.5, 'rgba(255,255,255,0.08)'], [1, 'rgba(255,255,255,0)']]);
+  const haloTex = radial([[0, 'rgba(255,255,255,0.85)'], [0.12, 'rgba(255,255,255,0.4)'], [0.4, 'rgba(255,255,255,0.08)'], [1, 'rgba(255,255,255,0)']]);
   const halos = haloAt.map(([x, y, z], i) => {
     const m = new THREE.SpriteMaterial({ color: COLOURS.gold, map: haloTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false });
     const h = new THREE.Sprite(m);
     h.position.set(x, y, z);
-    h.scale.setScalar(i < LAMPS.length ? 6 : 3.5);
+    h.scale.setScalar(i < LAMPS.length ? 4.2 : 2.6);
     scene.add(h);
     owned.push(m);
     return m;

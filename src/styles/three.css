@@ -38,6 +38,9 @@
   transition: opacity 0.9s var(--cbg-ease), transform 1.2s var(--cbg-ease);
 }
 .is-story .cbg-gallery__track > li.is-active { opacity: 1; transform: none; pointer-events: auto; }
+/* The page's reveal (src/motion/reveal.ts) tweens the cards with inline styles as they scroll in; in the
+   story only the active card may show, so the waiting ones stay hidden over any inline opacity. */
+.is-story .cbg-gallery__track > li:not(.is-active) { opacity: 0 !important; }
 /* The scene replaces the photo; the card becomes a frosted panel over the night sky. */
 .is-story .cbg-course__media { display: none; }
 .is-story .cbg-course.cbg-card { background: rgba(10, 22, 45, 0.55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
