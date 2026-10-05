@@ -19,7 +19,7 @@ await page.waitForTimeout(3000);
 // Scroll smoothly across [from, to] of a section's sticky stretch over 2.5 s, counting frames and the worst gap.
 const sweep = (sel, from, to) => page.evaluate(([sel, from, to]) => new Promise((done) => {
   const el = document.querySelector(sel);
-  if (!el) return done({ fps: '-', worst: '-' }); // not on this screen size (the courses pan is laptop only)
+  if (!el) return done({ fps: '-', worst: '-' }); // not on this screen or mode (the pan: laptop fallback only)
   const r = el.getBoundingClientRect();
   const y0 = scrollY + r.top + from * Math.max(0, r.height - innerHeight);
   const y1 = scrollY + r.top + to * Math.max(0, r.height - innerHeight);
@@ -37,6 +37,9 @@ const rows = [];
 await sweep('.cbg-orbit', 0, 0.02); await page.waitForTimeout(3000); // let the band's frames load
 rows.push(['band (orbit) 0-1', await sweep('.cbg-orbit', 0, 1)]);
 rows.push(['courses (pan)', await sweep('.pin-spacer:has(#cbg-courses)', 0, 1)]);
+await sweep('#cbg-courses.is-story', 0, 0.01); await page.waitForTimeout(3000); // let the first film load
+rows.push(['courses (story) chapters 0-2', await sweep('#cbg-courses.is-story', 0, 0.34)]);
+rows.push(['courses (story) 0-1', await sweep('#cbg-courses.is-story', 0, 1)]);
 rows.push(['about (globe)', await sweep('#cbg-about', 0, 1)]);
 for (const [k, v] of rows) console.log(`${W} ${k}: ${v.fps} fps, worst frame ${v.worst} ms`);
 await browser.close();

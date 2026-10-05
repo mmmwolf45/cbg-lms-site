@@ -111,10 +111,14 @@ function run(section: HTMLElement, fail: () => void): (() => void) | undefined {
     // The photo: its own copy at the canvas's size (the card's <img> is hidden in the story and lazy).
     const src = c.li.querySelector('.cbg-course__media source[type="image/avif"]')?.getAttribute('srcset');
     if (!c.base && src) {
-      c.photo = new Image();
-      c.photo.onload = () => { painted = ''; kick(); };
-      c.photo.sizes = `${canvas.width}px`;
-      c.photo.srcset = src;
+      const img = new Image();
+      img.sizes = `${canvas.width}px`;
+      img.srcset = src;
+      img.decode().then(() => {
+        c.photo = img; // decoded before its first draw, like the frames
+        painted = '';
+        kick();
+      }, () => {});
       return;
     }
     if (!c.base) return;
@@ -164,13 +168,13 @@ function run(section: HTMLElement, fail: () => void): (() => void) | undefined {
     if (fade >= 1) from = -1;
     const key = `${cur.toFixed(3)} ${from >= 0 ? fade.toFixed(3) : ''} ${canvas.width}`;
     if (key === painted) return;
+    const b = Math.round((cur / N) * 1000) / 1000;
+    if (bar && b !== barAt) bar.style.transform = `scaleX(${(barAt = b)})`;
     if (!paintChapter(k, clamp01(cur - k), 1)) return; // nothing loaded yet: keep what is there
     if (from >= 0) paintChapter(from, fromAt, 1 - smooth(clamp01(fade)));
     ctx.globalAlpha = 1;
     painted = key;
     canvas.classList.add('is-on');
-    const b = Math.round((cur / N) * 1000) / 1000;
-    if (bar && b !== barAt) bar.style.transform = `scaleX(${(barAt = b)})`;
   };
   const tick = (now: number) => {
     raf = 0;

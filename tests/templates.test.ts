@@ -203,6 +203,13 @@ describe('home course cards', () => {
 
   it('the row is a labelled, focusable region', () =>
     expect(cards).toContain('<div class="cbg-gallery" role="region" aria-labelledby="cbg-courses-heading" tabindex="0">'));
+
+  it('the story: a decorative film stage, and each card with a film names it on the Pages base', () => {
+    expect(cards).toMatch(/<section [^>]*data-cbg-gallery data-cbg-story>/);
+    expect(cards).toContain('<div class="cbg-story__stage" aria-hidden="true"><div class="cbg-story__film"><canvas class="cbg-story__canvas"></canvas></div></div>');
+    expect(cards).toMatch(/<li data-film="https:\/\/mmmwolf45\.github\.io\/cbg-lms-site\/course-films\/iosh\/" data-frames="\d+"><article[^>]*>[^]*?IOSH Level 3/);
+    expect(sectionHtml(home(h, [soon('No film', 1, { image: 'not-built-yet' })]), 'courses')).toContain('<li><article');
+  });
 });
 
 describe('home band', () => {

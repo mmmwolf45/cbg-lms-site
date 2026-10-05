@@ -5,6 +5,7 @@ Extends SPEC.md section 5.1 (the home page). The idea is in docs/ideas/home-nigh
 
 **Decisions after the port:**
 - 6 Oct 2026, Maasoom: the 3D course story (one three.js scene per course card) and three.js itself are dropped; the models looked too simple. `#cbg-courses` is the card carousel again (src/motion/gallery.ts) with the `carousel` fx's gold track in the plain theme (no blueprint grid, no 4-point stars): src/motion/gold-track.ts, src/styles/gold-track.css. The 3D scenes and models are recoverable from commit 5b9bd72 (possibly for the IOSH page later).
+- 6 Oct 2026, Maasoom: the course story comes back with photoreal films instead of three.js scenes. `#cbg-courses` holds (sticky) and scrolls through one chapter per course card: the card on the left (below the film on phones), that course's film on the right, scrubbed by the chapter's scroll, cross-fading 0.6 s into the next (src/motion/course-story.ts, src/styles/story.css; SPEC.md 5.1.3). The card carousel with the gold track stays as the fallback: reduced motion, no JS, Save-Data, no canvas 2D, the section already on screen, or the first film failing to load. A course without a film yet shows its card photo, still. Course films are an approved image exception (2.0 MB / 0.75 MB per course, SPEC.md section 8).
 
 ## Objective
 Restyle and animate the home page into a calm night sky with gold constellation lines. A first-time visitor should feel "premium, alive"; a daily student should never be slowed down. Same sections, same order, same copy. The exploding-building hero is unchanged.

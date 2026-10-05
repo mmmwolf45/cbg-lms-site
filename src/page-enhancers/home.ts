@@ -9,4 +9,5 @@ import { cursor } from '../motion/cursor';
 import { globe } from '../motion/globe';
 import { loginAction } from '../actions';
 
+// courseStory runs the card gallery and its gold track itself whenever the story can't (its fallback).
 export const enhancers = [explode, siteOrbit, courseStory, cardTilt, strip, support, cursor, globe, loginAction];
