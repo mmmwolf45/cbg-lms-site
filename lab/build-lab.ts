@@ -5,12 +5,14 @@
 //   npx tsx lab/build-lab.ts                    -> lab/out
 //   npx tsx lab/build-lab.ts --out lab/out-sky  -> another folder (one per agent, so builds don't collide)
 //   npx tsx lab/build-lab.ts --artifact         -> also strips course.link's own CSS/JS links (blocked in an Artifact)
+//   npx tsx lab/build-lab.ts --plain            -> the real page only (no switcher, no fx): a preview of the build
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { PAGES } from '../src/components/html';
 
 const arg = (k: string) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const OUT = arg('--out') ?? 'lab/out';
 const ARTIFACT = process.argv.includes('--artifact');
+const PLAIN = process.argv.includes('--plain');
 
 if (!existsSync('dist/preview/home.html')) throw new Error('run `npm run build` first');
 // Empty OUT rather than delete it (Windows refuses to remove a folder a shell is sitting in).
@@ -22,12 +24,14 @@ mkdirSync(`${OUT}/site`);
 for (const f of readdirSync('dist')) {
   if (/^cbg[.-].*\.(js|css)$/.test(f) || f === 'manifest.json') cpSync(`dist/${f}`, `${OUT}/site/${f}`);
 }
-for (const d of ['band-desk', 'brand', 'hero-explode']) cpSync(`dist/${d}`, `${OUT}/site/${d}`, { recursive: true });
+for (const d of ['band-desk', 'brand', 'hero-explode', 'three', 'sky']) if (existsSync(`dist/${d}`)) cpSync(`dist/${d}`, `${OUT}/site/${d}`, { recursive: true });
 
 // The lab itself.
-for (const d of ['fx', 'vendor', 'assets']) if (existsSync(`lab/${d}`)) cpSync(`lab/${d}`, `${OUT}/${d}`, { recursive: true });
-cpSync('lab/lab.js', `${OUT}/lab.js`);
-cpSync('lab/lab.css', `${OUT}/lab.css`);
+if (!PLAIN) {
+  for (const d of ['fx', 'vendor', 'assets']) if (existsSync(`lab/${d}`)) cpSync(`lab/${d}`, `${OUT}/${d}`, { recursive: true });
+  cpSync('lab/lab.js', `${OUT}/lab.js`);
+  cpSync('lab/lab.css', `${OUT}/lab.css`);
+}
 
 const css = existsSync('lab/fx') ? readdirSync('lab/fx').filter((f) => f.endsWith('.css')).map((f) => f.slice(0, -4)) : [];
 
@@ -70,7 +74,7 @@ for (const f of readdirSync(`${OUT}/site`)) {
 }
 page = page.replace(/<head>/, `<head>${DEBUG}${boot}`);
 
-page = page.replace('</head>', '<link rel="stylesheet" href="./lab.css"></head>').replace(
+if (!PLAIN) page = page.replace('</head>', '<link rel="stylesheet" href="./lab.css"></head>').replace(
   '</body>',
   // No vendored GSAP here: a window.gsap present before the bundle starts hijacks the bundle's own
   // ScrollTrigger (the courses pin breaks). lab.js loads it after the bundle is up.
@@ -82,7 +86,7 @@ page = page.replace('</head>', '<link rel="stylesheet" href="./lab.css"></head>'
 if (ARTIFACT) {
   page = page.replace(/<!DOCTYPE[^>]*>|<\/?html[^>]*>|<\/?head>|<\/?body[^>]*>/gi, '')
     .replace(/<title>[^<]*<\/title>/i, '');
-  page = `<title>CBG Night Sky Lab</title><meta name="color-scheme" content="dark">${page}`;
+  page = `<title>${PLAIN ? 'CBG Home Preview' : 'CBG Night Sky Lab'}</title><meta name="color-scheme" content="dark">${page}`;
 }
 
 writeFileSync(`${OUT}/index.html`, page);

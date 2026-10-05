@@ -10,3 +10,4 @@ review/
 lab/out*/
 lab/shots/
 .playwright-cli/
+lab/out-preview/
