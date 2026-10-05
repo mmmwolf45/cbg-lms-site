@@ -3,6 +3,9 @@
 Extends SPEC.md section 5.1 (the home page). The idea is in docs/ideas/home-night-sky.md.
 **Status:** the prototype stage was approved by Maasoom on 5 Oct 2026 (statement of intent confirmed). The port to `src/` waits for his pick.
 
+**Decisions after the port:**
+- 6 Oct 2026, Maasoom: the 3D course story (one three.js scene per course card) and three.js itself are dropped; the models looked too simple. `#cbg-courses` is the card carousel again (src/motion/gallery.ts) with the `carousel` fx's gold track in the plain theme (no blueprint grid, no 4-point stars): src/motion/gold-track.ts, src/styles/gold-track.css. The 3D scenes and models are recoverable from commit 5b9bd72 (possibly for the IOSH page later).
+
 ## Objective
 Restyle and animate the home page into a calm night sky with gold constellation lines. A first-time visitor should feel "premium, alive"; a daily student should never be slowed down. Same sections, same order, same copy. The exploding-building hero is unchanged.
 
