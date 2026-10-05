@@ -1,15 +1,18 @@
 // The one WebGL canvas every 3D section shares (phones drop contexts when a page holds several). A section
 // moves the canvas into its own host element and asks the stage to play its scene; the stage owns the
-// renderer, the frame loop, the gold glow (bloom), resizing, pausing and context loss.
+// renderer, the frame loop, resizing, pausing and context loss.
+//
+// No post-processing (bloom) pass: on Intel GPUs under Chrome (shaders translated to Direct3D) its shaders
+// compiled on the main thread at its first frame, a 6-12 s freeze that pre-compiling could not avoid, and it
+// added 17 full-screen passes to every frame. Gold glows instead from over-bright gold colours
+// (palette.goldLine/goldGlow) and halo sprites where a scene wants a light to bloom.
 //
 // Smoothness: sections hand the stage a raw scroll progress (0..1); the stage eases toward it with a
 // frame-rate independent damp (time constant ~0.3 s), so a fast flick or a skipped frame never makes a scene
 // jump. Rendering stops when the canvas is off screen, the tab is hidden, or nothing is moving.
 import * as THREE from 'three';
-import { BloomEffect, EffectComposer, EffectPass, RenderPass } from 'postprocessing';
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { applyPalette, makePalette } from './palette';
 import type { Kit, Quality, StageScene } from './types';
 
@@ -46,37 +49,21 @@ export function createStage(quality: Quality = detectQuality(), base = ''): Stag
   const canvas = document.createElement('canvas');
   canvas.className = 'cbg-stage';
   canvas.setAttribute('aria-hidden', 'true');
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: quality !== 'high', alpha: true, powerPreference: 'high-performance' });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: quality !== 'low', alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio, quality === 'high' ? 1.5 : quality === 'mid' ? 1.25 : 1));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
   renderer.setClearColor(0x000000, 0);
+  // Shader error checks read each program's info log, which makes the driver finish compiling there and
+  // then, on the main thread (multi-second freezes when a scene loads). Off outside development, so
+  // compileAsync really compiles in the background (KHR_parallel_shader_compile).
+  renderer.debug.checkShaderErrors = !!import.meta.env.DEV;
   renderer.localClippingEnabled = true; // section cuts (e.g. the MEP scene) use per-material clipping planes
 
-  // Gold glow: only colours brighter than white (palette.goldLine/goldGlow, site lights) cross the
-  // threshold, so the navy stays crisp. Phones on the low tier skip it.
-  let composer: EffectComposer | undefined;
-  let renderPass: RenderPass | undefined;
-  if (quality !== 'low') {
-    composer = new EffectComposer(renderer, { multisampling: quality === 'high' ? 4 : 0, frameBufferType: THREE.HalfFloatType });
-    renderPass = new RenderPass(new THREE.Scene(), new THREE.PerspectiveCamera());
-    composer.addPass(renderPass);
-    composer.addPass(new EffectPass(new THREE.PerspectiveCamera(),
-      // No vignette: on a transparent canvas it darkens a visible rectangle over the page's sky.
-      new BloomEffect({ luminanceThreshold: 0.92, luminanceSmoothing: 0.08, intensity: 0.85, mipmapBlur: true, radius: 0.7 })));
-  }
 
   const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
   const palette = makePalette();
-  // A soft studio reflection for every palette material (without one, metallic gold reads as dull olive).
-  // Built once from three's RoomEnvironment: no download. Kept low so the night mood stays.
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  pmrem.dispose();
-  for (const m of Object.values(palette)) {
-    if (m instanceof THREE.MeshStandardMaterial) { m.envMap = env; m.envMapIntensity = m === palette.gold ? 1.1 : 0.35; }
-  }
   const kit: Kit = {
     quality,
     palette,
@@ -102,7 +89,6 @@ export function createStage(quality: Quality = detectQuality(), base = ''): Stag
     if (!w || !h || (w === width && h === height)) return;
     width = w; height = h;
     renderer.setSize(w, h, false);
-    composer?.setSize(w, h, false);
     if (active) { active.camera.aspect = w / h; active.camera.updateProjectionMatrix(); }
   };
   const ro = new ResizeObserver(() => { size(); kick(); });
@@ -116,11 +102,7 @@ export function createStage(quality: Quality = detectQuality(), base = ''): Stag
 
   const draw = () => {
     if (!active) return;
-    if (composer && renderPass) {
-      renderPass.mainScene = active.scene;
-      renderPass.mainCamera = active.camera;
-      composer.render();
-    } else renderer.render(active.scene, active.camera);
+    renderer.render(active.scene, active.camera);
   };
 
   function frame(now: number) {
@@ -158,15 +140,7 @@ export function createStage(quality: Quality = detectQuality(), base = ''): Stag
     stop() { active = undefined; cancelAnimationFrame(raf); raf = 0; },
     async prepare(scene) {
       // Compile shaders and upload textures ahead of time, so a scene's first frame never stalls the scroll.
-      // Compile for where frames really go: with the glow on, the composer's float buffer (linear colour,
-      // no tone mapping), whose shader variants differ from the canvas's. Compiling for the canvas left the
-      // real ones to compile on a chapter's first frame (150-500 ms hitches). three's compileAsync builds
-      // its programs synchronously, so the target only needs setting around the call.
-      const prev = renderer.getRenderTarget();
-      if (composer) renderer.setRenderTarget(composer.inputBuffer);
-      const compiled = renderer.compileAsync(scene.scene, scene.camera);
-      renderer.setRenderTarget(prev);
-      await compiled;
+      await renderer.compileAsync(scene.scene, scene.camera);
       // ...and upload its textures (screens, plans, labels) now rather than on its first frame.
       scene.scene.traverse((o) => {
         const m = (o as THREE.Mesh).material as THREE.Material | THREE.Material[] | undefined;
@@ -180,8 +154,6 @@ export function createStage(quality: Quality = detectQuality(), base = ''): Stag
       ro.disconnect(); io.disconnect();
       document.removeEventListener('visibilitychange', onVis);
       removeEventListener('scroll', kick);
-      composer?.dispose();
-      env.dispose();
       renderer.dispose();
       canvas.remove();
     },

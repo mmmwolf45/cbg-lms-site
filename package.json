@@ -33,7 +33,6 @@
   "dependencies": {
     "cobe": "^2.0.1",
     "gsap": "^3.15.0",
-    "postprocessing": "6.39.5",
     "three": "0.186.1"
   },
   "allowScripts": {

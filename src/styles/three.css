@@ -32,7 +32,7 @@
 .is-story .cbg-story__stage { display: block; }
 
 /* All cards share one grid cell, so the cell is as tall as the tallest card and nothing overlaps below. */
-.is-story .cbg-gallery__track { display: grid; align-items: start; padding: 0; width: auto; }
+.is-story .cbg-gallery__track { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; padding: 0; width: auto; }
 .is-story .cbg-gallery__track > li {
   grid-area: 1 / 1; width: auto;
   opacity: 0; transform: translateY(18px); pointer-events: none;

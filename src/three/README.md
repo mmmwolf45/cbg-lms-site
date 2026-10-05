@@ -2,13 +2,15 @@
 
 Decided 6 Oct 2026 with Maasoom: stylised **clay + gold** look; one shared canvas; the band becomes a 3D night
 construction site the scroll walks 360° around; the "Your courses" pin becomes a scroll story with one 3D scene
-per course (replacing the sideways card pan on capable devices). Gold glow (bloom) on gold edges only.
+per course (replacing the sideways card pan on capable devices). Gold reads as glowing from over-bright gold
+materials and halo sprites: there is NO bloom/post-processing pass (6 Oct 2026: its shaders froze Intel GPUs for
+6-12 s on first use, and it cost 17 full-screen passes per frame). No environment map either (0.7 s freeze).
 
 ## Files
 - `types.ts`: the contract (`Kit`, `StageScene`, `SceneFactory`). Read it first.
-- `stage.ts`: shared renderer, damped progress, bloom, quality tiers, pausing, context loss. Scenes never own a renderer.
+- `stage.ts`: shared renderer, damped progress, quality tiers, pausing, context loss. Scenes never own a renderer.
 - `palette.ts`: the shared materials. **Use `kit.palette.*`, never `new MeshStandardMaterial` with ad-hoc colours.**
-  Gold accents: `palette.gold` (metal) and `palette.goldLine` / `palette.goldGlow` (bright, picked up by the bloom).
+  Gold accents: `palette.gold` and `palette.goldLine` / `palette.goldGlow` (over-bright; use halo sprites for lights).
 - `scenes/<name>.ts`: one file per scene, `export default` a `SceneFactory`. Names: `site`, `iosh`, `qs`, `bim`,
   `mep`, `structural`, `interior`.
 - Models: `public/three/<name>.glb` (meshopt, materials named after palette swatches), loaded with `kit.loadGLB(name)`.

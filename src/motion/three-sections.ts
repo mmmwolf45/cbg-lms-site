@@ -127,11 +127,16 @@ export const threeSections: Enhancer = (roots) => {
       lib = await import('../three');
       if (dead) return;
       stage = lib.createStage(undefined, new URL('./', import.meta.url).href);
+      // Size the canvas now, while nothing is compiling: resizing a WebGL canvas waits for every shader
+      // compile in flight (that wait was a 5 s freeze when it landed mid-warm-up).
+      const first = band ?? storyHost;
+      if (first) stage.mount(first);
       addEventListener('scroll', () => void route(), { passive: true, signal: off.signal });
       addEventListener('resize', () => void route(), { passive: true, signal: off.signal });
-      if (band) void scene('site');
+      if (band) await scene('site');
+      if (dead) return;
       void route();
-      void warm();
+      void warm(); // only after the first scene is up
     } catch (err) {
       console.warn('[cbg] 3D', err); // the sections keep their still forms
       bandSection?.classList.remove('is-3d');

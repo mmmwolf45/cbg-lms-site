@@ -17,7 +17,7 @@ const TAU = 1.2; // s: the turn glides to a stop
 const MAXV = 2 * DEG; // rad/s: never faster than this
 const FOV = 140 * DEG; // across the screen diagonal
 const CELL = 8; // css px per text-mask cell
-const PAD = 18; // css px around each text line that counts as behind text
+const PAD = 32; // css px around each text line that counts as behind text (the blur then softens the edge)
 const GOLD = [0.839, 0.694, 0.376];
 const OUR_ROUTE = /\bcbg-route-(home|course)\b/;
 
@@ -75,7 +75,7 @@ precision highp float;
 #else
 precision mediump float;
 #endif
-uniform sampler2D T;uniform vec4 K;uniform vec2 Q;
+uniform sampler2D T;uniform vec2 K,Q;
 float dim(){return 1.-.88*texture2D(T,vec2(gl_FragCoord.x,K.x-gl_FragCoord.y)/K.y/Q).r;}
 `;
 
@@ -90,8 +90,8 @@ void main(){
 vec2 p=(gl_FragCoord.xy-.5*R)/S;float q=dot(p,p);
 vec3 e=M*(vec3(4.*p,4.-q)/(4.+q));
 float b=dot(e,vec3(-.8677,-.1981,.456)),g=dot(e,vec3(-.0549,-.8734,-.4838)),w=.14+.04*g;
-float m=exp(-b*b/(w*w))*(.5+.5*smoothstep(-1.,1.,g))*smoothstep(.25,.8,.5*n(e*4.)+.3*n(e*9.+3.)+.2*n(e*23.+7.));
-m*=1.-.75*exp(-pow((b-.012)/.03,2.))*smoothstep(-.2,.7,g);
+float m=0.;if(abs(b)<3.*w){m=exp(-b*b/(w*w))*(.5+.5*smoothstep(-1.,1.,g))*smoothstep(.25,.8,.5*n(e*4.)+.3*n(e*9.+3.)+.2*n(e*23.+7.));
+m*=1.-.75*exp(-pow((b-.012)/.03,2.))*smoothstep(-.2,.7,g);}
 float a=.1*m*smoothstep(-.02,.15,dot(e,Z));
 vec3 c=mix(vec3(.62,.68,.9),vec3(.95,.86,.74),smoothstep(.3,1.,g))*a;
 if(G.y>0.){vec2 v=vec2(gl_FragCoord.x,K.x-gl_FragCoord.y)/K.y-H.xy;float t=-dot(v,H.zw),s=dot(v,vec2(-H.w,H.z)),k=clamp(t/G.x,0.,1.);
@@ -182,42 +182,62 @@ export function skyBackground(doc: Document = document): () => void {
   const off = new AbortController();
   const opts = { passive: true, signal: off.signal } as const;
   let stars: WebGLBuffer | null = null, lines: WebGLBuffer | null = null, nStars = 0, nLines = 0;
-  let q = [1, 1], texts: Node[] = [], cells = new Uint8Array(0), raf = 0, last = 0, prev = 0, dirty = true, shown = 0, born = 0, measuring = 0;
+  let q = [1, 1], texts = new Map<Element, Node[]>(), maskAt = 0, cells = new Uint8Array(0), raf = 0, last = 0, prev = 0, dirty = true, shown = 0, born = 0, measuring = 0;
   let shot: { t0: number; dur: number; len: number; x: number; y: number; dx: number; dy: number } | undefined;
   let next = 12 + Math.random() * 14; // first shooting star, s after the stars appear
   const range = doc.createRange();
   const ours = () => OUR_ROUTE.test(doc.documentElement.className);
 
-  // The text to keep the sky dim behind: every non-empty text node (re-collected, at most 300 ms late, when
-  // the page changes).
+  // The text to keep the sky dim behind: every non-empty text node, grouped by its section so a draw only
+  // reads the lines of sections on screen. Re-collected, at most 300 ms late, when the page changes.
   const collect = () => {
     measuring = 0;
-    texts = [];
+    texts = new Map();
     const walk = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT, {
       acceptNode: (n) => (n.nodeValue?.trim() && !n.parentElement?.closest('[class*="sr-only"]') ? 1 : 3), // sr-only reports a huge box
     });
-    for (let n; (n = walk.nextNode());) texts.push(n);
+    for (let n; (n = walk.nextNode());) {
+      const g = n.parentElement!.closest('section,header,footer,nav,aside') ?? n.parentElement!;
+      (texts.get(g) ?? texts.set(g, []).get(g)!).push(n);
+    }
     kick();
   };
   const recollect = () => {
     if (!measuring) measuring = win.setTimeout(collect, 300);
   };
-  // Where every text line is now, padded, as a low-res viewport mask (8 css px cells, soft edges from linear
-  // filtering). Read on every draw, so text that is pinned, carried or slid sideways (the hero, the
-  // carousels) keeps the stars behind it dim, frame for frame.
+  // Where every visible text line is now, padded and blurred, as a low-res viewport mask (8 css px cells).
+  // Read on every draw while scrolling and every 0.25 s otherwise, so text that is pinned, carried or slid
+  // sideways (the hero, the carousels, the course story) keeps the stars behind it dim. Faded-out text
+  // (opacity 0, visibility hidden) doesn't count, and the 3D stages (.cbg-stage) are never dimmed.
   const mask = (w: number, h: number) => {
-    const cols = Math.ceil(w / CELL), rows = Math.ceil(h / CELL);
-    if (cells.length !== cols * rows) cells = new Uint8Array(cols * rows);
-    else cells.fill(0);
-    for (const n of texts) {
-      range.selectNodeContents(n);
-      for (const r of range.getClientRects()) {
-        if (!r.width || r.bottom < -PAD || r.top > h + PAD) continue;
-        const x1 = Math.min(cols, Math.ceil((r.right + PAD) / CELL)), y1 = Math.min(rows, Math.ceil((r.bottom + PAD) / CELL));
-        for (let y = Math.max(0, Math.floor((r.top - PAD) / CELL)); y < y1; y++)
-          cells.fill(255, y * cols + Math.max(0, Math.floor((r.left - PAD) / CELL)), y * cols + x1);
+    const cols = Math.ceil(w / CELL), rows = Math.ceil(h / CELL), a = new Float32Array(cols * rows);
+    const box = (r: DOMRect, v: number, pad: number) => {
+      const x1 = Math.min(cols, Math.ceil((r.right + pad) / CELL)), y1 = Math.min(rows, Math.ceil((r.bottom + pad) / CELL));
+      for (let y = Math.max(0, Math.floor((r.top - pad) / CELL)); y < y1; y++)
+        a.fill(v, y * cols + Math.max(0, Math.floor((r.left - pad) / CELL)), y * cols + x1);
+    };
+    const near = (r: DOMRect) => r.width && r.bottom > -PAD && r.top < h + PAD;
+    for (const [g, ns] of texts) {
+      if (!near(g.getBoundingClientRect())) continue;
+      for (const n of ns) {
+        if (n.parentElement?.checkVisibility?.({ opacityProperty: true, visibilityProperty: true }) === false) continue;
+        range.selectNodeContents(n);
+        for (const r of range.getClientRects()) if (near(r)) box(r, 1, PAD);
       }
     }
+    for (const c of doc.querySelectorAll('.cbg-stage')) box(c.getBoundingClientRect(), 0, 0);
+    // Soft edges: a box blur (radius 3 cells) along rows, then columns, twice (close to a Gaussian). The
+    // screen edges repeat outward, so text at an edge stays fully covered.
+    for (let pass = 0; pass < 4; pass++) {
+      const [n, lines, step, gap] = pass & 1 ? [rows, cols, cols, 1] : [cols, rows, 1, cols];
+      const sum = new Float32Array(n + 7);
+      for (let j = 0; j < lines; j++) {
+        for (let i = 0; i < n + 6; i++) sum[i + 1] = sum[i] + a[j * gap + Math.min(n - 1, Math.max(0, i - 3)) * step];
+        for (let i = 0; i < n; i++) a[j * gap + i * step] = (sum[i + 7] - sum[i]) / 7;
+      }
+    }
+    if (cells.length !== a.length) cells = new Uint8Array(a.length);
+    for (let i = 0; i < a.length; i++) cells[i] = a[i] * 255;
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, cols, rows, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, cells);
     q = [cols * CELL, rows * CELL];
   };
@@ -227,7 +247,7 @@ export function skyBackground(doc: Document = document): () => void {
     gl.uniform3fv(u.Z, m.subarray(9));
     gl.uniform2f(u.R, canvas.width, canvas.height);
     gl.uniform1f(u.S, s);
-    gl.uniform4f(u.K, canvas.height, dpr, 0, 0);
+    gl.uniform2f(u.K, canvas.height, dpr);
     gl.uniform2f(u.Q, q[0], q[1]);
   };
   const attrs = (b: WebGLBuffer | null) => {
@@ -241,7 +261,8 @@ export function skyBackground(doc: Document = document): () => void {
     if (!ours() || doc.hidden || !stars) return;
     const still = reduce.matches;
     if (!still) raf = win.requestAnimationFrame(frame);
-    if (!dirty && ms - last < 30) return; // 30 fps for the twinkle; a scroll draws at once (the text mask follows)
+    if (!still && ms - last < 30) return; // at most 30 draws a second, scrolling or not (the GPU is shared with the 3D)
+    const kicked = dirty;
     dirty = false;
     last = ms;
     const dt = Math.min(0.1, (ms - (prev || ms)) / 1000), t = ms / 1000;
@@ -254,7 +275,10 @@ export function skyBackground(doc: Document = document): () => void {
     }
     shown = still ? 0 : turn(shown, win.scrollY * RATE, dt);
     const [s, alt] = lens(w, h), m = view(LST0 + shown, alt);
-    mask(w, h);
+    if (kicked || ms - maskAt > 250) {
+      maskAt = ms;
+      mask(w, h);
+    }
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT);
 

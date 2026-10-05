@@ -18,7 +18,7 @@ export const COLOURS = {
 export type Swatch = keyof typeof COLOURS;
 
 export type Palette = Record<Swatch, THREE.MeshStandardMaterial> & {
-  // Gold lines and glowing accents: bright enough to cross the bloom threshold (stage.ts).
+  // Gold lines and glowing accents: over-bright (above 1), so they read as lit gold against the navy.
   goldLine: THREE.LineBasicMaterial;
   goldGlow: THREE.MeshBasicMaterial;
   screenGlow: THREE.MeshBasicMaterial;
@@ -29,14 +29,17 @@ export function makePalette(): Palette {
     new THREE.MeshStandardMaterial({ color: c, roughness: 0.78, metalness: 0, flatShading: false, ...o });
   return {
     navy: std(COLOURS.navy, { roughness: 0.6 }),
-    slate: std(COLOURS.slate, { roughness: 0.55, metalness: 0.35 }),
+    // No environment map on the stage (building one froze the page ~0.7 s on Intel GPUs), so nothing is a
+    // mirror: a fully metallic gold with nothing to reflect reads dark olive. Low metalness plus a little
+    // warm emissive keeps it reading as gold under the scenes' own lights.
+    slate: std(COLOURS.slate, { roughness: 0.55, metalness: 0.15 }),
     clay: std(COLOURS.clay),
-    gold: std(COLOURS.gold, { roughness: 0.32, metalness: 0.85, emissive: COLOURS.gold, emissiveIntensity: 0.08 }),
+    gold: std(COLOURS.gold, { roughness: 0.42, metalness: 0.3, emissive: COLOURS.gold, emissiveIntensity: 0.16 }),
     orange: std(COLOURS.orange, { roughness: 0.5 }),
     screen: std(COLOURS.screen, { emissive: COLOURS.screen, emissiveIntensity: 0.9, roughness: 0.3 }),
     rebar: std(COLOURS.rebar, { roughness: 0.7, metalness: 0.3 }),
     glass: std(COLOURS.glass, { roughness: 0.1, metalness: 0.2, transparent: true, opacity: 0.35 }),
-    // Colours above 1 (HDR) are what the bloom picks up; everything else stays crisp.
+    // Colours above 1: the brightest thing in a scene, which is how the gold "glows" (no bloom pass).
     goldLine: new THREE.LineBasicMaterial({ color: new THREE.Color(COLOURS.gold).multiplyScalar(2.2) }),
     goldGlow: new THREE.MeshBasicMaterial({ color: new THREE.Color(COLOURS.gold).multiplyScalar(2.4) }),
     screenGlow: new THREE.MeshBasicMaterial({ color: new THREE.Color(COLOURS.screen).multiplyScalar(1.6) }),

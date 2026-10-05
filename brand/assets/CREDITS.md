@@ -27,4 +27,12 @@
 | band-objects/plans.png, laptop.png, helmet.png | Isolated from band-classroom.png onto transparent backgrounds with GPT Image 2.5 on Higgsfield (4 Oct 2026) | CBG |
 | band-scrub/keyframe-start.png, keyframe-end.png, crane-up.mp4 | Generated with Higgsfield for CBG, 5 Oct 2026 (night-sky lab, band option D): GPT Image 2.5 keyframes, MiniMax H3 2K first/last-frame video, 15.5 credits; frames cut by band-scrub/cut-frames.ts | CBG |
 
+## Sky data
+
+| File | Source | Licence |
+|---|---|---|
+| public/sky/stars.bin (stars) | Yale Bright Star Catalogue, 5th revised ed., Hoffleit & Warren 1991 (CDS V/50, https://cdsarc.cds.unistra.fr/ftp/V/50/), stars to V 5.8; built by scripts/sky-data.ts | Public domain (NASA HEASARC lists it under https://www.usa.gov/government-works) |
+| public/sky/stars.bin (constellation figures) | d3-celestial data/constellations.lines.json (https://github.com/ofrohn/d3-celestial), lines snapped to catalogue stars. Copyright (c) 2015, Olaf Frohn. All rights reserved. Redistribution and use in source and binary forms, with or without modification, are permitted provided that the conditions of the BSD 3-Clause License are met (retain this notice; do not use the author's name to endorse derived products). THE DATA IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. | BSD-3-Clause |
+| Milky Way (src/motion/sky.ts) | Procedural noise along the galactic plane, no image | CBG |
+
 Add a row for every image you add: stock photos with the Pexels / Unsplash URL and photographer, AI images with the tool and date.
