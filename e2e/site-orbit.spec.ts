@@ -20,7 +20,9 @@ async function open(page: Page) {
     return r.fulfill({ body: readFileSync(file), contentType: TYPES[file.split('.').pop()!] ?? 'application/octet-stream', headers: { 'access-control-allow-origin': '*' } });
   });
   page.on('pageerror', (e) => errors.push(e.message));
-  page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+  // A request the OS network stack drops under load (net::ERR_NO_BUFFER_SPACE) isn't an error of ours; a
+  // 404 or a script error still is.
+  page.on('console', (m) => m.type() === 'error' && !m.text().startsWith('Failed to load resource: net::') && errors.push(m.text()));
   await page.goto('/', { waitUntil: 'load' });
   if ((await page.locator('[data-cbg-orbit]').count()) === 0) test.skip(true, 'band not built yet');
   await expect.poll(() => page.evaluate(() => (window as { __cbg?: number }).__cbg)).toBe(1);
@@ -58,6 +60,7 @@ test.describe('laptop, full motion', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
 
   test('frames load only near the band; the stage holds while the frames advance, then lets go', async ({ page }) => {
+    test.setTimeout(60000); // 15 s of fixed settles, plus the wait for the last frames to decode below
     const { frames, errors } = await open(page);
     await page.waitForTimeout(1500);
     expect(frames, 'no band frames at the top of the page').toHaveLength(0);
@@ -78,9 +81,12 @@ test.describe('laptop, full motion', () => {
     expect(s1.frame).toBeLessThan(43);
 
     await scrollBand(page, 1);
+    // The last frames load last (frame 1, every 4th, then the rest), and the nearest loaded one (60) shows
+    // until they decode; with the suite's parallel workers decoding the course films too, that can outlast
+    // the settle, and loading speed isn't what this checks.
+    await expect.poll(async () => (await state(page)).frame, { timeout: 15000 }).toBeGreaterThanOrEqual(62);
     const s2 = await state(page);
     expect(s2.stageTop).toBe(56);
-    expect(s2.frame).toBeGreaterThanOrEqual(62);
 
     await page.evaluate(() => scrollBy(0, 400));
     await page.waitForTimeout(300);
