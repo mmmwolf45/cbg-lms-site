@@ -536,6 +536,63 @@
       ]
     }
   },
+  "site-orbit-poster": {
+    "width": 1920,
+    "height": 1080,
+    "variants": {
+      "avif": [
+        {
+          "w": 1920,
+          "file": "img/site-orbit-poster-1920.avif",
+          "bytes": 120518
+        },
+        {
+          "w": 1280,
+          "file": "img/site-orbit-poster-1280.avif",
+          "bytes": 61938
+        },
+        {
+          "w": 768,
+          "file": "img/site-orbit-poster-768.avif",
+          "bytes": 24855
+        }
+      ],
+      "webp": [
+        {
+          "w": 1920,
+          "file": "img/site-orbit-poster-1920.webp",
+          "bytes": 178670
+        },
+        {
+          "w": 1280,
+          "file": "img/site-orbit-poster-1280.webp",
+          "bytes": 93132
+        },
+        {
+          "w": 768,
+          "file": "img/site-orbit-poster-768.webp",
+          "bytes": 38730
+        }
+      ],
+      "jpg": [
+        {
+          "w": 1920,
+          "file": "img/site-orbit-poster-1920.jpg",
+          "bytes": 221910
+        },
+        {
+          "w": 1280,
+          "file": "img/site-orbit-poster-1280.jpg",
+          "bytes": 109569
+        },
+        {
+          "w": 768,
+          "file": "img/site-orbit-poster-768.jpg",
+          "bytes": 43130
+        }
+      ]
+    }
+  },
   "trainer-ali-orkkatteri": {
     "width": 224,
     "height": 224,

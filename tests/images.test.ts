@@ -15,6 +15,7 @@ const students = existsSync(STUDENTS) ? readdirSync(STUDENTS).filter((f) => f.en
 const BUDGET: Record<string, number> = {
   ...OPTIONAL,
   'hero-explode-poster': 80,
+  'site-orbit-poster': 220,
   'hazard-worksite': 250,
   'closing-plate': 150,
   'trainer-ali-orkkatteri': 20,

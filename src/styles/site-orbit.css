@@ -1,0 +1,30 @@
+/* Home band: a night construction site that turns half way round with the scroll (SPEC section 5.1.2,
+   src/motion/site-orbit.ts). Default (no JS, reduced motion): the poster, frame 1, in a full-width view that
+   dissolves into the canvas at top and bottom, no sticky stretch. With JS and motion allowed: .cbg-orbit
+   is two screens taller than its stage, which sticks under course.link's 56px navbar while the frames play
+   on the canvas over the poster. */
+.cbg-orbit__stage { position: relative; height: clamp(320px, 42vw, 640px); overflow: hidden; }
+.cbg-orbit__film {
+  position: absolute; inset: 0; background: var(--cbg-bg);
+  -webkit-mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent);
+}
+.cbg-orbit__poster, .cbg-orbit__poster img, .cbg-orbit__canvas {
+  position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover;
+}
+.cbg-orbit__canvas { opacity: 0; transition: opacity 0.6s var(--cbg-ease); }
+.cbg-orbit__canvas.is-on { opacity: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html.cbg-js .cbg-orbit { height: calc(300svh - 56px); }
+  html.cbg-js .cbg-orbit__stage { position: sticky; top: 56px; height: calc(100svh - 56px); min-height: 420px; }
+}
+/* Phones: a window a little wider than square on the 16:9 film (the building and the crane's whole jib
+   fit; a full-height crop would cut them), centred in the stage, with longer fades into the night sky. */
+@media (prefers-reduced-motion: no-preference) and (max-width: 767px) {
+  html.cbg-js .cbg-orbit__film {
+    inset: auto 0; top: 50%; height: min(100%, 88vw); transform: translateY(-50%);
+    -webkit-mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent);
+    mask-image: linear-gradient(transparent, #000 18%, #000 82%, transparent);
+  }
+}

@@ -113,7 +113,7 @@ html.cbg-js .cbg-explode__words:not(.is-ready) { visibility: hidden; }
   content: ""; width: 28px; height: 1px; margin: 0 clamp(20px, 3vw, 40px); background: var(--cbg-gold-line);
 }
 
-/* Band: a full-width view that dissolves into the canvas at top and bottom (the 3D site's host). */
+/* Band: full width. The orbiting site is site-orbit.css; .cbg-band__view and __media are for older saved blocks. */
 .cbg-band > .cbg-wrap { max-width: none; padding: 0; }
 .cbg-band__view {
   position: relative; height: clamp(320px, 42vw, 640px); overflow: hidden;

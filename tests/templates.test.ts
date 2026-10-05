@@ -206,8 +206,12 @@ describe('home course cards', () => {
 });
 
 describe('home band', () => {
-  it('is the empty 3D host: one labelled picture, nothing inside', () => {
-    expect(sectionHtml(html, 'band')).toContain(`<div class="cbg-wrap"><div class="cbg-band__view" data-cbg-site3d role="img" aria-label="${h.band!.alt}"></div></div>`);
+  it('is one labelled picture: the poster (decorative inside it) under the canvas, frames named on the Pages base', () => {
+    const band = sectionHtml(html, 'band');
+    expect(band).toContain(`data-cbg-orbit="https://mmmwolf45.github.io/cbg-lms-site/site-orbit/" data-cbg-frames="64"`);
+    expect(band).toContain(`<div class="cbg-orbit__stage" role="img" aria-label="${h.band!.alt}">`);
+    expect(band).toMatch(/<picture class="cbg-orbit__poster">.*<img [^>]*alt="" loading="lazy"/);
+    expect(band).toContain('<canvas class="cbg-orbit__canvas" aria-hidden="true"></canvas>');
     expect(home({ ...h, band: undefined }, courses)).not.toContain('id="cbg-band"');
   });
 });

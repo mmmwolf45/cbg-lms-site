@@ -60,11 +60,11 @@ how-it-works:
     - title: Join your live classes and keep going.
       body: Classes run live on Google Meet. After each class, the slides and new study materials are waiting for you here.
 
-# A full-width band between the steps and the course cards: the 3D night construction site (6 Oct 2026,
-# src/motion/three-sections.ts). `image` is kept for a still fallback (not shown today).
+# A full-width band between the steps and the course cards: a night construction site that turns half
+# way round with the scroll (6 Oct 2026, src/motion/site-orbit.ts). Without JS or with reduced motion: its
+# first frame, still.
 band:
-  image: band-desk
-  alt: A construction site at night under the stars
+  alt: A concrete building under construction at night with a tower crane, seen from one side and then the other
 
 courses:
   heading: Your courses

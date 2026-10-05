@@ -32,9 +32,9 @@ const homeShape = {
   // The slow strip of course titles. Its words come from the course cards, so it has no copy of its own.
   disciplines: {},
   'how-it-works': { heading: s, steps: [titled] },
-  // The full-width band (the 3D night site's host). `image`: a name from src/images.json, kept for a still
-  // fallback. `alt`: the band is one picture to screen readers.
-  'band?': { image: s, alt: s },
+  // The full-width band: the night site that turns with the scroll (its poster and frames come from
+  // scripts/orbit-frames.ts). `alt`: the band is one picture to screen readers.
+  'band?': { alt: s },
   courses: { heading: s, intro: s },
   support: { heading: s, body: s, whatsapp, emails: [email] },
   about: { heading: s, body: s, 'highlight?': s, logos, link },

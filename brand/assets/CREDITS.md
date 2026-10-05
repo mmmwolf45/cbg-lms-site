@@ -26,6 +26,7 @@
 | photos/band-desk.png | band-classroom.png with the laptop, hard hat and plans removed: GPT Image 2.5 edit on Higgsfield, upscaled to 4K (4 Oct 2026) | CBG |
 | band-objects/plans.png, laptop.png, helmet.png | Isolated from band-classroom.png onto transparent backgrounds with GPT Image 2.5 on Higgsfield (4 Oct 2026) | CBG |
 | band-scrub/keyframe-start.png, keyframe-end.png, crane-up.mp4 | Generated with Higgsfield for CBG, 5 Oct 2026 (night-sky lab, band option D): GPT Image 2.5 keyframes, MiniMax H3 2K first/last-frame video, 15.5 credits; frames cut by band-scrub/cut-frames.ts | CBG |
+| site-orbit/keyframe-a.png, keyframe-b.png, orbit.mp4, poster.png | Generated with Higgsfield for CBG, 6 Oct 2026 (home band): GPT Image 2.5 keyframes (high, 2K; the second made from the first, the same site from the opposite side), MiniMax H3 2K first/last-frame orbit video (6 s), 17.5 credits in all; poster = first frame; frames cut by scripts/orbit-frames.ts | CBG |
 | course-films/iosh/keyframe-a.png, keyframe-b.png, film.mp4 | Generated with Higgsfield for CBG, 5 Oct 2026 (IOSH course film pilot): GPT Image 2.5 keyframes (A composed from a screenshot of our own three.js IOSH scene, B edited from A), MiniMax H3 2K first/last-frame video, 15.5 credits; frames (public/course-films/iosh/) cut by course-films/iosh/cut-frames.ts | CBG |
 
 ## Sky data
