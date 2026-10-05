@@ -11,13 +11,10 @@ const media = (c: Card) => (c.image && c.image in images
 
 // A live card is a link (its button stretches over the whole card); a coming-soon card is not. The link's
 // name carries the course title for screen readers ("Open course: IOSH Level 3 Certificate").
-// The 3D scene for this course in the story (src/three/scenes/<name>.ts): the card photo's name without
-// "course-" (course-iosh -> iosh, course-qs -> qs ...).
-const sceneOf = (c: Card) => c.image?.replace(/^course-/, '') ?? '';
 
 function card(c: Card) {
   const cta = c.status === 'live now' ? c.cta : undefined;
-  return `<li data-scene="${esc(sceneOf(c))}"><article class="cbg-card cbg-course cbg-course--${cta ? 'live' : 'soon'}">
+  return `<li><article class="cbg-card cbg-course cbg-course--${cta ? 'live' : 'soon'}">
 <div class="cbg-course__media" aria-hidden="true">${media(c)}</div>
 <div class="cbg-course__body">
 <p class="cbg-course__top">${c.tag ? `<span class="cbg-tag">${esc(c.tag)}</span> ` : ''}<span class="cbg-status">${esc(c.status)}</span></p>
@@ -28,13 +25,12 @@ ${cta ? `<a class="cbg-btn cbg-btn--primary cbg-course__link" href="${esc(cta.hr
 </div></article></li>`;
 }
 
-// With 3D (src/motion/three-sections.ts) the section becomes a story: one course at a time beside its scene,
-// drawn into .cbg-story__stage. Otherwise the cards sit in one row (src/motion/gallery.ts pans it on a laptop; phones swipe it, home.css), so the
-// row is a focusable, labelled region: keyboard users can scroll it with the arrow keys.
+// The cards sit in one row (src/motion/gallery.ts pans it on a laptop; phones swipe it, home.css), so the row
+// is a focusable, labelled region: keyboard users can scroll it with the arrow keys. A gold line runs under
+// the cards (src/motion/gold-track.ts).
 export const courses = ({ courses: s }: Home, cards: Card[]) => section('courses', `
 <div class="cbg-section-head" data-cbg-reveal><h2 class="cbg-h2" id="cbg-courses-heading">${esc(s.heading)}</h2><p>${esc(s.intro)}</p></div>
 <div class="cbg-gallery" role="region" aria-labelledby="cbg-courses-heading" tabindex="0">
 <ul class="cbg-gallery__track" data-cbg-reveal="stagger">${cards.map(card).join('')}</ul>
 </div>
-<div class="cbg-story__stage" aria-hidden="true"></div>
-<div class="cbg-gallery__bar" aria-hidden="true"><i></i></div>`, ' data-cbg-gallery data-cbg-story');
+<div class="cbg-gallery__bar" aria-hidden="true"><i></i></div>`, ' data-cbg-gallery');

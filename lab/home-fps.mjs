@@ -27,9 +27,7 @@ const sweep = (sel, from, to) => page.evaluate(([sel, from, to]) => new Promise(
 const rows = [];
 await sweep('#cbg-band', 0, 0.05); await page.waitForTimeout(2500); // let the 3D load
 rows.push(['band 0-1', await sweep('#cbg-band', 0, 1)]);
-const n = await page.evaluate(() => document.querySelectorAll('#cbg-courses [data-scene]').length);
-await sweep('#cbg-courses', 0, 0.02); await page.waitForTimeout(Number(process.env.WAIT ?? 2000));
-for (let i = 0; i < n; i++) rows.push([`story ${i}`, await sweep('#cbg-courses', i / n, (i + 1) / n)]);
+rows.push(['courses (pan)', await sweep('.pin-spacer:has(#cbg-courses)', 0, 1)]);
 rows.push(['about (globe)', await sweep('#cbg-about', 0, 1)]);
 for (const [k, v] of rows) console.log(`${W} ${k}: ${v.fps} fps, worst frame ${v.worst} ms`);
 await browser.close();

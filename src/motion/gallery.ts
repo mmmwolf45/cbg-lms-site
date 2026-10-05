@@ -29,8 +29,7 @@ const whenIdle = (f: () => void) => {
 // The gallery starts below the fold, so the pin (and the refresh of every trigger it needs) waits for an
 // idle moment instead of lengthening the task that loads this chunk.
 export const gallery: Enhancer = (roots) => {
-  // .is-story: the 3D course story (three-sections.ts, which runs first) has taken the section over.
-  const sections = all(roots, '[data-cbg-gallery]:not(.is-story)');
+  const sections = all(roots, '[data-cbg-gallery]');
   if (!sections.length) return;
   const mm = gsap.matchMedia();
   mm.add(PAN, (ctx) => {

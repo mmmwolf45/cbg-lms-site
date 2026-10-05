@@ -23,23 +23,10 @@ async function openHome(page: Page) {
 }
 
 // Opacity of every reveal target: the element itself, or each child of a stagger parent.
-// Reveals and counters, tested without the 3D sections (no WebGL2): software WebGL in headless Chromium
-// starves the page of frames. The 3D sections have their own spec (e2e/three.spec.ts).
-test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => {
-    const get = HTMLCanvasElement.prototype.getContext;
-    HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, type: string, ...rest: unknown[]) {
-      return type === 'webgl2' ? null : (get as (...a: unknown[]) => unknown).call(this, type, ...rest);
-    } as typeof get;
-  });
-});
-
 const revealOpacities = (page: Page) =>
   page.evaluate(() =>
     [...document.querySelectorAll<HTMLElement>('[data-cbg-reveal]')]
       .flatMap((el) => (el.dataset.cbgReveal === 'stagger' ? [...el.children] : [el]))
-      // In the 3D course story only the active course's card shows; the others wait, hidden, by design.
-      .filter((el) => !el.matches('.is-story [data-scene]:not(.is-active)'))
       .map((el) => getComputedStyle(el).opacity),
   );
 
@@ -95,7 +82,7 @@ test('route change: teardown and re-setup keep finished reveals and still reveal
   const errors = watchErrors(page);
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await openHome(page);
-  // A section with reveals (a fraction of the page height can land inside the long 3D band or story).
+  // A section with reveals (a fraction of the page height can land inside the long band or the gallery pin).
   await page.evaluate(() => document.getElementById('cbg-how-it-works')!.scrollIntoView());
   await page.waitForTimeout(1200); // reveals in view finish
   const shown = (await revealOpacities(page)).filter((o) => o === '1').length;
