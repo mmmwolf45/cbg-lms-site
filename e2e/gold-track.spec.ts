@@ -94,8 +94,8 @@ test.describe('laptop, full motion', () => {
   });
 });
 
-test('phone: the line follows the swipe', async ({ browser }) => {
-  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, baseURL: 'http://localhost:4173' });
+test('phone: the line follows the swipe', async ({ browser, baseURL }) => {
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, baseURL });
   const page = await ctx.newPage();
   const errors = watchErrors(page);
   await openHome(page);

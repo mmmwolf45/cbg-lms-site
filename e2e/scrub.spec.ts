@@ -58,7 +58,7 @@ process.stdout.write(p);
 // chunk (to see the page before the stage mounts); `block` fails matching Pages requests.
 async function serve(page: Page, o: { slow?: number; block?: RegExp } = {}) {
   await page.route(`**${QS}`, (r) => r.fulfill({ body: PAGE, contentType: 'text/html' }));
-  await page.route('http://localhost:4173/cbg-lms-site/**', async (r) => {
+  await page.route('http://localhost:*/cbg-lms-site/**', async (r) => {
     const file = join(OUT, new URL(r.request().url()).pathname.replace('/cbg-lms-site/', ''));
     if (!existsSync(file)) return r.fulfill({ status: 404, body: '' });
     if (o.slow && /cbg-course\./.test(file)) await new Promise((d) => setTimeout(d, o.slow));

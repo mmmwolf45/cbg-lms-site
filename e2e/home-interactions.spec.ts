@@ -350,8 +350,8 @@ test.describe('phone', () => {
     await expect.poll(() => row.evaluate((r) => Math.round(r.querySelectorAll('.cbg-gallery__track > li')[1].getBoundingClientRect().left))).toBe(16);
   });
 
-  test('touch: tapping a coming-soon card does nothing special (no tilt, no navigation)', async ({ browser }) => {
-    const ctx = await browser.newContext({ viewport: PHONE, hasTouch: true, isMobile: true, baseURL: 'http://localhost:4173' });
+  test('touch: tapping a coming-soon card does nothing special (no tilt, no navigation)', async ({ browser, baseURL }) => {
+    const ctx = await browser.newContext({ viewport: PHONE, hasTouch: true, isMobile: true, baseURL });
       const page = await ctx.newPage();
     await openHome(page);
     const card = page.locator('.cbg-course--soon').first();
