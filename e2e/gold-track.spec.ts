@@ -1,9 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { withoutSky } from './no-sky';
-import { noStory, withoutStory } from './no-story';
 
 withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
-withoutStory(); // the card gallery: the courses story's fallback (e2e/no-story.ts, e2e/course-story.spec.ts)
 
 // The gold track under the course cards (src/motion/gold-track.ts) on the mock.
 
@@ -98,7 +96,6 @@ test.describe('laptop, full motion', () => {
 
 test('phone: the line follows the swipe', async ({ browser }) => {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, baseURL: 'http://localhost:4173' });
-  await ctx.addInitScript(noStory);
   const page = await ctx.newPage();
   const errors = watchErrors(page);
   await openHome(page);

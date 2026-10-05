@@ -207,7 +207,7 @@ export function skyBackground(doc: Document = document): () => void {
   };
   // Where every visible text line is now, padded and blurred, as a low-res viewport mask (8 css px cells).
   // Read on every draw while scrolling and every 0.25 s otherwise, so text that is pinned, carried or slid
-  // sideways (the hero, the carousels, the course story) keeps the stars behind it dim. Faded-out text
+  // sideways (the hero, the carousels) keeps the stars behind it dim. Faded-out text
   // (opacity 0, visibility hidden) doesn't count, and the 3D stages (.cbg-stage) are never dimmed.
   const mask = (w: number, h: number) => {
     const cols = Math.ceil(w / CELL), rows = Math.ceil(h / CELL), a = new Float32Array(cols * rows);

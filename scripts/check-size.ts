@@ -1,15 +1,14 @@
 // Gzip budget gate (SPEC section 8), per page, gzipped at level 9: JS 68 KB on the home page (raised for the
 // night-sky effects, 6 Oct 2026) and 60 KB on course pages; CSS 25 KB. JS per page = the entry (cbg.<hash>.js,
 // holds GSAP and the shared motion layer) + that page's lazy chunk (cbg-<page>.<hash>.js) + any other shared
-// chunk. Also the home band's film frames and each course film in the courses story, approved exceptions to the
+// chunk. Also the home band's film frames, an approved exception to the
 // image budget (raw bytes per set).
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 import { OUT as ORBIT, SIZES as ORBIT_SIZES } from './orbit-frames';
 
 const KB = 1024;
 const BUDGET = { js: { home: 68 * KB, course: 60 * KB }, css: 25 * KB } as const;
-const FILM = { l: 2 * KB * KB, s: 0.75 * KB * KB } as const; // one course film's frame set (Maasoom, 6 Oct 2026)
 const PAGES = ['home', 'course'] as const;
 
 const gz = (f: string) => gzipSync(readFileSync(`dist/${f}`), { level: 9 }).length;
@@ -36,10 +35,5 @@ check('css', sum(css), BUDGET.css);
 for (const [d, { budgetKB }] of Object.entries(ORBIT_SIZES)) {
   const dir = `dist/${ORBIT.replace(/^public\//, '')}/${d}`;
   check(`band frames (${d})`, readdirSync(dir).reduce((n, f) => n + statSync(`${dir}/${f}`).size, 0), budgetKB * KB);
-}
-const bytes = (dir: string) => readdirSync(dir).reduce((n, f) => n + statSync(`${dir}/${f}`).size, 0);
-const films = 'dist/course-films';
-for (const scene of existsSync(films) ? readdirSync(films).filter((f) => statSync(`${films}/${f}`).isDirectory()) : []) {
-  for (const [d, budget] of Object.entries(FILM)) if (existsSync(`${films}/${scene}/${d}`)) check(`${scene} film (${d})`, bytes(`${films}/${scene}/${d}`), budget);
 }
 if (failed) process.exit(1);
