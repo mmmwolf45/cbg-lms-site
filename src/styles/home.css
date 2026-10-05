@@ -58,6 +58,15 @@ html.cbg-js .cbg-explode__words:not(.is-ready) { visibility: hidden; }
 @keyframes cbg-fade-in { from { opacity: 0; } }
 .cbg-w { display: inline-block; white-space: nowrap; transform-origin: 50% 60%; }
 .cbg-l { display: inline-block; }
+/* While the headline comes apart, each moving word (and letter, where they spread) is its own layer, so the
+   big soft shadows are drawn once, not re-rastered every scroll frame (6 Oct 2026: 33 ms hero frames on an
+   Intel UHD laptop, 16.7 ms with the layers). */
+@media (prefers-reduced-motion: no-preference) {
+  html.cbg-js .cbg-w { will-change: transform; }
+}
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  html.cbg-js .cbg-l { will-change: transform; }
+}
 .cbg-w--gold { color: var(--cbg-gold); }
 .cbg-w--dim { color: var(--cbg-text-3); }
 .cbg-explode__chip {

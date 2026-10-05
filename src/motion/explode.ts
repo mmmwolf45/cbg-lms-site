@@ -1,3 +1,4 @@
+import { frameSet, type Frames } from './frames';
 import type { Enhancer } from './setup';
 import { clamp01, frameDir, fullMotion, loadOrder, progress, smooth } from './tokens';
 
@@ -45,29 +46,25 @@ function run(section: HTMLElement): () => void {
   const opts = { passive: true, signal: off.signal } as const;
   const n = Number(section.dataset.cbgFrames) || N_DEFAULT;
   const base = section.dataset.cbgExplode ?? '';
-  const frames: (HTMLImageElement | undefined)[] = new Array(n);
+  let set: Frames | undefined;
   let raf = 0;
   let cur = 0; // eased frame position
   let painted = -1;
   let tx = 0, ty = 0, gx = 0, gy = 0; // tilt: current and goal, -1..1
 
-  // ---- Frames ------------------------------------------------------------------------------------
-  const ready = (j: number) => j >= 0 && j < n && !!frames[j]?.complete && (frames[j]?.naturalWidth ?? 0) > 0;
-  const nearest = (i: number) => {
-    for (let d = 0; d < n; d++) for (const j of [i - d, i + d]) if (ready(j)) return j;
-    return -1;
-  };
+  // ---- Frames (decoded off the main thread, src/motion/frames.ts) --------------------------------
   const paint = (f: number) => {
-    if (Math.abs(f - painted) < 0.002) return;
+    if (!set || Math.abs(f - painted) < 0.002) return;
+    set.focus(f);
     const a = Math.floor(f);
-    const j = ready(a) ? a : nearest(Math.round(f));
+    const j = set.get(a) ? a : set.nearest(Math.round(f));
     if (j < 0) return;
     ctx.globalAlpha = 1;
-    ctx.drawImage(frames[j]!, 0, 0, canvas.width, canvas.height);
-    const t = f - a;
-    if (j === a && t > 0.01 && ready(a + 1)) {
+    ctx.drawImage(set.get(j)!, 0, 0, canvas.width, canvas.height);
+    const t = f - a, next = set.get(a + 1);
+    if (j === a && t > 0.01 && next) {
       ctx.globalAlpha = t;
-      ctx.drawImage(frames[a + 1]!, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(next, 0, 0, canvas.width, canvas.height);
       ctx.globalAlpha = 1;
     }
     painted = j === a ? f : -1;
@@ -80,29 +77,16 @@ function run(section: HTMLElement): () => void {
     const dir = frameDir(win.innerWidth, win.innerHeight, win.devicePixelRatio || 1);
     // Draw at the frames' own size: no upscaling of every frame on phones (640px frames).
     if (dir === 's') canvas.width = canvas.height = 640;
-    const load = (i: number) =>
-      new Promise<void>((done) => {
-        const img = new Image();
-        img.decoding = 'async';
-        (img as { fetchPriority?: string }).fetchPriority = i === 0 ? 'high' : 'low';
-        const settle = () => {
-          done();
-          if (off.signal.aborted) return;
-          painted = -1;
-          kick();
-        };
-        // Decode off the main thread before the frame is first drawn: an undecoded AVIF stalls the
-        // frame that draws it (seen as 80-120 ms frames while scrolling).
-        img.onload = () => void img.decode().catch(() => {}).finally(settle);
-        img.onerror = settle;
-        img.src = `${base}${dir}/f${String(i + 1).padStart(2, '0')}.avif`;
-        frames[i] = img;
-      });
+    const s = (set = frameSet((i) => `${base}${dir}/f${String(i + 1).padStart(2, '0')}.avif`, n, () => {
+      painted = -1;
+      kick();
+    }));
     (async () => {
       const order = loadOrder(n);
-      await load(order[0]!);
-      if (!ready(0)) return; // AVIF unsupported or offline: the poster stays, the headline still moves
-      for (let k = 1; k < order.length && !off.signal.aborted; k += 6) await Promise.all(order.slice(k, k + 6).map(load));
+      if (!(await s.load(order[0]!, true))) return; // AVIF unsupported or offline: the poster stays, the headline still moves
+      painted = -1;
+      kick();
+      for (let k = 1; k < order.length && !off.signal.aborted; k += 6) await Promise.all(order.slice(k, k + 6).map((i) => s.load(i)));
     })();
   }
 
@@ -166,8 +150,17 @@ function run(section: HTMLElement): () => void {
     if (cur !== target || tx !== gx || ty !== gy) raf = win.requestAnimationFrame(tick);
   };
   function kick() {
-    if (!raf && !off.signal.aborted) raf = win.requestAnimationFrame(tick);
+    if (!raf && near && !off.signal.aborted) raf = win.requestAnimationFrame(tick);
   }
+  // Only while the hero is within about half a screen: further down the page its loop (layout reads every
+  // scroll frame) would only cost the sections on screen (6 Oct 2026 smoothness pass).
+  let near = true;
+  const io = new IntersectionObserver(([e]) => {
+    near = !!e?.isIntersecting;
+    if (!near) set?.drop(); // its decoded frames go; the bytes stay for coming back
+    kick();
+  }, { rootMargin: '50% 0px' });
+  io.observe(section);
 
   win.addEventListener('scroll', kick, opts);
   win.addEventListener('resize', () => { measure(); kick(); }, opts);
@@ -185,8 +178,9 @@ function run(section: HTMLElement): () => void {
 
   return () => {
     off.abort();
+    io.disconnect();
     if (raf) win.cancelAnimationFrame(raf);
-    frames.forEach((f) => f && (f.onload = f.onerror = null));
+    set?.close();
     clear();
     if (chip) chip.style.opacity = '';
     film.style.transform = '';
