@@ -158,7 +158,22 @@ export function createStage(quality: Quality = detectQuality(), base = ''): Stag
     stop() { active = undefined; cancelAnimationFrame(raf); raf = 0; },
     async prepare(scene) {
       // Compile shaders and upload textures ahead of time, so a scene's first frame never stalls the scroll.
-      await renderer.compileAsync(scene.scene, scene.camera);
+      // Compile for where frames really go: with the glow on, the composer's float buffer (linear colour,
+      // no tone mapping), whose shader variants differ from the canvas's. Compiling for the canvas left the
+      // real ones to compile on a chapter's first frame (150-500 ms hitches). three's compileAsync builds
+      // its programs synchronously, so the target only needs setting around the call.
+      const prev = renderer.getRenderTarget();
+      if (composer) renderer.setRenderTarget(composer.inputBuffer);
+      const compiled = renderer.compileAsync(scene.scene, scene.camera);
+      renderer.setRenderTarget(prev);
+      await compiled;
+      // ...and upload its textures (screens, plans, labels) now rather than on its first frame.
+      scene.scene.traverse((o) => {
+        const m = (o as THREE.Mesh).material as THREE.Material | THREE.Material[] | undefined;
+        for (const mat of Array.isArray(m) ? m : m ? [m] : []) {
+          for (const v of Object.values(mat)) if (v instanceof THREE.Texture) renderer.initTexture(v);
+        }
+      });
     },
     dispose() {
       cancelAnimationFrame(raf);

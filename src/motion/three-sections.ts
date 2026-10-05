@@ -72,6 +72,19 @@ export const threeSections: Enhancer = (roots) => {
     return built.get(name)!;
   };
 
+  // Builds the course scenes one by one in idle moments, so reaching a chapter never waits on a build (a
+  // build is tens to hundreds of milliseconds of main-thread work on a phone). The scenes are light (each
+  // under ~35k triangles), so phones warm them all too.
+  const idle = () => new Promise<void>((done) => ('requestIdleCallback' in window ? requestIdleCallback(() => done(), { timeout: 1500 }) : setTimeout(done, 200)));
+  async function warm() {
+    if (!chapters.length) return;
+    for (const c of chapters) {
+      await idle();
+      if (dead) return;
+      await scene(c.dataset.scene!);
+    }
+  }
+
   const chapterAt = (p: number) => Math.min(chapters.length - 1, Math.floor(p * chapters.length));
 
   // Which section has the canvas, and what it plays. Runs on scroll (two rect reads) and when a scene lands.
@@ -118,6 +131,7 @@ export const threeSections: Enhancer = (roots) => {
       addEventListener('resize', () => void route(), { passive: true, signal: off.signal });
       if (band) void scene('site');
       void route();
+      void warm();
     } catch (err) {
       console.warn('[cbg] 3D', err); // the sections keep their still forms
       bandSection?.classList.remove('is-3d');
