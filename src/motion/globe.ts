@@ -47,15 +47,20 @@ function mount(panel: HTMLElement, stage: HTMLElement, { full, fine }: Condition
   const medal = stage.querySelector<HTMLElement>('.cbg-globe__medal');
   if (!canvas) return () => {};
   let size = canvas.offsetWidth || 400;
+  const head = panel.ownerDocument.head, styles = new Set(head.querySelectorAll('style'));
   const globe = createGlobe(canvas, {
     devicePixelRatio: Math.min(win.devicePixelRatio || 1, fine ? 1.5 : 1), width: size, height: size,
     phi: PHI0, theta: THETA0,
-    dark: 1, diffuse: 1.1, mapSamples: 16000, mapBrightness: 3, mapBaseBrightness: 0.02,
+    dark: 1, diffuse: 1.1, mapSamples: fine ? 16000 : 7000, mapBrightness: 3, mapBaseBrightness: 0.02, // phones: fewer dots to draw
     baseColor: [0.16, 0.24, 0.42], markerColor: GOLD, glowColor: [0.1, 0.18, 0.38],
     markerElevation: 0.01, arcColor: GOLD, arcWidth: 0.35, arcHeight: 0.18,
     markers: [...GULF, ...INDIA].map(([location, s]) => ({ location, size: s })),
     arcs: INDIA.map(([to]) => ({ from: DOHA, to })),
   });
+  // cobe rewrites a <style> it adds to <head> on every frame (CSS anchors for markers with ids; ours have
+  // none), and each rewrite restyles the whole page (6 Oct 2026 trace: 870 elements a globe frame). Taken out
+  // of the document, its writes touch nothing. ponytail: drop this once cobe skips unchanged writes.
+  for (const s of head.querySelectorAll('style')) if (!styles.has(s)) s.remove();
   if (!(canvas.getContext('webgl2') || canvas.getContext('webgl'))) return () => globe.destroy();
   panel.classList.add('is-ready');
 
@@ -127,7 +132,14 @@ function mount(panel: HTMLElement, stage: HTMLElement, { full, fine }: Condition
     area.addEventListener('pointerleave', () => (leanX = leanY = 0), opts);
   }
 
+  // At most 30 draws a second, and none while the page scrolls (the globe holds still, its turn resumes where
+  // it was once the scroll has rested 0.2 s): it was a third of every frame's work on a phone (6 Oct 2026).
+  let quiet = 0;
+  win.addEventListener('scroll', () => (quiet = performance.now() + 200), opts);
   const frame = (now: number) => {
+    raf = win.requestAnimationFrame(frame);
+    if (now < quiet) return void (last = now);
+    if (now - last < 30) return;
     const dt = frameDt(now, last);
     last = now;
     if (!drag) {
@@ -143,7 +155,6 @@ function mount(panel: HTMLElement, stage: HTMLElement, { full, fine }: Condition
     globe.update(view);
     // The medallion drifts a few px against the lean, so it reads as nearer than the globe.
     if (medal && fine) medal.style.transform = `translate3d(calc(-50% + ${(lx * -6).toFixed(2)}px),${(ly * -4).toFixed(2)}px,0)`;
-    raf = win.requestAnimationFrame(frame);
   };
   const run = () => {
     const go = onScreen && !panel.ownerDocument.hidden && !off.signal.aborted;
