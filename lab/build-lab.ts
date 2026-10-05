@@ -71,8 +71,9 @@ for (const f of readdirSync(`${OUT}/site`)) {
   if (!/^cbg[.-].*\.js$/.test(f)) continue;
   let js = readFileSync(`${OUT}/site/${f}`, 'utf8').replaceAll('location.pathname', '"/"');
   // An Artifact version holds at most 511 files: in artifact mode every film plays its large frame set
-  // (the small "s" folders are not copied), so the bundle's phone choice ?"s":"l" becomes ?"l":"l".
-  if (ARTIFACT) js = js.replaceAll('?"s":"l"', '?"l":"l"');
+  // (the small "s" folders are not copied), so the bundle's phone choice ?`s`:`l` becomes ?`l`:`l`
+  // (the minifier may use any quote style).
+  if (ARTIFACT) js = js.replace(/\?([`'"])s\1:([`'"])l\2/g, '?"l":"l"');
   writeFileSync(`${OUT}/site/${f}`, js);
 }
 if (ARTIFACT) {
