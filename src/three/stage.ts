@@ -9,6 +9,7 @@ import * as THREE from 'three';
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, VignetteEffect } from 'postprocessing';
 import { GLTFLoader, type GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { applyPalette, makePalette } from './palette';
 import type { Kit, Quality, StageScene } from './types';
 
@@ -51,6 +52,7 @@ export function createStage(quality: Quality = detectQuality(), base = ''): Stag
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
   renderer.setClearColor(0x000000, 0);
+  renderer.localClippingEnabled = true; // section cuts (e.g. the MEP scene) use per-material clipping planes
 
   // Gold glow: only colours brighter than white (palette.goldLine/goldGlow, site lights) cross the
   // threshold, so the navy stays crisp. Phones on the low tier skip it.
@@ -67,6 +69,14 @@ export function createStage(quality: Quality = detectQuality(), base = ''): Stag
 
   const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
   const palette = makePalette();
+  // A soft studio reflection for every palette material (without one, metallic gold reads as dull olive).
+  // Built once from three's RoomEnvironment: no download. Kept low so the night mood stays.
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const env = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  pmrem.dispose();
+  for (const m of Object.values(palette)) {
+    if (m instanceof THREE.MeshStandardMaterial) { m.envMap = env; m.envMapIntensity = m === palette.gold ? 1.1 : 0.35; }
+  }
   const kit: Kit = {
     quality,
     palette,
@@ -156,6 +166,7 @@ export function createStage(quality: Quality = detectQuality(), base = ''): Stag
       document.removeEventListener('visibilitychange', onVis);
       removeEventListener('scroll', kick);
       composer?.dispose();
+      env.dispose();
       renderer.dispose();
       canvas.remove();
     },
