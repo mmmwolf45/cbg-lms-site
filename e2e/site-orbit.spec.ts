@@ -69,7 +69,9 @@ test.describe('laptop, full motion', () => {
     expect(frames.length).toBeGreaterThan(0);
     expect(frames.every((u) => u.includes('/site-orbit/l/'))).toBe(true);
     const s0 = await state(page);
-    expect(s0.pin - s0.stage).toBeGreaterThan(900 * 1.5); // about two screens of scrolling
+    // 0.9 of a screen of scrolling (6 Oct 2026; it was two screens for a half turn, now about 60 degrees).
+    expect(s0.pin - s0.stage).toBeGreaterThan(900 * 0.8);
+    expect(s0.pin - s0.stage).toBeLessThan(900 * 1);
     expect(s0.stageTop).toBe(56);
     expect(s0.canvasOn).toBe(true);
     expect(s0.frame).toBeLessThanOrEqual(1);
@@ -77,14 +79,14 @@ test.describe('laptop, full motion', () => {
     await scrollBand(page, 0.5);
     const s1 = await state(page);
     expect(s1.stageTop).toBe(56);
-    expect(s1.frame).toBeGreaterThan(20);
-    expect(s1.frame).toBeLessThan(43);
+    expect(s1.frame).toBeGreaterThan(6); // 22 frames over the 60 degrees (6 Oct 2026; 64 over 180 before)
+    expect(s1.frame).toBeLessThan(15);
 
     await scrollBand(page, 1);
-    // The last frames load last (frame 1, every 4th, then the rest), and the nearest loaded one (60) shows
+    // The last frames load last (frame 1, every 4th, then the rest), and the nearest decoded one shows
     // until they decode; with the suite's parallel workers decoding the course films too, that can outlast
     // the settle, and loading speed isn't what this checks.
-    await expect.poll(async () => (await state(page)).frame, { timeout: 15000 }).toBeGreaterThanOrEqual(62);
+    await expect.poll(async () => (await state(page)).frame, { timeout: 15000 }).toBeGreaterThanOrEqual(20);
     const s2 = await state(page);
     expect(s2.stageTop).toBe(56);
 
@@ -92,10 +94,10 @@ test.describe('laptop, full motion', () => {
     await page.waitForTimeout(300);
     expect((await state(page)).stageTop).toBeLessThan(0); // released: it scrolls away with the page
 
-    await scrollBand(page, 0.25, 4500); // three quarters of the turn back: at least 2.4 s by design
+    await scrollBand(page, 0.25, 4500); // three quarters of the turn back: at least 1.8 s by design
     const back = await state(page);
-    expect(back.frame).toBeGreaterThan(8);
-    expect(back.frame).toBeLessThan(24);
+    expect(back.frame).toBeGreaterThan(2);
+    expect(back.frame).toBeLessThan(9);
     expect(errors).toEqual([]);
   });
 
@@ -115,7 +117,7 @@ test.describe('laptop, full motion', () => {
         performance.now() - t0 < 1000 ? requestAnimationFrame(f) : done(out);
       })();
     }));
-    expect(Math.max(...seen)).toBeLessThan(40); // a second after the jump the film is still turning
+    expect(Math.max(...seen)).toBeLessThan(14); // a second after the jump the film is still turning (21 frames in 2.4 s at most)
   });
 });
 
@@ -129,7 +131,7 @@ test.describe('phone, full motion', () => {
     expect(frames.every((u) => u.includes('/site-orbit/s/'))).toBe(true);
     const s = await state(page);
     expect(s.stageTop).toBe(56);
-    expect(s.frame).toBeGreaterThan(20);
+    expect(s.frame).toBeGreaterThan(6);
     expect(errors).toEqual([]);
   });
 });

@@ -5,7 +5,9 @@
 //   npx tsx scripts/orbit-frames.ts        (needs ffmpeg on PATH, or FFMPEG=<path>)
 //
 // Footage: brand/assets/site-orbit/orbit.mp4 (MiniMax H3, 2K, 6.6 s): the camera swings half way round a
-// night construction site. The model eases the move in and out (and holds still for the last second), so
+// night construction site. The band plays its first third, about 60 degrees, from the poster's corner view
+// to nearly face-on (Maasoom, 6 Oct 2026: the half turn was too much; 64 frames over 180 degrees became
+// these 22 over 60, the same frames, so the turn per frame is unchanged). The model eases the move in and out (and holds still for the last second), so
 // frames are picked at equal steps of camera travel, not of time (as brand/assets/band-scrub/cut-frames.ts
 // did for the crane-up film): every frame then turns the site by about the same angle and the scroll
 // reads as one slow, even turn. Travel = how far the picture moves between consecutive video frames: the
@@ -17,14 +19,15 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import sharp from 'sharp';
 
-export const FRAMES = 64;
+export const FRAMES = 22;
+const TURN = 1 / 3; // the share of the clip's camera travel the band plays
 const FFMPEG = process.env.FFMPEG ?? 'ffmpeg';
 const SRC = 'brand/assets/site-orbit/orbit.mp4';
 const POSTER = 'brand/assets/site-orbit/poster.png';
 // Its own folder: scripts/images.ts rebuilds public/img from scratch on every run.
 export const OUT = 'public/site-orbit';
 // Laptops get 1600px frames, phones 900px (SPEC section 8 budget, approved exception like the hero's).
-export const SIZES = { l: { w: 1600, q: 42, budgetKB: 3000 }, s: { w: 900, q: 42, budgetKB: 1300 } } as const;
+export const SIZES = { l: { w: 1600, q: 42, budgetKB: 1050 }, s: { w: 900, q: 42, budgetKB: 450 } } as const;
 export const frameName = (i: number) => `f${String(i + 1).padStart(2, '0')}.avif`;
 
 const AW = 320, AH = 180, BLOCK = 16, R = 8; // analysis size, block size, largest motion searched (px)
@@ -75,9 +78,9 @@ async function main() {
     console.log(`${all.length} video frames, travel ${total.toFixed(1)}px at ${AW}px wide`);
     console.log(`per-frame travel: ${travel.slice(1).map((t, i) => (t - travel[i]!).toFixed(2)).join(' ')}`);
 
-    // Equal steps of travel; between two video frames take the nearer one.
+    // Equal steps of travel over the first TURN of it; between two video frames take the nearer one.
     const pick = Array.from({ length: FRAMES }, (_, k) => {
-      const t = (k / (FRAMES - 1)) * total;
+      const t = (k / (FRAMES - 1)) * total * TURN;
       let i = travel.findIndex((v) => v >= t);
       if (i < 0) i = travel.length - 1;
       if (i > 0 && t - travel[i - 1]! < travel[i]! - t) i -= 1;

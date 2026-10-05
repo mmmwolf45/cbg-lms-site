@@ -19,7 +19,7 @@ describe('exploding-building hero', () => {
   });
 
   it('picks frames by the smaller screen side in device pixels (960px frames from 1100)', () => {
-    expect(frameDir(390, 844, 3)).toBe('l'); // a 3x phone has the pixels for 960 (the approved prototype's rule)
+    expect(frameDir(390, 844, 3)).toBe('s'); // a 3x phone counts as 2x since 6 Oct 2026 (memory; it was 'l')
     expect(frameDir(390, 664, 2)).toBe('s');
     expect(frameDir(360, 640, 1.5)).toBe('s');
     expect(frameDir(1440, 900, 1)).toBe('s'); // 900 css px at 1x: 640 frames are sharp enough

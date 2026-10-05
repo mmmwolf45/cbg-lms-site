@@ -1,8 +1,8 @@
-/* Home band: a night construction site that turns half way round with the scroll (SPEC section 5.1.2,
+/* Home band: a night construction site that turns about 60 degrees with the scroll (SPEC section 5.1.2,
    src/motion/site-orbit.ts). Default (no JS, reduced motion): the poster, frame 1, in a full-width view that
    dissolves into the canvas at top and bottom, no sticky stretch. With JS and motion allowed: .cbg-orbit
-   is two screens taller than its stage, which sticks under course.link's 56px navbar while the frames play
-   on the canvas over the poster. */
+   is 0.9 of a screen taller than its stage, which sticks under course.link's 56px navbar while the frames
+   play on the canvas over the poster. */
 .cbg-orbit__stage { position: relative; height: clamp(320px, 42vw, 640px); overflow: hidden; }
 .cbg-orbit__film {
   position: absolute; inset: 0; background: var(--cbg-bg);
@@ -16,7 +16,7 @@
 .cbg-orbit__canvas.is-on { opacity: 1; }
 
 @media (prefers-reduced-motion: no-preference) {
-  html.cbg-js .cbg-orbit { height: calc(300svh - 56px); }
+  html.cbg-js .cbg-orbit { height: calc(190svh - 56px); }
   html.cbg-js .cbg-orbit__stage { position: sticky; top: 56px; height: calc(100svh - 56px); min-height: 420px; }
 }
 /* Phones: a window a little wider than square on the 16:9 film (the building and the crane's whole jib

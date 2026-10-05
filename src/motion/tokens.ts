@@ -8,6 +8,11 @@ export const ease = {
 
 export const stagger = 0.07;
 
+// Set while the home band or the course story holds its panel under the navbar (site-orbit.ts,
+// course-story.ts) and read by the page background (sky.ts, flow.ts), so it does less behind them: behind
+// the band's film nothing needs drawing, and behind the story's pinned panel no text moves.
+export const pinned = { band: false, story: false };
+
 export const reducedMotion = '(prefers-reduced-motion: reduce)';
 export const fullMotion = '(prefers-reduced-motion: no-preference)';
 
@@ -20,8 +25,9 @@ export const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 // 1 when the stage is about to be released.
 export const progress = (top: number, stickyTop: number, span: number) => clamp01((stickyTop - top) / Math.max(1, span));
 
-// Phones (and small windows) get the small frames, larger screens the large ones.
-export const frameDir = (w: number, h: number, dpr: number) => (Math.min(w, h) * dpr < 1100 ? 's' : 'l');
+// Phones (and small windows) get the small frames, larger screens the large ones. The pixel ratio counts up
+// to 2 only: a 3x phone took the large set, twice the memory, for detail a phone can't show (6 Oct 2026).
+export const frameDir = (w: number, h: number, dpr: number) => (Math.min(w, h) * Math.min(dpr, 2) < 1100 ? 's' : 'l');
 
 // Frame 0 first, then every 8th, 4th, 2nd, then the rest: a coarse pass the scroll can already use.
 export function loadOrder(n: number): number[] {

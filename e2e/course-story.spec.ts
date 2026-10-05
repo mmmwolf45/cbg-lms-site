@@ -46,14 +46,15 @@ const state = (page: Page) =>
       chapter: Number(c.dataset.chapter ?? -1),
       frame: Number(c.dataset.frame ?? -1),
       on: c.classList.contains('is-on'),
-      active: lis.findIndex((li) => li.classList.contains('is-active')),
+      active: lis.findIndex((li) => li.classList.contains('is-current')),
       shown: lis.filter((li) => Number(getComputedStyle(li).opacity) > 0.01).length,
       n: lis.length,
     };
   });
 
-// Scroll to the middle of chapter k (or a share f of the whole story), in small steps like a wheel, then
-// let the story settle.
+// Scroll to the middle of chapter k (its resting point; a fraction is a point inside chapter floor(k)), in
+// small steps like a wheel, then let the story settle. The settle moves at most one chapter from the last one
+// (6 Oct 2026), so further chapters are reached a chapter at a time (walk below).
 async function scrollStory(page: Page, k: number, settle = 3000) {
   await page.evaluate(async (k) => {
     const s = document.querySelector<HTMLElement>('[data-cbg-story]')!, w = s.querySelector<HTMLElement>('.cbg-wrap')!;
@@ -67,6 +68,14 @@ async function scrollStory(page: Page, k: number, settle = 3000) {
   }, k);
   await page.waitForTimeout(settle);
 }
+async function walk(page: Page, to: number, settle = 1500) {
+  for (let k = 1; k <= to; k++) await scrollStory(page, k, settle);
+}
+const chapterPx = (page: Page) =>
+  page.evaluate(() => {
+    const s = document.querySelector<HTMLElement>('[data-cbg-story]')!, w = s.querySelector<HTMLElement>('.cbg-wrap')!;
+    return (s.offsetHeight - w.offsetHeight) / s.querySelectorAll('.cbg-gallery__track > li').length;
+  });
 
 test.describe('laptop, full motion', () => {
   test.use({ viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
@@ -77,7 +86,9 @@ test.describe('laptop, full motion', () => {
     expect(frames, 'no course films at the top of the page').toHaveLength(0);
     const s0 = await state(page);
     expect(s0.story).toBe(true);
-    expect(s0.height).toBeGreaterThan(900 * (s0.n - 0.5)); // a screen per course
+    // 0.6 of a screen of scroll per course, plus the panel's own screen (6 Oct 2026; a screen per course before).
+    expect(s0.height).toBeGreaterThan(900 * (0.6 * s0.n + 0.8));
+    expect(s0.height).toBeLessThan(900 * (0.6 * s0.n + 1.1));
 
     await scrollStory(page, 0, 4000);
     expect(frames.length).toBeGreaterThan(0);
@@ -96,7 +107,7 @@ test.describe('laptop, full motion', () => {
     expect(b.panelTop).toBe(56);
     expect(b).toMatchObject({ chapter: 1, active: 1, shown: 1, on: true });
 
-    await scrollStory(page, a.n - 1, 4000);
+    for (let k = 2; k < a.n; k++) await scrollStory(page, k, k < a.n - 1 ? 1500 : 4000); // a chapter per settle
     const c = await state(page);
     expect(c.panelTop).toBe(56);
     expect(c).toMatchObject({ chapter: a.n - 1, active: a.n - 1, shown: 1 });
@@ -109,7 +120,7 @@ test.describe('laptop, full motion', () => {
 
   test('scrolling back plays the film backwards, a frame at a time', async ({ page }) => {
     const { frames } = await open(page);
-    await scrollStory(page, 0.45, 2000); // late in chapter 0
+    await scrollStory(page, 0, 2000); // chapter 0 at rest, half way through its film
     // The whole film first: until then the nearest loaded frame stands in (every 4th, by design).
     await expect.poll(() => new Set(frames).size, { timeout: 15000 }).toBeGreaterThanOrEqual(40);
     await page.waitForTimeout(1000);
@@ -117,7 +128,7 @@ test.describe('laptop, full motion', () => {
       const c = document.querySelector<HTMLElement>('.cbg-story__canvas')!;
       const out: number[] = [];
       const t0 = performance.now();
-      scrollBy(0, -400);
+      scrollBy(0, -200); // then the settle carries it on back to the story's start
       (function f() {
         out.push(Number(c.dataset.frame));
         performance.now() - t0 < 1500 ? requestAnimationFrame(f) : done(out);
@@ -166,24 +177,57 @@ test.describe('laptop, full motion', () => {
     const { order } = await open(page, 'serve', /\/site-orbit\//);
     await scrollStory(page, -1.5, 0); // the band's end: the story is a screen away
     const count = (dir: string) => order.filter((u) => u.includes(dir)).length;
-    await expect.poll(() => count('/site-orbit/') === 64 && count('/course-films/') > 10, { timeout: 30000 }).toBe(true);
+    await expect.poll(() => count('/site-orbit/') === 22 && count('/course-films/') > 10, { timeout: 30000 }).toBe(true);
     const lastBand = order.map((u) => u.includes('/site-orbit/')).lastIndexOf(true);
     const firstRest = order.findIndex((u) => u.includes('/course-films/') && !u.endsWith('/f01.avif'));
     expect(firstRest).toBeGreaterThan(lastBand); // only each film's frame 1 may go first
   });
 
-  test('a jump ahead: the films of chapters left behind stop loading, the film jumped to goes first', async ({ page }) => {
+  // Since 6 Oct 2026 the story moves a chapter per settle (no jump to the last chapter by scrolling), so the
+  // reader steps on quickly instead: the films left behind stop, the one reached completes.
+  test('stepping ahead: the films of chapters left behind stop loading, the film reached completes', async ({ page }) => {
     const { frames } = await open(page, 'serve', /\/course-films\//);
     await scrollStory(page, 0, 1500); // IOSH (and QS's frame 1) start loading
-    await page.evaluate(() => { // straight to the last chapter, in one go (the story snaps there)
-      const s = document.querySelector<HTMLElement>('[data-cbg-story]')!, w = s.querySelector<HTMLElement>('.cbg-wrap')!;
-      const n = s.querySelectorAll('.cbg-gallery__track > li').length;
-      scrollTo(0, scrollY + s.getBoundingClientRect().top - 56 + ((n - 0.5) / n) * (s.offsetHeight - w.offsetHeight));
-    });
+    const n = (await state(page)).n;
+    await walk(page, n - 1, 900);
     const count = (film: string) => new Set(frames.filter((u) => u.includes(`/course-films/${film}/`))).size;
     await expect.poll(() => count('interior'), { timeout: 30000 }).toBe(40);
     expect(count('iosh')).toBeLessThan(40);
-    expect(count('qs')).toBe(1);
+  });
+
+  test('the settle: a flick shows the next course and never skips one; a nudge glides back', async ({ page }) => {
+    const { errors } = await open(page);
+    await scrollStory(page, 0, 2500);
+    const px = await chapterPx(page);
+    const y0 = await page.evaluate(() => scrollY);
+    // Record the chapters shown while one quick flick worth three chapters runs, and until it has settled.
+    const seen = page.evaluate(() => new Promise<number[]>((done) => {
+      const c = document.querySelector<HTMLElement>('.cbg-story__canvas')!;
+      const out: number[] = [];
+      const t0 = performance.now();
+      (function f() {
+        out.push(Number(c.dataset.chapter));
+        performance.now() - t0 < 4000 ? requestAnimationFrame(f) : done(out);
+      })();
+    }));
+    await page.mouse.move(720, 450);
+    for (let i = 0; i < 6; i++) {
+      await page.mouse.wheel(0, (px * 3) / 6);
+      await page.waitForTimeout(20);
+    }
+    expect(Math.max(...(await seen))).toBe(1); // the next course showed; the two after it never did
+    const s1 = await state(page);
+    expect(s1).toMatchObject({ chapter: 1, active: 1, shown: 1, panelTop: 56 });
+    expect(Math.abs((await page.evaluate(() => scrollY)) - (y0 + px))).toBeLessThan(4); // resting at chapter 1's middle
+
+    await page.mouse.wheel(0, px * 0.06); // a nudge: settles back
+    await page.waitForTimeout(2000);
+    expect(Math.abs((await page.evaluate(() => scrollY)) - (y0 + px))).toBeLessThan(4);
+    await page.mouse.wheel(0, px * 0.3); // a third of a chapter on: the settle carries it to the next one
+    await page.waitForTimeout(2500);
+    expect(Math.abs((await page.evaluate(() => scrollY)) - (y0 + 2 * px))).toBeLessThan(4);
+    expect((await state(page)).active).toBe(2);
+    expect(errors).toEqual([]);
   });
 });
 
@@ -199,7 +243,7 @@ test.describe('phone, full motion', () => {
     expect(s).toMatchObject({ chapter: 0, active: 0, shown: 1, panelTop: 56, on: true });
     const [film, card] = await page.evaluate(() => [
       document.querySelector('.cbg-story__film')!.getBoundingClientRect().bottom,
-      document.querySelector('.cbg-gallery__track > li.is-active')!.getBoundingClientRect().top,
+      document.querySelector('.cbg-gallery__track > li.is-current')!.getBoundingClientRect().top,
     ]);
     expect(card).toBeGreaterThanOrEqual(film - 1);
     expect(errors).toEqual([]);

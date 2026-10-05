@@ -4,7 +4,8 @@
 // The still gradient on body::before (critical.css) is the first paint and the fallback: this canvas
 // fades in over it after its first frame, and is removed if WebGL is missing or the context is lost.
 // Cost: one canvas at about a third of the screen's CSS size (a smooth gradient needs no more), one
-// draw per frame while scrolling, none at rest.
+// draw per frame while scrolling, none at rest or while the home band's film fills the screen.
+import { pinned } from './tokens';
 
 export const SCALE = 0.34; // canvas pixels per CSS pixel
 export const SPEED = 0.0016; // wave time per scrolled pixel
@@ -129,8 +130,10 @@ export function flowBackground(doc: Document = document): () => void {
     raf = 0;
     if (!gl || !ours()) return;
     shown = glide(shown, target);
-    fit();
-    gl.draw(shown);
+    if (!pinned.band) { // else parked behind the band's film: the waves still glide, unseen
+      fit();
+      gl.draw(shown);
+    }
     if (!canvas.classList.contains('is-on')) canvas.classList.add('is-on'); // fades in over the still gradient
     if (shown !== target) raf = win.requestAnimationFrame(frame);
   };

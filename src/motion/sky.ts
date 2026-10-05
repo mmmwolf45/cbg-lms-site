@@ -4,10 +4,17 @@
 // the horizon) and a rare slow shooting star. Scrolling turns the sky very slowly about the celestial pole,
 // like the night passing. Data: public/sky/stars.bin (scripts/sky-data.ts), fetched after the page loads.
 // Raw WebGL, not three.js: it shows from the first screen and must not wait for the 3D chunk.
-// Layers: flow canvas, then a still dim (.cbg-sky-dim, darkens the waves), then this canvas, then content.
+// Layers: flow canvas, then this canvas, then content. This canvas also draws the still dim over the waves
+// (it was its own full-screen layer, .cbg-sky-dim, until 6 Oct 2026).
 // Contrast: a mask of every text line, read on each draw, dims the sky to 12% behind text (text keeps 4.5:1).
-// Cost: one transparent canvas, at most 30 draws a second (twinkle), none while hidden or off our routes;
-// reduced motion draws a still sky only when the page scrolls (to keep the text mask in place).
+// Cost: one transparent canvas, at most 30 draws a second (twinkle), none while hidden or off our routes or
+// while the home band's film fills the screen (it parks: its last frame stays); the text mask is re-read on
+// every scroll draw except while the course story's panel is pinned (its text doesn't move then). Reduced
+// motion draws a still sky only when the page scrolls (to keep the text mask in place).
+// Not merged with the flow waves into one opaque canvas (tried 6 Oct 2026): on an Intel UHD laptop (Chrome,
+// D3D11) that canvas's first draws froze the page for 2.7 to 7.8 s in every scroll run with a 4x slower CPU
+// (6 of 6; 0 of 4 with this canvas over the flow canvas).
+import { pinned } from './tokens';
 
 const DEG = Math.PI / 180;
 export const LAT = 25.3 * DEG; // Doha
@@ -82,6 +89,8 @@ float dim(){return 1.-.88*texture2D(T,vec2(gl_FragCoord.x,K.x-gl_FragCoord.y)/K.
 // Milky Way (3D value noise along the galactic plane, a dust lane toward the centre) and the meteor.
 // Galactic pole and centre in J2000 equatorial: RA 192.859, Dec 27.128 and RA 266.405, Dec -28.936.
 // H: meteor head (css px) and direction; G: tail length (css px) and strength.
+// The still dim over the waves, as the old .cbg-sky-dim layer: 45% night, and up to 55% more toward the edges
+// (its radial gradient, 120% x 95% at 50% 42%, from 38%); the sky goes over it.
 export const SKY = `${HEAD}uniform mat3 M;uniform vec3 Z;uniform vec2 R;uniform float S;uniform vec4 H,G;
 float h(vec3 p){p=fract(p*.3183099+.1);p*=17.;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
 float n(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);vec2 e=vec2(0,1);
@@ -91,12 +100,13 @@ vec2 p=(gl_FragCoord.xy-.5*R)/S;float q=dot(p,p);
 vec3 e=M*(vec3(4.*p,4.-q)/(4.+q));
 float b=dot(e,vec3(-.8677,-.1981,.456)),g=dot(e,vec3(-.0549,-.8734,-.4838)),w=.14+.04*g;
 float m=0.;if(abs(b)<3.*w){m=exp(-b*b/(w*w))*(.5+.5*smoothstep(-1.,1.,g))*smoothstep(.25,.8,.5*n(e*4.)+.3*n(e*9.+3.)+.2*n(e*23.+7.));
-m*=1.-.75*exp(-pow((b-.012)/.03,2.))*smoothstep(-.2,.7,g);}
+float l=(b-.012)/.03;m*=1.-.75*exp(-l*l)*smoothstep(-.2,.7,g);}
 float a=.1*m*smoothstep(-.02,.15,dot(e,Z));
 vec3 c=mix(vec3(.62,.68,.9),vec3(.95,.86,.74),smoothstep(.3,1.,g))*a;
 if(G.y>0.){vec2 v=vec2(gl_FragCoord.x,K.x-gl_FragCoord.y)/K.y-H.xy;float t=-dot(v,H.zw),s=dot(v,vec2(-H.w,H.z)),k=clamp(t/G.x,0.,1.);
 float f=G.y*(step(-1.,t)*step(t,G.x)*(1.-k)*(1.-k)*exp(-s*s*2.)+.4*exp(-dot(v,v)*.5));c+=vec3(.93,.95,1.)*f;a+=f;}
-gl_FragColor=vec4(c,min(a,1.))*dim();}`;
+vec2 u=gl_FragCoord.xy/R;float v=1.-.55*(1.-.55*clamp((length(vec2((u.x-.5)/1.2,(.58-u.y)/.95))-.38)/.62,0.,1.)),d=dim();a=min(a,1.)*d;
+gl_FragColor=vec4(c*d+vec3(.008,.02,.047)*v*(1.-a),a+v*(1.-a));}`;
 
 // Stars as soft point sprites (faint diffraction spikes on the ~20 brightest), lines in gold. r < 0 = a line.
 const STAR_V = `attribute vec3 p;attribute vec4 m;uniform mat3 M;uniform vec3 Z;uniform vec2 R;uniform float S,D,t,L;
@@ -152,13 +162,9 @@ export function skyBackground(doc: Document = document): () => void {
   const phone = win.matchMedia('(pointer: coarse)').matches || win.innerWidth < 768;
   const dpr = Math.min(win.devicePixelRatio || 1, phone ? 1 : 1.5);
   const canvas = doc.createElement('canvas');
-  const dim = doc.createElement('div');
   canvas.className = 'cbg-sky';
-  dim.className = 'cbg-sky-dim';
-  for (const el of [dim, canvas]) {
-    el.setAttribute('aria-hidden', 'true');
-    el.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:100vh;height:100lvh;z-index:-1;pointer-events:none';
-  }
+  canvas.setAttribute('aria-hidden', 'true');
+  canvas.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:100vh;height:100lvh;z-index:-1;pointer-events:none';
   const gl = canvas.getContext('webgl', { alpha: true, antialias: false, depth: false, stencil: false, powerPreference: 'low-power' });
   if (!gl) return () => {};
   let sky: [WebGLProgram, Uniforms], dots: [WebGLProgram, Uniforms];
@@ -262,6 +268,7 @@ export function skyBackground(doc: Document = document): () => void {
     const still = reduce.matches;
     if (!still) raf = win.requestAnimationFrame(frame);
     if (!still && ms - last < 30) return; // at most 30 draws a second, scrolling or not (the GPU is shared with the 3D)
+    if (pinned.band) return; // parked behind the band's film (6 Oct 2026 smoothness pass)
     const kicked = dirty;
     dirty = false;
     last = ms;
@@ -275,7 +282,7 @@ export function skyBackground(doc: Document = document): () => void {
     }
     shown = still ? 0 : turn(shown, win.scrollY * RATE, dt);
     const [s, alt] = lens(w, h), m = view(LST0 + shown, alt);
-    if (kicked || ms - maskAt > 250) {
+    if ((kicked && !pinned.story) || ms - maskAt > 250) {
       maskAt = ms;
       mask(w, h);
     }
@@ -325,7 +332,7 @@ export function skyBackground(doc: Document = document): () => void {
     gl.uniform1f(dots[1].L, 0);
     attrs(stars);
     gl.drawArrays(gl.POINTS, 0, nStars);
-    if (!canvas.classList.contains('is-on')) for (const el of [dim, canvas]) el.classList.add('is-on');
+    if (!canvas.classList.contains('is-on')) canvas.classList.add('is-on');
   };
   const kick = () => {
     dirty = true;
@@ -339,7 +346,6 @@ export function skyBackground(doc: Document = document): () => void {
     clearTimeout(measuring);
     if (raf) win!.cancelAnimationFrame(raf);
     stars = null;
-    dim.remove();
     canvas.remove();
   }
   const routes = new win.MutationObserver(kick); // a client-side page change: draw for the page we land on
@@ -361,7 +367,7 @@ export function skyBackground(doc: Document = document): () => void {
       lines = buffer(gl, d.lines);
       nStars = d.stars.length / 7;
       nLines = d.lines.length / 7;
-      doc.body.append(dim, canvas); // after the flow canvas: same layer, so above it and below all content
+      doc.body.append(canvas); // after the flow canvas: same layer, so above it and below all content
       gl.enableVertexAttribArray(0);
       collect();
       win.addEventListener('scroll', kick, opts);

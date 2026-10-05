@@ -215,7 +215,7 @@ describe('home course cards', () => {
 describe('home band', () => {
   it('is one labelled picture: the poster (decorative inside it) under the canvas, frames named on the Pages base', () => {
     const band = sectionHtml(html, 'band');
-    expect(band).toContain(`data-cbg-orbit="https://mmmwolf45.github.io/cbg-lms-site/site-orbit/" data-cbg-frames="64"`);
+    expect(band).toContain(`data-cbg-orbit="https://mmmwolf45.github.io/cbg-lms-site/site-orbit/" data-cbg-frames="22"`); // 60 degrees of the turn (6 Oct 2026)
     expect(band).toContain(`<div class="cbg-orbit__stage" role="img" aria-label="${h.band!.alt}">`);
     expect(band).toMatch(/<picture class="cbg-orbit__poster">.*<img [^>]*alt="" loading="lazy"/);
     expect(band).toContain('<canvas class="cbg-orbit__canvas" aria-hidden="true"></canvas>');
