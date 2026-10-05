@@ -2,7 +2,8 @@
 //   node lab/home-fps.mjs [width=1440] [height=900] [cpu-throttle=1]
 //   PORT=4175 picks the mock's port (default 4173). A throttle of 4 slows the CPU 4x (CDP), like a cheap laptop.
 //   NOSKY=1 runs it without the night sky (as e2e/no-sky.ts), to see what the sky costs.
-// Per section: frames per second and the p50 / p95 / worst frame time (ms) over a 2.5 s sweep.
+// Per section: frames per second, the p50 / p95 / worst frame time (ms) and the long tasks (main-thread tasks
+// over 50 ms: count and total ms) over a 2.5 s sweep.
 import { readFileSync, existsSync } from 'node:fs';
 import { chromium } from '@playwright/test';
 
@@ -36,7 +37,9 @@ const run = (sel, range, pointer = false) => page.evaluate(([sel, range, pointer
     : range === 'still' ? [top + r.height / 2 - innerHeight / 2, top + r.height / 2 - innerHeight / 2]
     : [top - innerHeight, top + r.height];
   scrollTo(0, y0);
-  const gaps = [];
+  const gaps = [], long = [];
+  const po = new PerformanceObserver((l) => long.push(...l.getEntries().map((e) => e.duration)));
+  po.observe({ type: 'longtask' });
   let last = 0, t0 = 0;
   (function f(now) {
     if (t0) gaps.push(now - last); else t0 = now;
@@ -48,9 +51,10 @@ const run = (sel, range, pointer = false) => page.evaluate(([sel, range, pointer
       el.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerType: 'mouse', clientX: b.left + b.width * (0.05 + 0.9 * k), clientY: b.top + b.height * 0.7 }));
     }
     if (k < 1) return requestAnimationFrame(f);
+    po.disconnect();
     gaps.sort((a, b) => a - b);
     const q = (p) => Math.round(gaps[Math.min(gaps.length - 1, Math.floor(p * gaps.length))]);
-    done({ fps: Math.round(gaps.length / 2.5), p50: q(0.5), p95: q(0.95), worst: Math.round(gaps.at(-1)) });
+    done({ fps: Math.round(gaps.length / 2.5), p50: q(0.5), p95: q(0.95), worst: Math.round(gaps.at(-1)), long: long.length, longMs: Math.round(long.reduce((a, b) => a + b, 0)) });
   })(performance.now());
 }), [sel, range, pointer]);
 
@@ -64,5 +68,5 @@ const rows = [
   ['support', await run('#cbg-support', 'pass')],
   ['about (globe)', await run('#cbg-about', 'pass')],
 ];
-for (const [k, v] of rows) if (v) console.log(`${W}x${H} cpu/${THROTTLE} ${k}: ${v.fps} fps, p50 ${v.p50} ms, p95 ${v.p95} ms, worst ${v.worst} ms`);
+for (const [k, v] of rows) if (v) console.log(`${W}x${H} cpu/${THROTTLE} ${k}: ${v.fps} fps, p50 ${v.p50} ms, p95 ${v.p95} ms, worst ${v.worst} ms, long tasks ${v.long} (${v.longMs} ms)`);
 await browser.close();
