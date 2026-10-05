@@ -1,0 +1,22 @@
+/* Band C, "Silk surface". Replaces the floating desk; framed like the site's media (.cbg-frame: 24px radius,
+   two gold corner marks), within the site column, at the desk band's height. The CSS gradient is the still
+   fallback when WebGL is missing; the canvas fades in over it. */
+#cbg-band .cbg-band__view { display: none; }
+.lab-silk {
+  width: calc(100% - 2 * var(--cbg-gutter)); max-width: calc(var(--cbg-col-site) - 2 * var(--cbg-gutter)); margin: 0 auto;
+}
+.lab-silk-sheet {
+  position: relative; height: clamp(320px, 42vw, 600px);
+  background:
+    linear-gradient(150deg, transparent 34%, rgba(214, 177, 96, 0.16) 41%, transparent 48%),
+    linear-gradient(150deg, transparent 58%, rgba(214, 177, 96, 0.10) 64%, transparent 70%),
+    radial-gradient(70% 60% at 80% 85%, rgba(32, 55, 105, 0.55), transparent 70%),
+    linear-gradient(160deg, #0f1b33 0%, #081226 55%, #060e1f 100%);
+}
+.lab-silk-sheet canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;
+  opacity: 0; transition: opacity 1.6s var(--cbg-ease);
+}
+.lab-silk-sheet canvas.is-on { opacity: 1; }
+.lab-silk-sheet::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--cbg-line); pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .lab-silk-sheet canvas { transition: none; } }

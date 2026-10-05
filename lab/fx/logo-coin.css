@@ -1,0 +1,87 @@
+/* logo=coin: a taller About panel holding a thick CSS 3D medallion: the CBG mark in a brushed gold bezel, a reeded
+   gold edge lit by angle, and an engraved navy-and-gold back. */
+.cbg-logos.lab-logo-coin-panel { position: relative; overflow: hidden; min-height: 360px; padding: 0; }
+@media (min-width: 1024px) { .cbg-logos.lab-logo-coin-panel { min-height: 480px; } }
+
+/* the flat mark stays in the DOM for its alt text */
+.lab-logo-coin-panel > .cbg-logo {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+
+.lab-logo-coin-stage {
+  --d: min(64vw, 240px); --t: calc(var(--d) * 0.085);
+  position: absolute; inset: 0; display: grid; place-items: center; perspective: 1100px;
+  background: radial-gradient(50% 48% at 50% 46%, rgba(32, 55, 105, 0.4), transparent 72%);
+}
+@media (min-width: 1024px) { .lab-logo-coin-stage { --d: 290px; } }
+
+.lab-logo-coin {
+  position: relative; width: var(--d); aspect-ratio: 1; margin-top: -4%;
+  transform-style: preserve-3d; will-change: transform; cursor: pointer;
+  /* light on the front face (-1..1) and the sheen offset, both written by JS */
+  --lf: 0.7; --gx: 0; --gy: 0; --ry: 0;
+}
+.lab-logo-coin-face {
+  position: absolute; inset: 0; border-radius: 50%; overflow: hidden; backface-visibility: hidden;
+  /* brushed gold bezel: a conic sweep for the turned metal, fine rings for the brushing */
+  background:
+    repeating-radial-gradient(circle, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 3px),
+    conic-gradient(from 20deg, #8C6B2C, #F1D9A0 12%, #B48C45 25%, #E8CB86 38%, #8C6B2C 50%, #D6B160 62%, #F6E2AE 75%, #9C7934 88%, #8C6B2C);
+}
+.lab-logo-coin-front { transform: translateZ(calc(var(--t) / 2)); }
+.lab-logo-coin-back { transform: rotateY(180deg) translateZ(calc(var(--t) / 2)); }
+.lab-logo-coin-front img {
+  position: absolute; inset: 6.5%; width: 87%; height: 87%; border-radius: 50%;
+  box-shadow: 0 0 0 1.5px rgba(60, 42, 10, 0.55), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+.lab-logo-coin-back svg {
+  position: absolute; inset: 6.5%; width: 87%; height: 87%; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #1A2B4D, #0F1B33 60%, #081226);
+  box-shadow: inset 0 0 0 1.5px rgba(60, 42, 10, 0.55);
+}
+.lab-logo-coin-groove { fill: none; stroke: rgba(214, 177, 96, 0.45); stroke-width: 0.8; }
+.lab-logo-coin-ring {
+  fill: #D6B160; font: 700 12.5px / 1 var(--cbg-font-display); letter-spacing: 0.06em;
+  paint-order: stroke; stroke: rgba(5, 10, 22, 0.7); stroke-width: 1.4px; /* reads as cut into the metal */
+}
+.lab-logo-coin-mono {
+  fill: #D6B160; font: 800 44px / 1 var(--cbg-font-display); letter-spacing: -0.02em;
+  paint-order: stroke; stroke: rgba(5, 10, 22, 0.7); stroke-width: 2px;
+}
+
+/* light: faces darken as they turn from the upper-left light; a soft band of sheen slides with the angle */
+.lab-logo-coin-face::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%; background: #050A16; pointer-events: none;
+  opacity: clamp(0, calc(0.48 - var(--lf) * 0.6), 0.7);
+}
+.lab-logo-coin-back::after { opacity: clamp(0, calc(0.48 + var(--lf) * 0.6), 0.7); }
+.lab-logo-coin-sheen {
+  position: absolute; inset: -40%; z-index: 1; pointer-events: none; mix-blend-mode: soft-light;
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 250, 235, 0.55) 50%, transparent 62%);
+  transform: translate3d(calc(var(--gx) * -28%), calc(var(--gy) * 22%), 0);
+}
+
+/* the reeded edge: a ring of strips standing between the faces, each shaded by where it faces */
+.lab-logo-coin-edge { position: absolute; inset: 0; transform-style: preserve-3d; }
+.lab-logo-coin-edge i {
+  position: absolute; left: 50%; top: 50%;
+  width: calc(var(--d) * 3.1416 / 48 + 1px); height: var(--t);
+  margin: calc(var(--t) / -2) 0 0 calc((var(--d) * 3.1416 / 48 + 1px) / -2);
+  transform: rotateZ(var(--a)) translateY(calc(var(--d) / -2 + 0.5px)) rotateX(90deg);
+  background:
+    linear-gradient(rgba(60, 42, 10, 0.6), transparent 22%, transparent 78%, rgba(60, 42, 10, 0.6)),
+    repeating-linear-gradient(90deg, #E2C47E 0 1.5px, #9C7934 1.5px 3px);
+}
+.lab-logo-coin-edge i::after {
+  content: ""; position: absolute; inset: 0; background: #050A16;
+  /* dot(normal, light), normal = (sin a * cos ry, -cos a, -sin a * sin ry); rotateX left out (it stays small) */
+  opacity: clamp(0.04, calc(0.5 - 0.55 * (
+    -0.5 * sin(var(--a)) * cos(var(--ry) * 1deg) + 0.5 * cos(var(--a)) - 0.71 * sin(var(--a)) * sin(var(--ry) * 1deg)
+  )), 0.82);
+}
+
+.lab-logo-coin-shadow {
+  position: absolute; left: 50%; top: calc(50% + var(--d) * 0.5 + 18px); width: calc(var(--d) * 0.8); height: 26px;
+  transform: translateX(-50%); border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(2, 5, 12, 0.7), transparent);
+}

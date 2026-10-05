@@ -1,0 +1,25 @@
+/* Night sky (lab fx): the star canvas sits on the page-background layer, above the flow canvas. */
+.lab-sky {
+  position: fixed; left: 0; top: 0; width: 100%; height: 100vh; height: 100lvh;
+  z-index: -1; pointer-events: none;
+  opacity: 0; transition: opacity 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lab-sky.is-on { opacity: 1; }
+
+/* Stars over waves: today's flow, a good deal darker, with a deep vignette at the edges. */
+html[data-lab-sky="waves"] .cbg-flow { filter: brightness(0.55) saturate(1.1); }
+html[data-lab-sky="waves"] .lab-sky {
+  background: radial-gradient(120% 95% at 50% 42%, rgba(2, 5, 12, 0) 38%, rgba(2, 5, 12, 0.55) 100%);
+}
+
+/* Pure sky: no flow; near-black navy, lifted a touch high in the sky, with a barely-there Milky Way. */
+html[data-lab-sky="pure"] .cbg-flow { display: none; }
+html[data-lab-sky="pure"] .lab-sky {
+  background:
+    linear-gradient(115deg, transparent 34%, rgba(120, 138, 190, 0.03) 44%, rgba(150, 160, 205, 0.05) 50%, rgba(120, 138, 190, 0.03) 56%, transparent 66%),
+    radial-gradient(110% 80% at 50% 12%, #0A1530 0%, #060D1F 48%, #02050C 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lab-sky { transition: none; }
+}

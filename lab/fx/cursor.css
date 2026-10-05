@@ -1,0 +1,51 @@
+/* Cursor fx: a soft trailing circle over the big text (see cursor.js). Above the content, never clickable. */
+.lab-cursor {
+  --s: 128px;
+  position: fixed; left: 0; top: 0; z-index: 2147482000; width: var(--s); height: var(--s);
+  pointer-events: none; will-change: transform;
+  opacity: 0; transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lab-cursor[data-state="on"], .lab-cursor[data-state="link"] { opacity: 1; }
+.lab-cursor > * { position: absolute; inset: 0; border-radius: 50%; transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1s cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* Link: the fill fades, a 44px ring stays around the pointer */
+.lab-cursor-ring { inset: calc(50% - 22px); opacity: 0; transform: scale(1.8); }
+.lab-cursor[data-state="link"] .lab-cursor-ring { opacity: 1; transform: none; }
+.lab-cursor[data-state="link"] .lab-cursor-rim { opacity: 0; transform: scale(0.5); }
+
+/* plain: off-white disc, difference blend = the inverted view */
+.lab-cursor--plain { mix-blend-mode: difference; }
+.lab-cursor-disc { background: #F3F5F9; transform: scale(0.55); }
+.lab-cursor[data-state="on"] .lab-cursor-disc { transform: none; }
+.lab-cursor[data-state="link"] .lab-cursor-disc { opacity: 0; transform: scale(0.3); }
+.lab-cursor--plain .lab-cursor-rim { display: none; }
+.lab-cursor--plain .lab-cursor-ring { box-shadow: inset 0 0 0 1.5px #F3F5F9; }
+
+/* blueprint: the loupe. Screen blend only ever lightens, so white text stays white; the sheet is faint. */
+.lab-cursor--blueprint { mix-blend-mode: screen; }
+.lab-cursor-glass {
+  overflow: hidden; background: rgba(28, 66, 132, 0.28);
+  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent);
+  mask-image: radial-gradient(closest-side, #000 72%, transparent);
+}
+.lab-cursor[data-state="link"] .lab-cursor-glass { opacity: 0; }
+.lab-cursor-sheet {
+  position: absolute; left: 0; top: 0; width: 100vw; height: 100vh; will-change: transform;
+  background:
+    linear-gradient(rgba(96, 146, 226, 0.3) 1px, transparent 1px) 0 0 / 120px 120px,
+    linear-gradient(90deg, rgba(96, 146, 226, 0.3) 1px, transparent 1px) 0 0 / 120px 120px,
+    linear-gradient(rgba(96, 146, 226, 0.13) 1px, transparent 1px) 0 0 / 24px 24px,
+    linear-gradient(90deg, rgba(96, 146, 226, 0.13) 1px, transparent 1px) 0 0 / 24px 24px;
+}
+.lab-cursor-sheet svg { width: 100%; height: 100%; display: block; }
+.lab-cursor-sheet path, .lab-cursor-sheet circle { fill: none; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.lab-cursor-sheet .b { stroke: rgba(126, 172, 240, 0.75); }
+.lab-cursor-sheet .b text { fill: rgba(126, 172, 240, 0.85); stroke: none; }
+.lab-cursor-sheet .g { stroke: rgba(214, 177, 96, 0.8); }
+.lab-cursor-sheet .g text { fill: rgba(214, 177, 96, 0.9); stroke: none; }
+.lab-cursor-sheet .d { stroke-dasharray: 10 4 2 4; }
+.lab-cursor-sheet text { font: 600 11px/1 "Source Sans 3", system-ui, sans-serif; letter-spacing: 0.08em; text-anchor: middle; }
+.lab-cursor-sheet text.l { text-anchor: start; }
+.lab-cursor--blueprint .lab-cursor-rim { box-shadow: inset 0 0 0 1px rgba(214, 177, 96, 0.7), 0 0 18px rgba(214, 177, 96, 0.12); transform: scale(0.9); }
+.lab-cursor--blueprint[data-state="on"] .lab-cursor-rim { transform: none; }
+.lab-cursor--blueprint .lab-cursor-ring { box-shadow: inset 0 0 0 1px rgba(214, 177, 96, 0.85); }

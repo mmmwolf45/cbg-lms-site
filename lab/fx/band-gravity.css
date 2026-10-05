@@ -1,0 +1,45 @@
+/* Band B, "Zero gravity" (lab/fx/band-gravity.js): a framed night-sky panel replaces the floating desk.
+   The frame reuses the site's .cbg-frame (24px media radius, two gold corner marks). Same height as today's
+   band, aligned to the page column. */
+#cbg-band .cbg-band__view { display: none; }
+.lab-band-gravity {
+  width: min(100% - 2 * var(--cbg-gutter), var(--cbg-col-site) - 2 * var(--cbg-gutter));
+  height: clamp(320px, 42vw, 640px); margin: 0 auto;
+}
+.lab-band-gravity__panel {
+  position: absolute; inset: 0; touch-action: pan-y; isolation: isolate;
+  background:
+    radial-gradient(120% 90% at 22% -10%, rgba(32, 55, 105, 0.55), transparent 60%),
+    linear-gradient(#050B18, #07112A 70%, #081226);
+  border: 1px solid var(--cbg-line);
+}
+.lab-band-gravity__sky { position: absolute; inset: 0; width: 100%; height: 100%; }
+.lab-band-gravity__tw {
+  position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #F3F5F9;
+  box-shadow: 0 0 6px 1px rgba(201, 214, 242, 0.55); opacity: 0.35;
+  animation: lab-band-gravity-tw 9s ease-in-out infinite alternate;
+}
+.lab-band-gravity__tw:nth-child(odd) { animation-duration: 12s; }
+@keyframes lab-band-gravity-tw { to { opacity: 0.95; } }
+
+.lab-band-gravity__obj {
+  position: absolute; left: 0; top: 0; will-change: transform; cursor: grab;
+  -webkit-tap-highlight-color: transparent; user-select: none;
+}
+.lab-band-gravity[data-dragging] .lab-band-gravity__obj { cursor: grabbing; }
+.lab-band-gravity__obj img {
+  display: block; width: 100%; height: auto; pointer-events: none;
+  filter: drop-shadow(0 26px 34px rgba(2, 6, 16, 0.6)) drop-shadow(0 0 22px rgba(110, 150, 225, 0.14));
+}
+/* Depth: the plans sit a little further back (dimmer, softer); the hard hat is nearest. */
+.lab-band-gravity__obj--plans img {
+  filter: brightness(0.82) saturate(0.9) blur(0.4px) drop-shadow(0 20px 28px rgba(2, 6, 16, 0.55));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lab-band-gravity__tw { animation: none; opacity: 0.7; }
+  .lab-band-gravity__obj { cursor: default; will-change: auto; }
+}
+@media (hover: none), (pointer: coarse) {
+  .lab-band-gravity__obj { cursor: pointer; }
+}

@@ -1,0 +1,20 @@
+/* Band A, "Constellation build". Replaces the floating desk; framed like the site's media (.cbg-frame:
+   24px radius, two gold corner marks), within the site column, at the desk band's height. */
+#cbg-band .cbg-band__view { display: none; }
+.lab-constellation {
+  width: calc(100% - 2 * var(--cbg-gutter)); max-width: calc(var(--cbg-col-site) - 2 * var(--cbg-gutter)); margin: 0 auto;
+}
+.lab-constellation-sky {
+  position: relative; height: clamp(320px, 42vw, 600px);
+  background: radial-gradient(120% 90% at 50% 100%, #0d1a36 0%, #070f22 55%, #050b19 100%);
+  box-shadow: inset 0 0 0 1px var(--cbg-line);
+}
+.lab-constellation-sky canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+/* A star-chart caption, bottom left: small caps, quiet, fades in as the drawing completes */
+.lab-constellation-cap {
+  position: absolute; left: clamp(16px, 3vw, 32px); bottom: clamp(14px, 2.4vw, 26px); margin: 0; opacity: 0;
+  display: flex; gap: 10px; align-items: center; pointer-events: none;
+  color: var(--cbg-text-3); font: 600 0.75rem / 1 var(--cbg-font-display); letter-spacing: 0.18em; text-transform: uppercase;
+}
+.lab-constellation-cap span { display: flex; gap: 10px; align-items: center; color: rgba(214, 177, 96, 0.85); }
+.lab-constellation-cap span::before { content: ""; width: 22px; height: 1px; background: var(--cbg-gold-line); }

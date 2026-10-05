@@ -20,6 +20,17 @@
         "4310"
       ],
       "port": 4310
+    },
+    {
+      "name": "lab-artifact",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "tsx",
+        "lab/serve.ts",
+        "lab/out-artifact",
+        "4320"
+      ],
+      "port": 4320
     }
   ]
 }

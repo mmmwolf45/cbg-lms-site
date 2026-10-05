@@ -1,0 +1,36 @@
+/* logo=globe: a taller About panel; the globe fills it, the CBG mark sits as a medallion on its lower front. */
+.cbg-logos.lab-logo-globe {
+  position: relative; overflow: hidden; min-height: 380px; padding: 0;
+}
+@media (min-width: 1024px) { .cbg-logos.lab-logo-globe { min-height: 520px; } }
+
+/* the flat mark stays in the DOM for its alt text */
+.lab-logo-globe.is-ready > .cbg-logo {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+
+.lab-logo-globe-stage {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  /* a soft navy glow behind the sphere */
+  background: radial-gradient(58% 52% at 50% 44%, rgba(32, 55, 105, 0.42), transparent 72%);
+}
+.lab-logo-globe-orb { position: relative; width: min(84%, 300px); aspect-ratio: 1; margin-top: -7%; }
+@media (min-width: 480px) { .lab-logo-globe-orb { width: min(90%, 420px); } }
+.lab-logo-globe-canvas {
+  display: block; width: 100%; height: 100%;
+  cursor: grab; touch-action: pan-y; /* phones: vertical swipes still scroll the page */
+  opacity: 0; transition: opacity 1.6s var(--cbg-ease);
+}
+.lab-logo-globe.is-ready .lab-logo-globe-canvas { opacity: 1; }
+.lab-logo-globe.is-dragging .lab-logo-globe-canvas { cursor: grabbing; }
+
+/* the medallion: crisp mark, thin gold rim, a faint gold halo, resting on the globe's lower rim.
+   It drifts a few px against the lean, so it reads as nearer than the globe. */
+.lab-logo-globe-medal {
+  position: absolute; left: 50%; bottom: -9%; width: 27%; aspect-ratio: 1;
+  border-radius: 50%; padding: 3px; pointer-events: none;
+  background: linear-gradient(145deg, #F1D9A0, #D6B160 40%, #8C6B2C 75%, #D6B160);
+  box-shadow: 0 0 0 1px rgba(214, 177, 96, 0.25), 0 0 40px 8px rgba(214, 177, 96, 0.14), 0 18px 40px rgba(2, 6, 16, 0.65);
+  transform: translate3d(calc(-50% + var(--lx, 0) * -6px), calc(var(--ly, 0) * -4px), 0);
+}
+.lab-logo-globe-medal img { display: block; width: 100%; height: 100%; border-radius: 50%; }

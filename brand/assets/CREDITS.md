@@ -25,5 +25,6 @@
 | photos/qs-xray-concrete.png, photos/qs-xray-steel.png | Generated with Higgsfield for CBG, 4 Oct 2026: GPT Image 2.5, steel version edited from the concrete image | CBG |
 | photos/band-desk.png | band-classroom.png with the laptop, hard hat and plans removed: GPT Image 2.5 edit on Higgsfield, upscaled to 4K (4 Oct 2026) | CBG |
 | band-objects/plans.png, laptop.png, helmet.png | Isolated from band-classroom.png onto transparent backgrounds with GPT Image 2.5 on Higgsfield (4 Oct 2026) | CBG |
+| band-scrub/keyframe-start.png, keyframe-end.png, crane-up.mp4 | Generated with Higgsfield for CBG, 5 Oct 2026 (night-sky lab, band option D): GPT Image 2.5 keyframes, MiniMax H3 2K first/last-frame video, 15.5 credits; frames cut by band-scrub/cut-frames.ts | CBG |
 
 Add a row for every image you add: stock photos with the Pexels / Unsplash URL and photographer, AI images with the tool and date.

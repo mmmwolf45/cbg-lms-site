@@ -1,0 +1,50 @@
+/* Support card fx (see support.js). The plate already clips (.cbg-frame > :first-child, radius 24px). */
+.lab-support-beam {
+  position: absolute; inset: 0; z-index: 2; padding: 1px; border-radius: inherit; pointer-events: none;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.lab-support-beam > i {
+  position: absolute; width: 220px; aspect-ratio: 1; opacity: 0.6;
+  background: linear-gradient(to left, rgba(214, 177, 96, 0.95), rgba(214, 177, 96, 0.35) 40%, transparent);
+  offset-path: rect(0 auto auto 0 round 24px);
+  animation: lab-support-beam 22s linear infinite;
+}
+@keyframes lab-support-beam { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+@supports not (offset-path: rect(0 auto auto 0)) { .lab-support-beam { display: none; } }
+
+/* Desktop layers: between the photo and the text */
+.lab-support--fine { perspective: 1400px; }
+.lab-support--fine .cbg-plate__bg { transform: scale(1.07); will-change: transform; }
+.lab-support-spot, .lab-support-glare {
+  position: absolute; left: 0; top: 0; pointer-events: none; opacity: 0;
+  transition: opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1); will-change: transform;
+}
+.lab-support.is-lit .lab-support-spot { opacity: 1; }
+.lab-support.is-lit .lab-support-glare { opacity: 1; }
+.lab-support-spot {
+  width: 680px; aspect-ratio: 1; overflow: hidden; mix-blend-mode: screen;
+  background: radial-gradient(closest-side, rgba(214, 177, 96, 0.2), rgba(214, 177, 96, 0.07) 50%, transparent);
+}
+.lab-support-grid {
+  position: absolute; left: 0; top: 0; width: 1600px; height: 1000px;
+  background:
+    linear-gradient(rgba(126, 172, 240, 0.2) 1px, transparent 1px) 0 0 / 96px 96px,
+    linear-gradient(90deg, rgba(126, 172, 240, 0.2) 1px, transparent 1px) 0 0 / 96px 96px,
+    linear-gradient(rgba(126, 172, 240, 0.08) 1px, transparent 1px) 0 0 / 24px 24px,
+    linear-gradient(90deg, rgba(126, 172, 240, 0.08) 1px, transparent 1px) 0 0 / 24px 24px;
+}
+.lab-support-spot:has(.lab-support-grid) {
+  -webkit-mask-image: radial-gradient(closest-side, #000, rgba(0, 0, 0, 0.45) 35%, transparent 80%);
+  mask-image: radial-gradient(closest-side, #000, rgba(0, 0, 0, 0.45) 35%, transparent 80%);
+}
+.lab-support-glare {
+  inset: 0 -40%; width: auto; mix-blend-mode: screen;
+  background: linear-gradient(112deg, transparent 38%, rgba(243, 245, 249, 0.05) 47%, rgba(243, 245, 249, 0.07) 50%, transparent 60%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lab-support { border-color: var(--cbg-gold-line); }
+  .lab-support-beam { display: none; }
+}

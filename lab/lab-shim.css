@@ -1,1 +1,14 @@
-/* Artifact-only shim: stands in for course.link's own CSS (blocked in an Artifact). Filled in at integration. */
+/* Artifact-only shim: an Artifact can't load course.link's own Tailwind CSS, so this stands in for the few
+   utilities the home page's native chrome (the navbar) needs. Local lab builds don't use it. */
+body { margin: 0; }
+#navbar { position: sticky; top: 0; z-index: 50; height: 56px; border-bottom: 1px solid rgba(255, 255, 255, .09); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+#navbar .inner, #navbar .inner > div { height: 100%; display: flex; align-items: center; }
+#navbar .inner { max-width: 1240px; margin: 0 auto; padding: 0 16px; box-sizing: border-box; width: 100%; }
+#navbar .inner > div { width: 100%; gap: 20px; }
+#navbar .navbar-title-container { margin-right: auto; display: flex; }
+#navbar .navbar-title-container img { width: 36px; height: 36px; object-fit: contain; }
+#navbar .navbar-title-container + div, #navbar .navbar-title-container + div > div { display: flex; gap: 12px; align-items: center; }
+#navbar button { font: 600 14px/1 "Plus Jakarta Sans", system-ui, sans-serif; padding: 9px 16px; cursor: pointer; }
+#navbar .navbar-title-container + div button:last-child { background: #F3F5F9; color: #081226; border: 0; border-radius: 999px; }
+#navbar svg { width: 16px; height: 16px; }
+.custom-section { width: 100%; }

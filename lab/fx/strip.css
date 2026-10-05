@@ -1,0 +1,71 @@
+/* The course-names strip (strip.js). Plain: big outlined kinetic names. Blueprint: a star map. */
+@font-face {
+  font-family: lab-strip-pjs; font-weight: 200 800; font-display: swap; /* Plus Jakarta Sans, variable, latin */
+  src: url(https://fonts.gstatic.com/s/plusjakartasans/v12/LDIoaomQNQcsA88c7O9yZ4KMCoOg4Ko20yw.woff2) format("woff2");
+}
+
+/* ---- plain ---- */
+.lab-strip-plain { padding: clamp(18px, 2.4vw, 32px) 0; }
+.lab-strip-plain .cbg-marquee__set > span {
+  color: transparent; letter-spacing: -0.025em;
+  font: 300 clamp(2.5rem, 6vw, 5.5rem) / 1.12 lab-strip-pjs, var(--cbg-font-display);
+}
+.lab-strip-plain .cbg-marquee__set > span::after { width: clamp(32px, 4vw, 56px); margin: 0 clamp(28px, 4vw, 64px); }
+.lab-strip-l {
+  --k: 0; --r: 1; position: relative;
+  font-weight: calc(300 + 260 * var(--k));
+  color: rgb(214 177 96 / calc(var(--k) * var(--r)));
+  -webkit-text-stroke: 1px color-mix(in srgb, #D6B160 calc(var(--k) * 100%), rgb(243 245 249 / calc(0.42 * var(--r))));
+}
+.lab-strip-l.is-x { color: transparent; -webkit-text-stroke-color: transparent; }
+.lab-strip-l.is-x::after {
+  content: attr(data-s); position: absolute; left: 50%; top: 0; translate: -50% 0;
+  color: transparent; -webkit-text-stroke: 1px rgba(214, 177, 96, 0.38);
+}
+
+/* ---- blueprint: star map ---- */
+.lab-strip-sky { padding: 0; view-timeline-name: --lab-strip; }
+.lab-strip-sky .cbg-marquee__track { display: none; }
+.lab-strip-map { position: relative; width: 100%; height: clamp(230px, 21vw, 300px); }
+.lab-strip-map svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.lab-strip-seg { stroke: rgba(214, 177, 96, 0.55); stroke-width: 1; stroke-dasharray: 1; }
+.lab-strip-star { position: absolute; }
+.lab-strip-star i {
+  position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; background: #C0C6D2; opacity: 0.75;
+  clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%);
+}
+.lab-strip-star::before {
+  content: ""; position: absolute; left: -24px; top: -24px; width: 48px; height: 48px; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(243, 245, 249, 0.16), transparent);
+}
+.lab-strip-star.is-live i { left: -9px; top: -9px; width: 18px; height: 18px; background: #D6B160; opacity: 1; }
+.lab-strip-star.is-live::before { background: radial-gradient(closest-side, rgba(214, 177, 96, 0.38), transparent); }
+.lab-strip-star b {
+  position: absolute; left: 20px; top: 0; translate: 0 -50%; width: max-content; max-width: 12em;
+  font: 600 clamp(0.875rem, 1.15vw, 1.125rem) / 1.25 var(--cbg-font-display); letter-spacing: -0.01em; color: var(--cbg-text-3);
+}
+.lab-strip-star.is-live b { color: var(--cbg-text-1); }
+@media (max-width: 700px) and (prefers-reduced-motion: reduce) {
+  .lab-strip-map { height: 320px; }
+  .lab-strip-star b { font-size: 0.75rem; max-width: 7em; }
+}
+
+/* Scroll is the clock: the map drifts by its extra width while the strip crosses the screen, the stars
+   come up and the hairlines draw in one by one before it reaches the middle. Plus a slow twinkle. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .lab-strip-map { width: max(120vw, 1100px); animation: lab-strip-drift linear both; animation-timeline: --lab-strip; }
+    .lab-strip-star { animation: lab-strip-in linear both; animation-timeline: --lab-strip; animation-range: cover calc(6% + var(--i) * 6%) cover calc(18% + var(--i) * 6%); }
+    .lab-strip-seg { animation: lab-strip-draw linear both; animation-timeline: --lab-strip; animation-range: cover calc(12% + var(--i) * 6%) cover calc(26% + var(--i) * 6%); }
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lab-strip-star::before { animation: lab-strip-twinkle 8s ease-in-out calc(var(--i) * -1.7s) infinite; }
+}
+@keyframes lab-strip-drift { to { transform: translateX(calc(100vw - 100%)); } }
+@keyframes lab-strip-in { from { opacity: 0; } }
+@keyframes lab-strip-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes lab-strip-twinkle { 50% { opacity: 0.45; } }
+@media (prefers-reduced-motion: reduce) {
+  .lab-strip-plain .cbg-marquee__set > span { font-size: clamp(1.75rem, 3.6vw, 3rem); }
+}

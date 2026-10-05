@@ -1,0 +1,41 @@
+/* Gold constellation track (carousel.js). The track gets 44px of room under the cards for the line and its
+   nodes; on the pinned laptop pan the photos give that room back, so the panel's height (and the pin) is unchanged. */
+#cbg-courses .cbg-gallery { position: relative; }
+#cbg-courses .cbg-gallery__track { position: relative; padding-bottom: 44px; row-gap: 56px; }
+#cbg-courses.is-pan .cbg-course__media { max-height: max(96px, calc(100vh - 704px)); }
+
+.lab-carousel-sky { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; will-change: transform; }
+.lab-carousel-guide { fill: none; stroke: rgba(243, 245, 249, 0.1); stroke-width: 1; }
+html[data-lab-theme="blueprint"] .lab-carousel-guide { stroke: rgba(150, 180, 235, 0.24); stroke-dasharray: 2 6; }
+.lab-carousel-line { fill: none; stroke: #D6B160; stroke-width: 1.25; stroke-linecap: round; }
+.lab-carousel-star {
+  fill: #081226; stroke: rgba(243, 245, 249, 0.4); stroke-width: 1;
+  transform-box: fill-box; transform-origin: center; scale: 0.85;
+  transition: fill 1.6s var(--cbg-ease), stroke 1.6s var(--cbg-ease), scale 1.6s var(--cbg-ease);
+}
+.lab-carousel-halo { opacity: 0; transition: opacity 2s var(--cbg-ease); }
+.is-lit .lab-carousel-star { fill: #D6B160; stroke: #D6B160; scale: 1; }
+.is-lit .lab-carousel-halo { opacity: 1; }
+
+/* Border beam (Magic UI BorderBeam technique): a short gold gradient riding the card's edge on offset-path,
+   seen only through a hairline ring mask. Live cards, hover or keyboard focus, very faint, one lap per 18s. */
+.lab-carousel-beam {
+  position: absolute; inset: 0; z-index: 2; padding: 1.5px; border-radius: inherit; pointer-events: none; opacity: 0;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  transition: opacity 1.4s var(--cbg-ease);
+}
+.lab-carousel-beam::before {
+  content: ""; position: absolute; width: 140px; aspect-ratio: 1;
+  offset-path: rect(0 auto auto 0 round 18px);
+  background: linear-gradient(to left, #E6C67E, rgba(214, 177, 96, 0.35) 45%, transparent);
+  animation: lab-carousel-beam 18s linear infinite paused;
+}
+.cbg-course--live:focus-within .lab-carousel-beam { opacity: 0.75; }
+.cbg-course--live:focus-within .lab-carousel-beam::before { animation-play-state: running; }
+@media (hover: hover) {
+  .cbg-course--live:hover .lab-carousel-beam { opacity: 0.75; }
+  .cbg-course--live:hover .lab-carousel-beam::before { animation-play-state: running; }
+}
+@keyframes lab-carousel-beam { to { offset-distance: 100%; } }
+@media (prefers-reduced-motion: reduce) { .lab-carousel-beam { display: none; } }

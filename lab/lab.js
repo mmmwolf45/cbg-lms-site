@@ -23,8 +23,13 @@ const store = {
   set(k, v) { try { sessionStorage.setItem(k, v); } catch { /* private mode: fine */ } },
 };
 
+// The hash carries the state locally; an Artifact's frame may drop key=value hashes, so the last choice is
+// also kept in sessionStorage, and the bare tokens #i1, #i2 and #today pick a preset.
 function readState() {
-  const p = new URLSearchParams(location.hash.slice(1));
+  const bare = { i1: 0, i2: 1, today: 2 }[location.hash.slice(1)];
+  if (bare !== undefined) return { ...PRESETS[bare][1] };
+  const raw = location.hash.includes('=') ? location.hash.slice(1) : store.get('lab-state') || '';
+  const p = new URLSearchParams(raw);
   const s = {};
   for (const k of Object.keys(OPTIONS)) {
     const v = p.get(k);
@@ -37,6 +42,7 @@ const hashOf = (s) => Object.keys(OPTIONS).map((k) => `${k}=${s[k]}`).join('&');
 
 function go(next) {
   store.set('lab-scroll', String(scrollY));
+  store.set('lab-state', hashOf(next));
   const base = String(window.__labHref || location.href).split('#')[0];
   const hash = hashOf(next);
   if (base === location.href.split('#')[0]) { location.hash = hash; location.reload(); }
@@ -53,7 +59,8 @@ function panel() {
   el.className = 'lab-panel';
   el.setAttribute('role', 'region');
   el.setAttribute('aria-label', 'Prototype switcher');
-  const open = store.get('lab-open') !== '0';
+  const saved = store.get('lab-open');
+  const open = saved ? saved !== '0' : innerWidth > 600; // starts folded on phones
   el.dataset.open = String(open);
   const rows = Object.keys(OPTIONS).map((k) => `<div class="lab-row"><span class="lab-key">${LABELS[k]}</span><div class="lab-seg">${
     OPTIONS[k].map(([id, label]) => `<button type="button" data-k="${k}" data-v="${id}" aria-pressed="${state[k] === id}">${label}</button>`).join('')
@@ -99,12 +106,11 @@ const ctx = {
   state,
   reduced: matchMedia('(prefers-reduced-motion: reduce)').matches,
   fine: matchMedia('(hover: hover) and (pointer: fine)').matches,
-  gsap: window.gsap,
-  ScrollTrigger: window.ScrollTrigger,
+  gsap: null, // set in start(), after the bundle: see loadScript
+  ScrollTrigger: null,
   asset: (p) => `./assets/${p}`,
   site: (p) => `./site/${p}`,
 };
-if (ctx.gsap && ctx.ScrollTrigger) ctx.gsap.registerPlugin(ctx.ScrollTrigger);
 window.__lab = ctx;
 
 // The real bundle sets window.__cbg once it has started; fx modules run after it so they can build on its DOM.
@@ -113,9 +119,23 @@ const bundleReady = () => new Promise((done) => {
   (function wait() { (window.__cbg || performance.now() - t0 > 6000) ? done() : setTimeout(wait, 50); })();
 });
 
+// The lab's own GSAP (a global) must arrive after the bundle has started: GSAP plugins adopt window.gsap
+// when they initialise, so an earlier global would steal the bundle's ScrollTrigger.
+const loadScript = (src) => new Promise((done) => {
+  const s = document.createElement('script');
+  s.src = src;
+  s.onload = s.onerror = done;
+  document.head.appendChild(s);
+});
+
 async function start() {
   panel();
   await bundleReady();
+  await loadScript('./vendor/gsap.min.js');
+  await loadScript('./vendor/ScrollTrigger.min.js');
+  ctx.gsap = window.gsap;
+  ctx.ScrollTrigger = window.ScrollTrigger;
+  if (ctx.gsap && ctx.ScrollTrigger) ctx.gsap.registerPlugin(ctx.ScrollTrigger);
   for (const name of wanted(state)) {
     try {
       await linkCss(name);
