@@ -6,8 +6,8 @@ import * as THREE from 'three';
 import type { SceneFactory } from '../types';
 import { COLOURS } from '../palette';
 import {
-  addLights, blobShadow, loadDevice, circleXZ, disposeTree, drawChrome, ease, frame, Grow, hex, legendRow,
-  lerp, LineDraw, makeCanvas, rectXZ, screenMaterial, type Piece,
+  addLights, blobShadow, loadDevice, circleXZ, disposeTree, drawChrome, ease, fitPoints, Grow, hex, legendRow,
+  lerp, LineDraw, makeCanvas, measure, measureState, rectXZ, screenMaterial, type Piece,
 } from './lib/course-b-kit';
 
 const W = 3.2, D = 2.2, H = 0.72, T = 0.07; // footprint, storey height, slab thickness
@@ -78,14 +78,16 @@ const bim: SceneFactory = async (kit) => {
     pipes.push({ x: 1.3, y: L * H + H / 2, z: -0.85, sx: 0.07, sy: H, sz: 0.07, grow: 'y', from: -1, t0: d0, t1: d0 + 0.06, e0, e1, level: L });
   }
 
+  // scene-owned copies of the swatches: Grow patches its material's shader
+  const mats = [palette.clay.clone(), palette.glass.clone(), palette.slate.clone(), palette.screen.clone()];
   const box = new THREE.BoxGeometry(1, 1, 1);
   const cyl = new THREE.CylinderGeometry(0.5, 0.5, 1, low ? 8 : 14, 1);
   const grows = [
-    new Grow(box, palette.clay, struct),
-    new Grow(box, palette.glass, glass),
-    new Grow(box, palette.slate, ducts),
-    new Grow(cyl, palette.screen, pipes),
-    ...(fins.length ? [new Grow(box, palette.clay, fins)] : []),
+    new Grow(box, mats[0], struct),
+    new Grow(box, mats[1], glass),
+    new Grow(box, mats[2], ducts),
+    new Grow(cyl, mats[3], pipes),
+    ...(fins.length ? [new Grow(box, mats[0], fins)] : []),
   ];
   grows[1].mesh.renderOrder = 2; // glass after the opaque layers
   grows.forEach((g) => model.add(g.mesh));
@@ -199,17 +201,35 @@ const bim: SceneFactory = async (kit) => {
   device.group.rotation.y = -0.28;
   scene.add(device.group);
 
-  // ---- layout and framing: desktop puts the monitor right of the model; narrow screens tuck it in front ----
-  const target = new THREE.Vector3(), dir = new THREE.Vector3(0, 0.44, 1).normalize();
-  let aspect = -1, hw = 3, hh = 2;
+  // ---- layout and framing: wide frames put the monitor right of the model; portrait frames (the page's
+  // course column, phones) tuck it in front. The camera distance is solved from the measured bounds of the
+  // whole composition over the progress range, so nothing leaves the frame at any progress. ----
+  const dir = new THREE.Vector3(0, 0.44, 1).normalize();
+  let aspect = -1, devScale = 1;
+  const pose = (p: number) => {
+    apply(p);
+    model.rotation.y = lerp(-1.0, -0.3, p);
+    model.position.y = 0.25 * ease(0.84, 1, p) - 0.15 * (1 - ease(0, 0.16, p));
+    const ds = ease(0.04, 0.2, p) * (1 - ease(0.86, 0.99, p));
+    device.group.scale.setScalar(devScale * Math.max(1e-3, ds));
+    device.group.visible = ds > 0.002;
+    shadow.mat.opacity = 0.7 * ease(0, 0.14, p) * (1 - ease(0.88, 1, p));
+  };
   const layout = () => {
     aspect = camera.aspect;
-    const k = ease(1.25, 0.85, aspect); // 0 wide .. 1 narrow
-    world.position.set(lerp(-1.15, -0.25, k), 0, lerp(0, -0.4, k));
-    device.group.position.set(lerp(2.25, 1.35, k), lerp(0.25, -0.05, k), lerp(0.4, 1.9, k));
-    device.group.scale.setScalar(lerp(1, 0.68, k));
-    target.set(lerp(0.45, 0.25, k), lerp(1.55, 1.45, k), lerp(0.1, 0.4, k));
-    hw = lerp(4.4, 2.9, k); hh = lerp(2.6, 2.9, k);
+    const k = ease(1.25, 0.95, aspect); // 0 wide .. 1 portrait
+    world.position.set(lerp(-1.15, -0.2, k), 0, lerp(0, -0.5, k));
+    device.group.position.set(lerp(2.25, 1.35, k), lerp(0.25, -0.15, k), lerp(0.4, 2.1, k));
+    devScale = lerp(1, 0.82, k);
+    const bounds: THREE.Vector3[] = [];
+    for (const s of [0.25, 0.5, 0.8, 0.92]) {
+      pose(s);
+      device.group.scale.setScalar(devScale);
+      measureState(s, levels);
+      measure(world, bounds, shadow.mesh);
+      measure(device.group, bounds);
+    }
+    fitPoints(camera, dir, bounds, 0.08);
   };
 
   let lastP = -1;
@@ -217,23 +237,14 @@ const bim: SceneFactory = async (kit) => {
     scene,
     camera,
     update(p, _dt, time) {
-      if (camera.aspect !== aspect) { layout(); frame(camera, target, dir, hw, hh); }
-      if (p !== lastP) {
-        lastP = p;
-        apply(p);
-        model.rotation.y = lerp(-1.0, -0.3, p);
-        const out = ease(0.84, 1, p), inn = 1 - ease(0, 0.16, p);
-        model.position.y = 0.25 * out - 0.15 * inn;
-        device.group.visible = p > 0.02 && p < 0.995;
-        const ds = ease(0.04, 0.2, p) * (1 - ease(0.86, 0.99, p));
-        device.group.scale.setScalar(lerp(1, 0.68, ease(1.25, 0.85, aspect)) * Math.max(1e-3, ds));
-        shadow.mat.opacity = 0.7 * ease(0, 0.14, p) * (1 - ease(0.88, 1, p));
-      }
+      if (camera.aspect !== aspect) { layout(); lastP = -1; }
+      if (p !== lastP) { lastP = p; pose(p); }
       world.position.y = Math.sin((time / 9) * Math.PI * 2) * 0.025;
     },
     dispose() {
       box.dispose(); cyl.dispose();
-      grows.forEach((g) => g.mesh.dispose());
+      grows.forEach((g) => g.dispose());
+      mats.forEach((m) => m.dispose());
       slabEdges.forEach((l) => l.geometry.dispose());
       planDraw.dispose(); shadow.dispose(); ductLines.forEach((l) => l.dispose());
       ui.tex.dispose(); shot.dispose(); screenMat.dispose();

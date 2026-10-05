@@ -7,8 +7,8 @@ import * as THREE from 'three';
 import type { SceneFactory } from '../types';
 import { COLOURS } from '../palette';
 import {
-  addLights, blobShadow, loadDevice, disposeTree, drawChrome, ease, frame, Grow, hex, legendRow, lerp, LineDraw,
-  makeCanvas, screenMaterial, type Piece,
+  addLights, blobShadow, loadDevice, disposeTree, drawChrome, ease, fitPoints, Grow, hex, legendRow, lerp, LineDraw,
+  makeCanvas, measure, measureState, screenMaterial, type Piece,
 } from './lib/course-b-kit';
 
 const HF = 1.2, T = 0.1, X0 = -1.7, X1 = 1.7, Z0 = -0.95, Z1 = 0.95;
@@ -39,7 +39,7 @@ const mep: SceneFactory = async (kit) => {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
   const lights = new THREE.Group();
-  addLights(lights, 1.0, 1.25);
+  addLights(lights, 0.8, 1.1);
   scene.add(lights);
   const world = new THREE.Group(), model = new THREE.Group();
   world.add(model);
@@ -56,10 +56,11 @@ const mep: SceneFactory = async (kit) => {
   for (const m of [hot, waste]) { m.emissive.copy(GOLD); m.emissiveIntensity = 0; }
   const coldEmissive = cold.emissive.clone(), coldIntensity = cold.emissiveIntensity;
   const trayMat = palette.slate.clone(); trayMat.emissive.copy(GOLD); trayMat.emissiveIntensity = 0;
-  const cableMat = palette.gold.clone();
+  const cableMat = palette.gold.clone(), conduitMat = palette.gold.clone();
+  const clayG = palette.clay.clone(), navyG = palette.navy.clone();
   const lampMat = palette.goldGlow.clone();
   const sectionMat = palette.glass.clone(); sectionMat.opacity = 0.14; sectionMat.depthWrite = false; sectionMat.side = THREE.DoubleSide;
-  const owned = [clayCut, glassCut, goldCut, ductMat, cold, hot, waste, trayMat, cableMat, lampMat, sectionMat];
+  const owned = [clayCut, glassCut, goldCut, ductMat, cold, hot, waste, trayMat, cableMat, conduitMat, clayG, navyG, lampMat, sectionMat];
 
   // ---- structure: slabs, back and end walls, right-hand columns, basins and the distribution board ----
   const struct: Piece[] = [], ducts: Piece[] = [], tray: Piece[] = [], facade: Piece[] = [], glazing: Piece[] = [];
@@ -132,13 +133,13 @@ const mep: SceneFactory = async (kit) => {
   }
   const box = new THREE.BoxGeometry(1, 1, 1), cyl = new THREE.CylinderGeometry(0.5, 0.5, 1, 8, 1);
   const grows = [
-    new Grow(box, palette.clay, struct),
+    new Grow(box, clayG, struct),
     new Grow(box, clayCut, facade),
     new Grow(box, glassCut, glazing),
     new Grow(box, ductMat, ducts),
     new Grow(box, trayMat, tray),
     new Grow(cyl, cableMat, cables),
-    new Grow(box, palette.navy, fixtures),
+    new Grow(box, navyG, fixtures),
   ];
   grows[2].mesh.renderOrder = 2;
   grows.forEach((g) => model.add(g.mesh));
@@ -167,8 +168,8 @@ const mep: SceneFactory = async (kit) => {
   addTube([[0.25, HF + T + 0.7, zw], [0.25, HF + T + 0.42, zw], [-0.85, HF + T + 0.42, zw], [-0.85, T, zw]], 0.05, waste, 0.12, 0.21);
   addTube([[0.25, T + 0.7, zw], [0.25, T + 0.42, zw], [-0.85, T + 0.42, zw]], 0.05, waste, 0.14, 0.21);
   // conduits: board up to the ceiling and across to the tray; tray drops to the pendants
-  addTube([[1.0, T + 1.09, Z0 + 0.14], [1.0, HF - 0.08, Z0 + 0.14], [1.0, HF - 0.08, 0.6]], 0.02, cableMat, 0.14, 0.22);
-  if (!low) addTube([[1.15, T + 1.09, Z0 + 0.14], [1.15, HF + T, Z0 + 0.14], [1.15, 2 * HF - 0.08, Z0 + 0.14], [1.15, 2 * HF - 0.08, 0.6]], 0.02, cableMat, 0.15, 0.23);
+  addTube([[1.0, T + 1.09, Z0 + 0.14], [1.0, HF - 0.08, Z0 + 0.14], [1.0, HF - 0.08, 0.6]], 0.02, conduitMat, 0.14, 0.22);
+  if (!low) addTube([[1.15, T + 1.09, Z0 + 0.14], [1.15, HF + T, Z0 + 0.14], [1.15, 2 * HF - 0.08, Z0 + 0.14], [1.15, 2 * HF - 0.08, 0.6]], 0.02, conduitMat, 0.15, 0.23);
 
   // ---- the section plane: a gold frame with a faint glass face, sliding along x ----
   const sec = new THREE.Group();
@@ -212,7 +213,7 @@ const mep: SceneFactory = async (kit) => {
     cold.emissive.copy(coldEmissive).lerp(GOLD, hP * 0.8);
     cold.emissiveIntensity = lerp(coldIntensity, 1.0, hP);
     trayMat.emissiveIntensity = 1.3 * hE * (1 - 0.7 * ease(0.78, 0.84, p));
-    cableMat.emissiveIntensity = 0.08 + 0.7 * hE * (1 - 0.6 * ease(0.78, 0.84, p));
+    cableMat.emissiveIntensity = conduitMat.emissiveIntensity = 0.08 + 0.7 * hE * (1 - 0.6 * ease(0.78, 0.84, p));
     lampMat.color.copy(GOLD).multiplyScalar(lerp(0.32, 2.4, hE) * (1 - ease(0.84, 0.9, p)));
     lamps.visible = ease(0.12, 0.2, p) * (1 - ease(0.86, 0.9, p)) > 0.01;
   };
@@ -241,17 +242,17 @@ const mep: SceneFactory = async (kit) => {
 
   const sub = new THREE.Scene();
   sub.background = ui.tex;
-  apply(0.47);
+  apply(0.405);
   sub.add(lights, model);
   const sw = low ? 768 : 1024, sh = sw * 0.625;
-  // isolate the HVAC system (as an MEP viewer does), looking up at the level 1 run from below
-  const hide = [edges.lines, grows[0].mesh, grows[1].mesh, grows[2].mesh, grows[4].mesh, grows[5].mesh, lamps, frames.lines, ...tubes.map((t) => t.mesh)];
+  // isolate the services from the building (as an MEP viewer does) and zoom on the level 1 ceiling runs
+  const hide = [edges.lines, grows[0].mesh, grows[1].mesh, grows[2].mesh, grows[4].mesh, grows[5].mesh, grows[6].mesh, lamps, frames.lines];
   hide.forEach((o) => { o.visible = false; });
-  const subCam = new THREE.PerspectiveCamera(30, 1024 / 640, 0.05, 50);
-  subCam.position.set(1.7, HF + 0.75, 2.9);
-  subCam.lookAt(-0.25, HF - 0.25, -0.05);
-  subCam.setViewOffset(1024, 640, -112, 0, 1024, 640);
-  model.rotation.y = 0.35;
+  const subCam = new THREE.PerspectiveCamera(31, 1024 / 640, 0.05, 50);
+  subCam.position.set(1.5, HF + 0.5, 3.1);
+  subCam.lookAt(-0.15, HF - 0.32, -0.15);
+  subCam.setViewOffset(1024, 640, -150, 20, 1024, 640);
+  model.rotation.y = 0.3;
   const shot = kit.snapshot(sub, subCam, sw, sh);
   hide.forEach((o) => { o.visible = true; });
   sub.background = null;
@@ -263,16 +264,33 @@ const mep: SceneFactory = async (kit) => {
   device.group.rotation.y = -0.3;
   scene.add(device.group);
 
-  const target = new THREE.Vector3(), dir = new THREE.Vector3(0, 0.16, 1).normalize();
-  let aspect = -1, hw = 3, hh = 2, devScale = 1;
+  // ---- layout and framing (see bim.ts): measured over the progress range, 8% margin ----
+  const dir = new THREE.Vector3(0, 0.16, 1).normalize();
+  let aspect = -1, devScale = 1;
+  const pose = (p: number) => {
+    apply(p);
+    model.rotation.y = lerp(0.4, 0.1, p);
+    model.position.y = -0.15 * (1 - ease(0, 0.16, p)) - 0.2 * ease(0.86, 1, p);
+    const ds = ease(0.06, 0.2, p) * (1 - ease(0.86, 0.98, p));
+    device.group.scale.setScalar(devScale * Math.max(1e-3, ds));
+    device.group.visible = ds > 0.002;
+    shadow.mat.opacity = 0.72 * ease(0, 0.14, p) * (1 - ease(0.88, 1, p));
+  };
   const layout = () => {
     aspect = camera.aspect;
-    const k = ease(1.25, 0.85, aspect);
-    world.position.set(lerp(-1.0, -0.15, k), 0, lerp(0, -0.6, k));
-    device.group.position.set(lerp(2.45, 1.2, k), lerp(0.15, -0.2, k), lerp(0.8, 2.0, k));
-    devScale = lerp(1, 0.66, k);
-    target.set(lerp(0.6, 0.35, k), lerp(1.2, 1.05, k), lerp(0.25, 0.5, k));
-    hw = lerp(3.85, 2.7, k); hh = lerp(1.75, 2.3, k);
+    const k = ease(1.25, 0.95, aspect);
+    world.position.set(lerp(-1.0, 0, k), 0, lerp(0, -0.4, k));
+    device.group.position.set(lerp(2.45, 1.0, k), lerp(0.15, -0.95, k), lerp(0.8, 1.9, k));
+    devScale = lerp(1, 0.9, k);
+    const pts: THREE.Vector3[] = [];
+    for (const s of [0.25, 0.5, 0.75, 0.9]) {
+      pose(s);
+      device.group.scale.setScalar(devScale);
+      measureState(s);
+      measure(world, pts, shadow.mesh);
+      measure(device.group, pts);
+    }
+    fitPoints(camera, dir, pts, 0.08);
   };
 
   let lastP = -1;
@@ -280,22 +298,13 @@ const mep: SceneFactory = async (kit) => {
     scene,
     camera,
     update(p, _dt, time) {
-      if (camera.aspect !== aspect) { layout(); frame(camera, target, dir, hw, hh); lastP = -1; }
-      if (p !== lastP) {
-        lastP = p;
-        apply(p);
-        model.rotation.y = lerp(0.4, 0.1, p);
-        model.position.y = -0.15 * (1 - ease(0, 0.16, p)) - 0.2 * ease(0.86, 1, p);
-        const ds = ease(0.06, 0.2, p) * (1 - ease(0.86, 0.98, p));
-        device.group.scale.setScalar(devScale * Math.max(1e-3, ds));
-        device.group.visible = ds > 0.002;
-        shadow.mat.opacity = 0.72 * ease(0, 0.14, p) * (1 - ease(0.88, 1, p));
-      }
+      if (camera.aspect !== aspect) { layout(); lastP = -1; }
+      if (p !== lastP) { lastP = p; pose(p); }
       world.position.y = Math.sin((time / 10) * Math.PI * 2) * 0.02;
     },
     dispose() {
       box.dispose(); cyl.dispose(); lampGeo.dispose();
-      grows.forEach((g) => g.mesh.dispose());
+      grows.forEach((g) => g.dispose());
       lamps.dispose();
       frames.dispose(); edges.dispose(); shadow.dispose();
       ui.tex.dispose(); shot.dispose(); screenMat.dispose();

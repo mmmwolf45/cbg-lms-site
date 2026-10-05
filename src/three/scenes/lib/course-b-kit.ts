@@ -23,10 +23,10 @@ export async function loadProp(kit: Kit, name: string): Promise<THREE.Object3D |
 }
 
 // Night lighting per the README: cool sky / navy ground, one warm moonlight, optional gold point lights.
-export function addLights(scene: THREE.Object3D, sky = 1.15, moon = 1.7) {
+export function addLights(scene: THREE.Object3D, sky = 0.8, moon = 1.3) {
   scene.add(new THREE.HemisphereLight(0xcfd8ff, 0x0f1b33, sky));
   const sun = new THREE.DirectionalLight(0xfff1d6, moon);
-  sun.position.set(-3, 7, 5);
+  sun.position.set(-4.5, 6.5, 3.5);
   scene.add(sun);
   return sun;
 }
@@ -50,50 +50,33 @@ export function blobShadow(w: number, d: number, opacity = 0.6) {
   return { mesh, mat, dispose: () => { tex.dispose(); mat.dispose(); mesh.geometry.dispose(); } };
 }
 
-// Gold lines that draw themselves: segments are revealed in order along their total length, the last one
-// partially, so the pen moves continuously (no per-segment pops). set(t) allocates nothing.
+// Gold lines that draw themselves: segments are cut into short steps (STEP long) and revealed in order with
+// the draw range, so the pen moves continuously and the vertex buffer is never rewritten (buffer uploads
+// every frame stall the composer on ANGLE/D3D11). set(t) allocates nothing.
+const STEP = 0.025;
 export class LineDraw {
   readonly lines: THREE.LineSegments;
-  private src: Float32Array;
-  private cum: Float32Array;
-  private attr: THREE.BufferAttribute;
-  private dirty = -1;
+  private n: number;
   constructor(segments: number[], material: THREE.Material) {
-    this.src = new Float32Array(segments);
-    const n = this.src.length / 6;
-    this.cum = new Float32Array(n + 1);
-    for (let i = 0; i < n; i++) {
-      const o = i * 6, s = this.src;
-      this.cum[i + 1] = this.cum[i] + Math.hypot(s[o + 3] - s[o], s[o + 4] - s[o + 1], s[o + 5] - s[o + 2]);
+    const out: number[] = [];
+    for (let o = 0; o < segments.length; o += 6) {
+      const [ax, ay, az, bx, by, bz] = segments.slice(o, o + 6);
+      const k = Math.max(1, Math.ceil(Math.hypot(bx - ax, by - ay, bz - az) / STEP));
+      for (let i = 0; i < k; i++) {
+        const f0 = i / k, f1 = (i + 1) / k;
+        out.push(ax + (bx - ax) * f0, ay + (by - ay) * f0, az + (bz - az) * f0, ax + (bx - ax) * f1, ay + (by - ay) * f1, az + (bz - az) * f1);
+      }
     }
-    const geo = new THREE.BufferGeometry();
-    this.attr = new THREE.BufferAttribute(this.src.slice(), 3);
-    this.attr.setUsage(THREE.DynamicDrawUsage);
-    geo.setAttribute('position', this.attr);
+    this.n = out.length / 6;
+    const geo = new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(out, 3));
     geo.computeBoundingSphere();
     this.lines = new THREE.LineSegments(geo, material);
     this.lines.frustumCulled = false;
   }
   set(t: number) {
-    const n = this.src.length / 6, a = this.attr.array as Float32Array, s = this.src;
-    if (this.dirty >= 0) { // restore the previously partial segment
-      const o = this.dirty * 6 + 3;
-      a[o] = s[o]; a[o + 1] = s[o + 1]; a[o + 2] = s[o + 2];
-      this.dirty = -1;
-    }
-    const len = clamp01(t) * this.cum[n];
-    let k = 0;
-    while (k < n && this.cum[k + 1] <= len) k++;
-    if (k < n && len > this.cum[k]) {
-      const f = (len - this.cum[k]) / (this.cum[k + 1] - this.cum[k]), o = k * 6;
-      a[o + 3] = s[o] + (s[o + 3] - s[o]) * f;
-      a[o + 4] = s[o + 1] + (s[o + 4] - s[o + 1]) * f;
-      a[o + 5] = s[o + 2] + (s[o + 5] - s[o + 2]) * f;
-      this.dirty = k;
-      this.lines.geometry.setDrawRange(0, (k + 1) * 2);
-    } else this.lines.geometry.setDrawRange(0, k * 2);
-    this.lines.visible = len > 0;
-    this.attr.needsUpdate = true;
+    const k = Math.round(clamp01(t) * this.n);
+    this.lines.geometry.setDrawRange(0, k * 2);
+    this.lines.visible = k > 0;
   }
   dispose() { this.lines.geometry.dispose(); }
 }
@@ -117,10 +100,12 @@ export function boxEdges(out: number[], cx: number, cy: number, cz: number, sx: 
 }
 
 // A 2D canvas wrapped as a texture, for screens. Draw with ctx, then set tex.needsUpdate = true.
+// willReadFrequently keeps the canvas CPU-backed: uploading a GPU-accelerated canvas held the frame rate at
+// ~19 fps on ANGLE/D3D11 for as long as the scene ran.
 export function makeCanvas(w: number, h: number) {
   const canvas = document.createElement('canvas');
   canvas.width = w; canvas.height = h;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
   const tex = new THREE.CanvasTexture(canvas);
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = 4;
@@ -260,6 +245,9 @@ export function disposeTree(root: THREE.Object3D) {
 // Many pieces of one shape and material (walls, columns, ducts...) in ONE draw call, each growing in along
 // a local axis between t0..t1 and retracting between e0..e1. `level` picks a vertical offset from the
 // array passed to update (for exploded floors). Unit geometry: a 1x1x1 box or a radius 0.5, height 1 cylinder.
+// The growth runs in the vertex shader from one progress uniform: instance buffers are written once, never
+// per frame (per-frame instance uploads stalled the MSAA composer on ANGLE/D3D11: 60 -> 19 fps).
+// The material is patched in place, so pass a scene-owned clone, used only by Grow meshes.
 export interface Piece {
   x: number; y: number; z: number;
   sx: number; sy: number; sz: number;
@@ -269,39 +257,80 @@ export interface Piece {
   level?: number;
   rx?: number; ry?: number; rz?: number;
 }
-const _m = new THREE.Matrix4(), _p = new THREE.Vector3(), _s = new THREE.Vector3(), _o = new THREE.Vector3();
+type GrowUniforms = { uP: { value: number }; uLevels: { value: Float32Array } };
+const GROW_GLSL = `
+attribute vec4 aTime;
+attribute vec4 aAxis;
+attribute float aLevel;
+uniform float uP;
+uniform float uLevels[4];
+float growEase(float a, float b, float x) { float t = clamp((x - a) / (b - a), 0.0, 1.0); return t * t * t * (t * (t * 6.0 - 15.0) + 10.0); }
+`;
+function patchGrow(mat: THREE.Material): GrowUniforms {
+  if (mat.userData.grow) return mat.userData.grow as GrowUniforms;
+  const u: GrowUniforms = { uP: { value: 0 }, uLevels: { value: new Float32Array(4) } };
+  mat.userData.grow = u;
+  mat.onBeforeCompile = (sh) => {
+    sh.uniforms.uP = u.uP;
+    sh.uniforms.uLevels = u.uLevels;
+    sh.vertexShader = GROW_GLSL + sh.vertexShader
+      .replace('#include <begin_vertex>', `
+        float gGrow = max(1e-4, growEase(aTime.x, aTime.y, uP) * (1.0 - growEase(aTime.z, aTime.w, uP)));
+        vec3 g3 = mix(vec3(min(1.0, gGrow * 5.0)), vec3(gGrow), aAxis.xyz);
+        vec3 transformed = position * g3 - 0.5 * (1.0 - g3) * aAxis.xyz * aAxis.w;`)
+      .replace('#include <project_vertex>', `
+        vec4 mvPosition = instanceMatrix * vec4(transformed, 1.0);
+        int li = int(aLevel + 0.5);
+        mvPosition.y += li == 1 ? uLevels[1] : li == 2 ? uLevels[2] : li == 3 ? uLevels[3] : uLevels[0];
+        mvPosition = modelViewMatrix * mvPosition;
+        gl_Position = projectionMatrix * mvPosition;`);
+  };
+  mat.customProgramCacheKey = () => 'course-b-grow';
+  return u;
+}
+const _m = new THREE.Matrix4(), _p = new THREE.Vector3(), _s = new THREE.Vector3(), _q = new THREE.Quaternion(), _e = new THREE.Euler();
 export class Grow {
   readonly mesh: THREE.InstancedMesh;
-  private q: THREE.Quaternion[];
+  private u: GrowUniforms;
   constructor(geo: THREE.BufferGeometry, mat: THREE.Material, readonly pieces: Piece[]) {
-    this.mesh = new THREE.InstancedMesh(geo, mat, pieces.length);
-    this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    const g = geo.clone(); // own copy: carries the per-instance attributes
+    const n = pieces.length, time = new Float32Array(n * 4), axis = new Float32Array(n * 4), level = new Float32Array(n);
+    pieces.forEach((c, i) => {
+      time.set([c.t0, c.t1, c.e0, c.e1], i * 4);
+      const gx = c.grow === 'x' || c.grow === 'xz' || c.grow === 'all', gy = c.grow === 'y' || c.grow === 'all', gz = c.grow === 'z' || c.grow === 'xz' || c.grow === 'all';
+      axis.set([+gx, +gy, +gz, c.from === -1 ? 1 : 0], i * 4);
+      level[i] = c.level ?? 0;
+    });
+    g.setAttribute('aTime', new THREE.InstancedBufferAttribute(time, 4));
+    g.setAttribute('aAxis', new THREE.InstancedBufferAttribute(axis, 4));
+    g.setAttribute('aLevel', new THREE.InstancedBufferAttribute(level, 1));
+    this.u = patchGrow(mat);
+    this.mesh = new THREE.InstancedMesh(g, mat, n);
     this.mesh.frustumCulled = false;
-    this.q = pieces.map((c) => new THREE.Quaternion().setFromEuler(new THREE.Euler(c.rx ?? 0, c.ry ?? 0, c.rz ?? 0)));
+    growOf.set(this.mesh, this);
+    pieces.forEach((c, i) => {
+      _q.setFromEuler(_e.set(c.rx ?? 0, c.ry ?? 0, c.rz ?? 0));
+      this.mesh.setMatrixAt(i, _m.compose(_p.set(c.x, c.y, c.z), _q, _s.set(c.sx, c.sy, c.sz)));
+    });
   }
   update(p: number, levels?: ArrayLike<number>) {
-    const ps = this.pieces;
-    for (let i = 0; i < ps.length; i++) {
-      const c = ps[i];
-      const g = Math.max(1e-4, ease(c.t0, c.t1, p) * (1 - ease(c.e0, c.e1, p)));
-      // the cross-section sprouts too, so a piece never shows as a flat footprint before it grows
-      const k = Math.min(1, g * 5);
-      const gx = c.grow === 'x' || c.grow === 'xz' || c.grow === 'all' ? g : k;
-      const gy = c.grow === 'y' || c.grow === 'all' ? g : k;
-      const gz = c.grow === 'z' || c.grow === 'xz' || c.grow === 'all' ? g : k;
-      _s.set(c.sx * gx, c.sy * gy, c.sz * gz);
-      _o.set(0, 0, 0);
-      if (c.from === -1) {
-        if (gx === g) _o.x = -(c.sx - _s.x) / 2;
-        if (gy === g) _o.y = -(c.sy - _s.y) / 2;
-        if (gz === g) _o.z = -(c.sz - _s.z) / 2;
-        _o.applyQuaternion(this.q[i]);
-      }
-      _p.set(c.x, c.y + (levels && c.level !== undefined ? levels[c.level] : 0), c.z).add(_o);
-      this.mesh.setMatrixAt(i, _m.compose(_p, this.q[i], _s));
-    }
-    this.mesh.instanceMatrix.needsUpdate = true;
+    this.u.uP.value = p;
+    if (levels) for (let i = 0; i < 4; i++) this.u.uLevels.value[i] = levels[i] ?? 0;
   }
+  // Mesh-local bounds of the pieces at progress p (for framing; runs on resize, not per frame).
+  boundsAt(p: number, levels: ArrayLike<number> | undefined, out: THREE.Box3) {
+    out.makeEmpty();
+    const b = new THREE.Box3(), unit = new THREE.Box3(new THREE.Vector3(-0.5, -0.5, -0.5), new THREE.Vector3(0.5, 0.5, 0.5));
+    for (const c of this.pieces) {
+      const g = ease(c.t0, c.t1, p) * (1 - ease(c.e0, c.e1, p));
+      if (g < 0.01) continue;
+      _q.setFromEuler(_e.set(c.rx ?? 0, c.ry ?? 0, c.rz ?? 0));
+      _p.set(c.x, c.y + (levels && c.level !== undefined ? levels[c.level] : 0), c.z);
+      out.union(b.copy(unit).applyMatrix4(_m.compose(_p, _q, _s.set(c.sx, c.sy, c.sz))));
+    }
+    return out;
+  }
+  dispose() { this.mesh.geometry.dispose(); this.mesh.dispose(); }
 }
 
 // The catalogue monitor/laptop when available (scaled to `width`), else the code-built one. The GLB screen is
@@ -326,4 +355,70 @@ export async function loadDevice(kit: Kit, kind: 'monitor' | 'laptop', screen: T
   scr.material = screen;
   scr.add(new THREE.LineSegments(new THREE.EdgesGeometry(g), kit.palette.goldLine));
   return { group, lid: group, dispose: () => disposeTree(group) };
+}
+
+// Frame a set of world-space points: the camera looks along -dir at them, at the distance where every point
+// sits inside the view with `margin` (fraction of the width/height) on each side, re-centred on the projected
+// extent. Runs on resize only (it allocates a little).
+export function fitPoints(camera: THREE.PerspectiveCamera, dir: THREE.Vector3, pts: THREE.Vector3[], margin = 0.08) {
+  const target = new THREE.Box3().setFromPoints(pts).getCenter(new THREE.Vector3());
+  const lim = 1 - 2 * margin, v = new THREE.Vector3(), right = new THREE.Vector3(), up = new THREE.Vector3();
+  const place = (d: number) => {
+    camera.position.copy(dir).multiplyScalar(d).add(target);
+    camera.lookAt(target);
+    camera.updateMatrixWorld();
+  };
+  const bounds = () => {
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    for (const p of pts) {
+      v.copy(p).applyMatrix4(camera.matrixWorldInverse);
+      if (v.z > -camera.near) return null; // behind or too close
+      v.applyMatrix4(camera.projectionMatrix);
+      x0 = Math.min(x0, v.x); x1 = Math.max(x1, v.x); y0 = Math.min(y0, v.y); y1 = Math.max(y1, v.y);
+    }
+    return [x0, x1, y0, y1];
+  };
+  let d = 10;
+  for (let pass = 0; pass < 3; pass++) {
+    let lo = 0.2, hi = 200;
+    for (let i = 0; i < 40; i++) {
+      d = (lo + hi) / 2;
+      place(d);
+      const b = bounds();
+      if (!b || Math.max(-b[0], b[1], -b[2], b[3]) > lim) lo = d; else hi = d;
+    }
+    d = hi;
+    place(d);
+    const b = bounds();
+    if (!b) break;
+    const h = Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * d;
+    right.setFromMatrixColumn(camera.matrixWorld, 0);
+    up.setFromMatrixColumn(camera.matrixWorld, 1);
+    target.addScaledVector(right, ((b[0] + b[1]) / 2) * h * camera.aspect).addScaledVector(up, ((b[2] + b[3]) / 2) * h);
+  }
+  place(d);
+}
+
+// Grow meshes report their bounds from the pose being measured (set via measureState before measure()).
+const growOf = new WeakMap<THREE.Object3D, Grow>();
+const growState: { p: number; levels?: ArrayLike<number> } = { p: 0.5 };
+export function measureState(p: number, levels?: ArrayLike<number>) { growState.p = p; growState.levels = levels; }
+
+// Collects the world-space corners of every visible drawable's bounds under root (instanced meshes are
+// re-measured from their current instances), for fitPoints. `skip` (e.g. the soft shadow) is ignored.
+export function measure(root: THREE.Object3D, pts: THREE.Vector3[], skip?: THREE.Object3D) {
+  root.updateMatrixWorld(true);
+  root.traverseVisible((o) => {
+    if (o === skip || o.parent === skip) return;
+    const m = o as THREE.Mesh;
+    if (!m.geometry) return;
+    let bb: THREE.Box3 | null;
+    const grow = growOf.get(o);
+    if (grow) bb = grow.boundsAt(growState.p, growState.levels, new THREE.Box3());
+    else if ((o as THREE.InstancedMesh).isInstancedMesh) { (o as THREE.InstancedMesh).computeBoundingBox(); bb = (o as THREE.InstancedMesh).boundingBox; }
+    else { if (!m.geometry.boundingBox) m.geometry.computeBoundingBox(); bb = m.geometry.boundingBox; }
+    if (!bb || bb.isEmpty()) return;
+    for (let i = 0; i < 8; i++)
+      pts.push(new THREE.Vector3(i & 1 ? bb.max.x : bb.min.x, i & 2 ? bb.max.y : bb.min.y, i & 4 ? bb.max.z : bb.min.z).applyMatrix4(o.matrixWorld));
+  });
 }
