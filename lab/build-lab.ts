@@ -24,7 +24,7 @@ mkdirSync(`${OUT}/site`);
 for (const f of readdirSync('dist')) {
   if (/^cbg[.-].*\.(js|css)$/.test(f) || f === 'manifest.json') cpSync(`dist/${f}`, `${OUT}/site/${f}`);
 }
-for (const d of ['band-desk', 'brand', 'hero-explode', 'three', 'sky']) if (existsSync(`dist/${d}`)) cpSync(`dist/${d}`, `${OUT}/site/${d}`, { recursive: true });
+for (const d of ['brand', 'hero-explode', 'sky', 'site-orbit', 'course-films']) if (existsSync(`dist/${d}`)) cpSync(`dist/${d}`, `${OUT}/site/${d}`, { recursive: true });
 
 // The lab itself.
 if (!PLAIN) {
@@ -69,8 +69,22 @@ const DEBUG = process.argv.includes('--debug') ? `<script>(function(){var d=docu
 page = page.replace('location.pathname.replace(', '"/".replace(');
 for (const f of readdirSync(`${OUT}/site`)) {
   if (!/^cbg[.-].*\.js$/.test(f)) continue;
-  const js = readFileSync(`${OUT}/site/${f}`, 'utf8');
-  writeFileSync(`${OUT}/site/${f}`, js.replaceAll('location.pathname', '"/"'));
+  let js = readFileSync(`${OUT}/site/${f}`, 'utf8').replaceAll('location.pathname', '"/"');
+  // An Artifact version holds at most 511 files: in artifact mode every film plays its large frame set
+  // (the small "s" folders are not copied), so the bundle's phone choice ?"s":"l" becomes ?"l":"l".
+  if (ARTIFACT) js = js.replaceAll('?"s":"l"', '?"l":"l"');
+  writeFileSync(`${OUT}/site/${f}`, js);
+}
+if (ARTIFACT) {
+  const prune = (dir: string) => {
+    if (!existsSync(dir)) return;
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      if (!e.isDirectory()) continue;
+      if (e.name === 's') rmSync(`${dir}/${e.name}`, { recursive: true, force: true });
+      else prune(`${dir}/${e.name}`);
+    }
+  };
+  prune(`${OUT}/site`);
 }
 page = page.replace(/<head>/, `<head>${DEBUG}${boot}`);
 
