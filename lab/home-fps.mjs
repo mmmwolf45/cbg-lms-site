@@ -14,6 +14,16 @@ await page.route('https://mmmwolf45.github.io/cbg-lms-site/**', (r) => {
   const type = { avif: 'image/avif', webp: 'image/webp', jpg: 'image/jpeg', js: 'text/javascript', css: 'text/css' }[file.split('.').pop()];
   return r.fulfill({ body: readFileSync(file), contentType: type ?? 'application/octet-stream', headers: { 'access-control-allow-origin': '*' } });
 });
+// Headless Chrome has no display to pace its frames: rAF keeps 60 fps while the GPU falls behind, and the
+// queued work surfaces later as one multi-second "freeze" at the first GPU sync (a WebGL context made or
+// dropped, a readback). 6 Oct 2026, Intel UHD laptop: 10 s of scrolling the home page left 11 s of GPU work
+// queued (22 s with the sky); a real Chrome window drew the same scroll at 13 to 18 fps instead. A 1-pixel
+// readback every frame waits for the GPU, so the frame times here are the ones a real window shows.
+await page.addInitScript(() => {
+  const g = document.createElement('canvas').getContext('webgl'), px = new Uint8Array(4);
+  const sync = () => { g?.readPixels(0, 0, 1, 1, g.RGBA, g.UNSIGNED_BYTE, px); requestAnimationFrame(sync); };
+  requestAnimationFrame(sync);
+});
 await page.goto('http://localhost:4173/');
 await page.waitForTimeout(3000);
 // Scroll smoothly across [from, to] of a section's sticky stretch over 2.5 s, counting frames and the worst gap.
