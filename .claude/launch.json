@@ -42,6 +42,19 @@
         "4330"
       ],
       "port": 4330
+    },
+    {
+      "name": "lab3d",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "--config",
+        "lab3d/vite.config.ts",
+        "--port",
+        "5180",
+        "--strictPort"
+      ],
+      "port": 5180
     }
   ]
 }
