@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { homeSections, loadCourseFiles, loadHome, type CardOnly, type CourseFile, type Home } from '../content/schema';
-import images from '../src/images.json';
 import { home } from '../templates/home';
+import { letters } from '../templates/sections/home-disciplines';
 
 const h = loadHome();
 const courses = loadCourseFiles();
@@ -15,9 +15,7 @@ const sectionHtml = (out: string, id: string) => {
 };
 const soon = (title: string, order: number, extra: Partial<CardOnly['card']> = {}): CardOnly =>
   ({ slug: title.toLowerCase(), card: { title, status: 'coming soon', order, ...extra } });
-// The band shows only once `npm run images` has built its photo.
-const bandBuilt = !!h.band && h.band.image in images;
-const rendered = homeSections.filter((id) => id !== 'band' || bandBuilt);
+const rendered = homeSections.filter((id) => id !== 'band' || !!h.band);
 
 // Every string in a content object, replaced by fn(path) so we can trace where it lands.
 function mapStrings<T>(v: T, fn: (s: string) => string): T {
@@ -140,9 +138,16 @@ describe('home disciplines strip', () => {
     expect(strip).not.toMatch(/<(a|button)\b|tabindex/);
   });
 
-  it('shows every course title, in two identical sets', () => {
-    for (const c of courses) expect(count(strip, new RegExp(`<span>${c.card.title.replace(/[()]/g, '\\$&')}</span>`, 'g'))).toBe(2);
+  it('shows every course title, in two identical sets, split into letters', () => {
+    const names = [...strip.matchAll(/<span class="cbg-strip__n">(.*?)<\/span><\/span>/g)].map((m) => m[1].replace(/<[^>]+>/g, '').replace(/&amp;/g, '&'));
+    expect(names).toHaveLength(2 * courses.length);
+    for (const c of courses) expect(names.filter((n) => n === c.card.title)).toHaveLength(2);
     expect(count(strip, /class="cbg-marquee__set"/g)).toBe(2);
+  });
+
+  it('staggers each title\'s letters from 0 to 0.6 s; spaces stay plain text', () => {
+    expect(letters('A B&C')).toBe('<span style="--d:0.00s">A</span> <span style="--d:0.20s">B</span><span style="--d:0.40s">&amp;</span><span style="--d:0.60s">C</span>');
+    expect(letters('X')).toBe('<span style="--d:0.00s">X</span>');
   });
 });
 
@@ -201,22 +206,8 @@ describe('home course cards', () => {
 });
 
 describe('home band', () => {
-  it('shows only once its image is built', () => {
-    expect(html.includes('id="cbg-band"')).toBe(bandBuilt);
-    const out = home({ ...h, band: { image: 'closing-plate', alt: 'A desk' } }, courses);
-    expect(sectionHtml(out, 'band')).toMatch(/data-cbg-parallax[^]*closing-plate-1536\.avif/);
-    expect(home({ ...h, band: { image: 'not-built-yet', alt: 'A desk' } }, courses)).not.toContain('id="cbg-band"');
+  it('is the empty 3D host: one labelled picture, nothing inside', () => {
+    expect(sectionHtml(html, 'band')).toContain(`<div class="cbg-wrap"><div class="cbg-band__view" data-cbg-site3d role="img" aria-label="${h.band!.alt}"></div></div>`);
     expect(home({ ...h, band: undefined }, courses)).not.toContain('id="cbg-band"');
-  });
-
-  it('is the floating desk: one labelled picture, three sized cut-outs that react to the pointer', () => {
-    const band = sectionHtml(html, 'band');
-    expect(band).toContain(`role="img" aria-label="${h.band!.alt}"`);
-    expect(band).toContain('data-cbg-desk');
-    for (const name of ['plans', 'laptop', 'helmet']) {
-      expect(band).toMatch(new RegExp(`cbg-desk__obj--${name}" data-cbg-desk-object data-depth="[0-9.]+" data-spin="[yz]"`));
-      expect(band).toMatch(new RegExp(`band-desk/${name}-[0-9]+[.]avif [0-9]+w`));
-    }
-    expect(band.match(/<img [^>]*width="\d+" height="\d+" alt=""/g)!.length).toBe(4); // the photo and three cut-outs, all sized
   });
 });

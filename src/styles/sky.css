@@ -1,0 +1,29 @@
+/* The night sky (src/motion/sky.ts): a still dim over the flow waves, then the star canvas, both on the
+   page-background layer (z-index -1, later in the page than the flow canvas, so above it and below all
+   content). Both fade in slowly once the stars have arrived; on other routes they are hidden. */
+.cbg-sky, .cbg-sky-dim {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100lvh;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.8s var(--cbg-ease);
+}
+.cbg-sky.is-on, .cbg-sky-dim.is-on { opacity: 1; }
+
+/* Darkens the waves to about 55%, deeper at the edges, so the stars read. Its own still layer, so it
+   rasterises once (a filter or opacity on a moving canvas made the compositor re-blend every frame). */
+.cbg-sky-dim {
+  background:
+    radial-gradient(120% 95% at 50% 42%, rgba(2, 5, 12, 0) 38%, rgba(2, 5, 12, 0.55) 100%),
+    rgba(2, 5, 12, 0.45);
+}
+html:not(.cbg-route-home):not(.cbg-route-course) :is(.cbg-sky, .cbg-sky-dim) { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cbg-sky, .cbg-sky-dim { transition: none; }
+}

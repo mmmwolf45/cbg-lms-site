@@ -32,9 +32,8 @@ const homeShape = {
   // The slow strip of course titles. Its words come from the course cards, so it has no copy of its own.
   disciplines: {},
   'how-it-works': { heading: s, steps: [titled] },
-  // A full-width photo band. `image` is a name from src/images.json; the band is left out until
-  // `npm run images` has built it.
-  // `alt`: the band is one picture to screen readers (the desk scene); its objects are decorative layers.
+  // The full-width band (the 3D night site's host). `image`: a name from src/images.json, kept for a still
+  // fallback. `alt`: the band is one picture to screen readers.
   'band?': { image: s, alt: s },
   courses: { heading: s, intro: s },
   support: { heading: s, body: s, whatsapp, emails: [email] },

@@ -291,7 +291,7 @@ test('reduced motion: no pin, no zoom, no tilt; the strip stands still', async (
   expect(strip).toEqual({ animation: 'none', sets: 1 });
 });
 
-test('the disciplines strip moves only with scroll; nothing on the page loops on a clock', async ({ page }) => {
+test('the disciplines strip moves only with scroll; nothing else on the page loops on a clock', async ({ page }) => {
   await page.setViewportSize(LAPTOP);
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await openHome(page);
@@ -311,7 +311,9 @@ test('the disciplines strip moves only with scroll; nothing on the page loops on
   const after = await x();
   expect(after).toBeLessThan(before - 50); // drifts left as the page scrolls down
   expect(after).toBeGreaterThan(before - LAPTOP.width / 4 - 1); // a quarter of the screen at most
-  const loops = await page.evaluate(() => document.getAnimations().filter((a) => a.effect?.getTiming().iterations === Infinity).length);
+  // The one CSS loop allowed: the support card's slow border light (approved 6 Oct 2026, paused off screen).
+  const loops = await page.evaluate(() => document.getAnimations()
+    .filter((a) => a.effect?.getTiming().iterations === Infinity && (a as CSSAnimation).animationName !== 'cbg-beam').length);
   expect(loops).toBe(0);
 });
 
@@ -325,27 +327,6 @@ test('the facts count up to the course data; reduced motion shows the final numb
   await page.locator('#cbg-facts').scrollIntoViewIfNeeded();
   await expect.poll(read, { timeout: 4000 }).toEqual(['6', '4']);
   await expect(page.locator('.cbg-stat .cbg-sr-only')).toHaveText(['6', '4']);
-});
-
-test('the photo band drifts with scroll (full motion only)', async ({ page }) => {
-  const drift = async () => {
-    const y = await page.locator('#cbg-band').evaluate((b) => b.getBoundingClientRect().top + scrollY);
-    const at = async (to: number) => {
-      await page.evaluate((t) => window.scrollTo(0, t), to);
-      await page.waitForTimeout(300);
-      return page.locator('.cbg-band__media').evaluate((m) => new DOMMatrix(getComputedStyle(m).transform).f);
-    };
-    return [await at(y - 700), await at(y)];
-  };
-  await page.setViewportSize(LAPTOP);
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await openHome(page);
-  expect(await page.locator('#cbg-band[data-cbg-parallax]').count()).toBe(1); // the built band, once
-  const [a, b] = await drift();
-  expect(b).toBeGreaterThan(a + 5);
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await openHome(page);
-  expect(await drift()).toEqual([0, 0]);
 });
 
 test.describe('phone', () => {

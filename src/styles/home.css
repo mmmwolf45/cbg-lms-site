@@ -113,8 +113,7 @@ html.cbg-js .cbg-explode__words:not(.is-ready) { visibility: hidden; }
   content: ""; width: 28px; height: 1px; margin: 0 clamp(20px, 3vw, 40px); background: var(--cbg-gold-line);
 }
 
-/* Band: a full-width photo that dissolves into the canvas at top and bottom. The photo is 20% taller
-   than the band, so the parallax (src/motion/parallax.ts) never shows its edge. */
+/* Band: a full-width view that dissolves into the canvas at top and bottom (the 3D site's host). */
 .cbg-band > .cbg-wrap { max-width: none; padding: 0; }
 .cbg-band__view {
   position: relative; height: clamp(320px, 42vw, 640px); overflow: hidden;
@@ -122,31 +121,8 @@ html.cbg-js .cbg-explode__words:not(.is-ready) { visibility: hidden; }
   mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent);
 }
 .cbg-band__media { position: absolute; inset: -10% 0; }
-/* The plain photo band (before the floating desk) kept for an older saved block. */
+/* The plain photo band, kept for an older saved block. */
 picture.cbg-band__media img { width: 100%; height: 100%; object-fit: cover; }
-.cbg-desk__plate img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; }
-.cbg-desk__plate { position: absolute; inset: 0; }
-
-/* The floating desk (src/motion/band-desk.ts): the plans, laptop and hard hat as separate cut-outs on the
-   empty-desk photo. Their resting places are percentages of the media layer (which the parallax moves,
-   so they stay on the desk); the script lifts and turns them near the pointer. A soft contact shadow
-   under each fades and spreads as it lifts. Taller than the plain photo band on phones (320px). */
-.cbg-band__view { touch-action: pan-y; }
-.cbg-desk { perspective: 1100px; }
-.cbg-desk__obj { position: absolute; transform-style: preserve-3d; -webkit-tap-highlight-color: transparent; cursor: pointer; }
-.cbg-desk__obj img { display: block; width: 100%; height: auto; pointer-events: none; filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.35)); }
-.cbg-desk__shadow {
-  position: absolute; left: 8%; right: 8%; bottom: -3%; height: 14%; border-radius: 50%; pointer-events: none;
-  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.55), transparent);
-}
-.cbg-desk__obj--plans  { left: -3%; bottom: 10.8%; width: 24%; }
-.cbg-desk__obj--laptop { left: 22%; bottom: 5.8%;  width: 31%; }
-.cbg-desk__obj--helmet { left: 70%; bottom: 12.5%; width: 22%; }
-@media (max-width: 720px) {
-  .cbg-desk__obj--plans  { left: -10%; bottom: 13.3%; width: 36%; }
-  .cbg-desk__obj--laptop { left: 20%;  bottom: 6.7%;  width: 48%; }
-  .cbg-desk__obj--helmet { left: 64%;  bottom: 15%;   width: 34%; }
-}
 
 /* Courses: a photo card per course file. Phones: one swipeable row. 768px: two columns. 1024px: three
    columns, or (.is-pan below) one row that src/motion/gallery.ts pans. */

@@ -1,0 +1,122 @@
+/* Night-sky home effects (picked by Maasoom 6 Oct 2026: theme "plain", logo "globe"; SPEC-home-night-sky.md).
+   Each block pairs with a script in src/motion/. Every motion is slow and smooth: long eases, no overshoot.
+   Decorative layers are aria-hidden and never take the pointer, except the globe's canvas (it can be dragged). */
+
+/* ---------- the course-names strip (src/motion/strip.ts): big outlined names ---------- */
+.cbg-strip { padding: clamp(18px, 2.4vw, 32px) 0; }
+.cbg-strip .cbg-marquee__track { position: relative; } /* the letters' offsetParent: strip.ts measures from it */
+.cbg-strip .cbg-marquee__set > span {
+  color: transparent; letter-spacing: -0.025em;
+  font: 300 clamp(2.5rem, 6vw, 5.5rem) / 1.12 var(--cbg-font-display);
+}
+.cbg-strip .cbg-marquee__set > span::after { width: clamp(32px, 4vw, 56px); margin: 0 clamp(28px, 4vw, 64px); }
+/* --k (0..1, strip.ts): how gold a letter is near the mouse. Colour only, so nothing reflows. */
+.cbg-strip__n > span {
+  --k: 0;
+  display: inline-block;
+  color: rgb(214 177 96 / var(--k));
+  -webkit-text-stroke: 1px rgb(243 245 249 / 0.42);
+  -webkit-text-stroke: 1px color-mix(in srgb, #D6B160 calc(var(--k) * 100%), rgb(243 245 249 / 0.42));
+}
+/* First view: each letter fades and rises 0.35em over 0.9 s, staggered across the title (--d, the template).
+   Hidden only under cbg-js: if the script fails, cbg-js goes and the names show. */
+@media (prefers-reduced-motion: no-preference) {
+  html.cbg-js .cbg-strip__n > span {
+    opacity: 0; transform: translateY(0.35em);
+    transition: opacity 0.9s var(--cbg-ease) var(--d, 0s), transform 0.9s var(--cbg-ease) var(--d, 0s);
+  }
+  html.cbg-js .cbg-strip__n.is-in > span { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cbg-strip .cbg-marquee__set > span { font-size: clamp(1.75rem, 3.6vw, 3rem); }
+}
+
+/* ---------- the support card (src/motion/support.ts) ---------- */
+/* Laptop mouse: the photo tilts (the text stays flat), a gold spotlight and a faint glare sit between the two. */
+.cbg-plate.is-fine { perspective: 1400px; }
+.cbg-plate.is-fine .cbg-plate__bg { transform: scale(1.07); will-change: transform; }
+.cbg-plate__spot, .cbg-plate__glare {
+  position: absolute; left: 0; top: 0; pointer-events: none; opacity: 0;
+  transition: opacity 1.4s var(--cbg-ease); will-change: transform;
+}
+.cbg-plate.is-lit .cbg-plate__spot, .cbg-plate.is-lit .cbg-plate__glare { opacity: 1; }
+.cbg-plate__spot {
+  width: 680px; aspect-ratio: 1; mix-blend-mode: screen;
+  background: radial-gradient(closest-side, rgba(214, 177, 96, 0.2), rgba(214, 177, 96, 0.07) 50%, transparent);
+}
+.cbg-plate__glare {
+  inset: 0 -40%; mix-blend-mode: screen;
+  background: linear-gradient(112deg, transparent 38%, rgba(243, 245, 249, 0.05) 47%, rgba(243, 245, 249, 0.07) 50%, transparent 60%);
+}
+/* Full motion, every screen: a faint gold light goes round the border once every 22 s, only while the card is
+   on screen (.is-on). The plate clips to its 24px radius (components.css). */
+.cbg-plate__beam {
+  display: none; position: absolute; inset: 0; z-index: 2; padding: 1px; border-radius: inherit; pointer-events: none;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.cbg-plate__beam > i {
+  position: absolute; width: 220px; aspect-ratio: 1; opacity: 0.6;
+  background: linear-gradient(to left, rgba(214, 177, 96, 0.95), rgba(214, 177, 96, 0.35) 40%, transparent);
+  offset-path: rect(0 auto auto 0 round 24px);
+  animation: cbg-beam 22s linear infinite paused;
+}
+.cbg-plate.is-on .cbg-plate__beam > i { animation-play-state: running; }
+@keyframes cbg-beam { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+@supports (offset-path: rect(0 auto auto 0)) {
+  @media (prefers-reduced-motion: no-preference) { .cbg-plate__beam { display: block; } }
+}
+/* Reduced motion: a still gold edge instead. */
+@media (prefers-reduced-motion: reduce) { .cbg-plate { border-color: var(--cbg-gold-line); } }
+
+/* ---------- the cursor (src/motion/cursor.ts): laptop mouse only, on <body> ---------- */
+.cbg-cursor {
+  position: fixed; left: 0; top: 0; z-index: 2147482000; width: 128px; height: 128px;
+  pointer-events: none; will-change: transform; mix-blend-mode: difference;
+  opacity: 0; transition: opacity 1.1s var(--cbg-ease);
+}
+.cbg-cursor[data-state="on"], .cbg-cursor[data-state="link"] { opacity: 1; }
+.cbg-cursor > * {
+  position: absolute; inset: 0; border-radius: 50%;
+  transition: transform 1.2s var(--cbg-ease), opacity 1s var(--cbg-ease);
+}
+/* An off-white disc in difference blend: what is under it shows inverted. */
+.cbg-cursor__disc { background: #F3F5F9; transform: scale(0.55); }
+.cbg-cursor[data-state="on"] .cbg-cursor__disc { transform: none; }
+.cbg-cursor[data-state="link"] .cbg-cursor__disc { opacity: 0; transform: scale(0.3); }
+/* Over a link: the disc fades, a 44px ring stays round the pointer. */
+.cbg-cursor__ring { inset: calc(50% - 22px); opacity: 0; transform: scale(1.8); box-shadow: inset 0 0 0 1.5px #F3F5F9; }
+.cbg-cursor[data-state="link"] .cbg-cursor__ring { opacity: 1; transform: none; }
+
+/* ---------- the About globe (src/motion/globe.ts) ---------- */
+/* A taller panel, the same before and after the script, so nothing shifts. The globe fills it once drawn
+   (.is-ready); the flat mark then fades out but stays in the page for screen readers. */
+.cbg-logos--globe { position: relative; overflow: hidden; min-height: 380px; align-items: center; justify-content: center; }
+@media (min-width: 1024px) { .cbg-logos--globe { min-height: 520px; } }
+.cbg-logos--globe > .cbg-logo { transition: opacity 1.2s var(--cbg-ease); }
+.cbg-logos--globe.is-ready > .cbg-logo { opacity: 0; }
+.cbg-globe {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  background: radial-gradient(58% 52% at 50% 44%, rgba(32, 55, 105, 0.42), transparent 72%); /* a soft navy glow */
+  visibility: hidden; opacity: 0; transition: opacity 1.6s var(--cbg-ease), visibility 0s 1.6s;
+}
+.cbg-logos--globe.is-ready .cbg-globe { visibility: visible; opacity: 1; transition: opacity 1.6s var(--cbg-ease); }
+.cbg-globe__orb { position: relative; width: min(84%, 300px); aspect-ratio: 1; margin-top: -7%; }
+@media (min-width: 480px) { .cbg-globe__orb { width: min(90%, 420px); } }
+.cbg-globe canvas {
+  display: block; width: 100%; height: 100%;
+  cursor: grab; touch-action: pan-y; /* phones: a sideways drag turns it, a vertical swipe still scrolls */
+}
+.cbg-logos--globe.is-dragging canvas { cursor: grabbing; }
+@media (prefers-reduced-motion: reduce) { .cbg-globe canvas { cursor: auto; } }
+/* The medallion: the crisp mark with a thin gold rim and a faint halo, on the globe's lower rim. On a laptop it
+   drifts a few px against the lean (globe.ts), so it reads as nearer than the globe. */
+.cbg-globe__medal {
+  position: absolute; left: 50%; bottom: -9%; width: 27%; aspect-ratio: 1;
+  border-radius: 50%; padding: 3px; pointer-events: none;
+  background: linear-gradient(145deg, #F1D9A0, #D6B160 40%, #8C6B2C 75%, #D6B160);
+  box-shadow: 0 0 0 1px rgba(214, 177, 96, 0.25), 0 0 40px 8px rgba(214, 177, 96, 0.14), 0 18px 40px rgba(2, 6, 16, 0.65);
+  transform: translate3d(-50%, 0, 0);
+}
+.cbg-globe__medal img { display: block; width: 100%; height: 100%; border-radius: 50%; }

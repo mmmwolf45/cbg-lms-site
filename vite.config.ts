@@ -15,7 +15,12 @@ export default defineConfig({
       input: 'src/main.ts',
       output: {
         entryFileNames: 'cbg.[hash].js',
-        chunkFileNames: 'cbg-[name].[hash].js',
+        // The lazy 3D code (src/three, three.js, postprocessing) is named cbg-three-*: scripts/check-size.ts
+        // budgets it apart from the per-page JS, since it loads only near a 3D section.
+        chunkFileNames: (c) =>
+          c.moduleIds.some((id) => /[\/](src[\/]three|node_modules[\/](three|postprocessing))[\/]/.test(id))
+            ? 'cbg-three-[name].[hash].js'
+            : 'cbg-[name].[hash].js',
         assetFileNames: 'cbg.[hash][extname]',
       },
     },

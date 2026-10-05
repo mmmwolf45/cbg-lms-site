@@ -2,8 +2,10 @@ import './styles/tokens.css';
 import './styles/base.css';
 import './styles/components.css';
 import './styles/home.css';
+import './styles/three.css';
 import './styles/course.css';
 import './styles/motion.css';
+import './styles/night.css';
 import './styles/hazard.css';
 import './styles/build80.css';
 import './styles/course-motion.css';
@@ -11,10 +13,12 @@ import './styles/qs.css';
 import './styles/scrub.css';
 import './styles/xray.css';
 import './styles/native-overrides.css';
+import './styles/sky.css';
 import { routeOf, type Route } from './pages';
 import { watchRoutes } from './router';
 import { failOpen, failed, setupMotion, type Enhancer } from './motion/setup';
 import { flowBackground } from './motion/flow';
+import { skyBackground } from './motion/sky';
 
 export type Teardown = () => void;
 export type Setups = Record<Route, () => Teardown>;
@@ -99,6 +103,11 @@ function start() {
     }
     try {
       flowBackground(); // decorative: if it fails, the still gradient stays
+    } catch (err) {
+      warn(err);
+    }
+    try {
+      skyBackground(); // the stars over the waves; if it fails, the waves stay
     } catch (err) {
       warn(err);
     }

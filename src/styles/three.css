@@ -1,0 +1,53 @@
+/* The home page's 3D sections (src/motion/three-sections.ts). Classes arrive only when the 3D runs:
+   .is-3d on the band, .is-story on the courses section. Without them both keep their still forms. */
+
+/* The shared canvas fills whichever host holds it. */
+.cbg-stage { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+.cbg-stage.is-lost { visibility: hidden; }
+
+/* Band: a still of the 3D site (scripts render it) until the 3D takes over; with 3D the band holds for
+   2.4 screens of scroll while the camera walks once around the site. */
+.cbg-band__view[data-cbg-site3d] {
+  background: var(--cbg-bg) url("/three/site-still.webp") center / cover no-repeat;
+}
+.cbg-band.is-3d { height: 240svh; padding: 0; }
+.cbg-band.is-3d > .cbg-wrap { position: sticky; top: 56px; height: calc(100svh - 56px); }
+.cbg-band.is-3d .cbg-band__view[data-cbg-site3d] { height: 100%; background: none; }
+
+/* Courses story: the section is one screen per course tall; its panel sticks under the 56px navbar.
+   Laptop: heading and the active course's card on the left, the scene on the right. Phone: the scene on
+   top, the card below. Only the active card shows; the others wait, faded, in the same place. */
+.cbg-courses.is-story { --chapters: 6; height: calc(var(--chapters) * 100svh); padding: 0; }
+.cbg-courses.is-story > .cbg-wrap {
+  position: sticky; top: 56px; height: calc(100svh - 56px); box-sizing: border-box;
+  display: grid; grid-template-columns: minmax(300px, 400px) 1fr; grid-template-rows: auto 1fr auto;
+  column-gap: clamp(24px, 4vw, 64px); padding-block: clamp(20px, 4vh, 48px);
+}
+.is-story .cbg-section-head { grid-column: 1; grid-row: 1; margin-bottom: var(--cbg-s5); }
+.is-story .cbg-gallery { grid-column: 1; grid-row: 2; position: relative; overflow: visible; }
+.is-story .cbg-story__stage { grid-column: 2; grid-row: 1 / 4; position: relative; min-height: 0; }
+.is-story .cbg-gallery__bar { grid-column: 1; grid-row: 3; display: block; height: 2px; background: var(--cbg-line); }
+.is-story .cbg-gallery__bar i { display: block; height: 100%; background: var(--cbg-gold); transform-origin: 0 50%; }
+.cbg-story__stage { display: none; }
+.is-story .cbg-story__stage { display: block; }
+
+.is-story .cbg-gallery__track { display: block; position: relative; height: 100%; padding: 0; width: auto; }
+.is-story .cbg-gallery__track > li {
+  position: absolute; inset: 0 0 auto; width: auto;
+  opacity: 0; transform: translateY(18px); pointer-events: none;
+  transition: opacity 0.9s var(--cbg-ease), transform 1.2s var(--cbg-ease);
+}
+.is-story .cbg-gallery__track > li.is-active { opacity: 1; transform: none; pointer-events: auto; }
+/* The scene replaces the photo; the card becomes a frosted panel over the night sky. */
+.is-story .cbg-course__media { display: none; }
+.is-story .cbg-course.cbg-card { background: rgba(10, 22, 45, 0.55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+
+@media (max-width: 1023px) {
+  .cbg-courses.is-story > .cbg-wrap { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr) auto auto; padding-block: 16px; }
+  .is-story .cbg-section-head { grid-row: 1; margin-bottom: var(--cbg-s3); }
+  .is-story .cbg-section-head p { display: none; }
+  .is-story .cbg-story__stage { grid-column: 1; grid-row: 2; }
+  .is-story .cbg-gallery { grid-row: 3; min-height: 260px; }
+  .is-story .cbg-gallery__bar { grid-row: 4; margin-top: var(--cbg-s3); }
+  .is-story .cbg-course__body { padding: var(--cbg-s4); gap: var(--cbg-s2); }
+}
