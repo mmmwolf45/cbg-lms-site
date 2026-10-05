@@ -15,7 +15,6 @@ export function ease(a: number, b: number, x: number) {
 }
 // A soft hump: 0 before a, rises to 1 over [a,b], holds, falls back to 0 over [c,d].
 export const hump = (a: number, b: number, c: number, d: number, x: number) => ease(a, b, x) * (1 - ease(c, d, x));
-export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 // Everything a scene creates (geometry, textures, its own few materials) goes in here so dispose() is one call.
 export class Bag {
@@ -91,7 +90,7 @@ export interface Drifter { obj: THREE.Object3D; home: THREE.Vector3; from: THREE
 export class Drift {
   list: Drifter[] = [];
   add(obj: THREE.Object3D, from: [number, number, number], lag = 0, spin = 0, to?: [number, number, number]) {
-    this.list.push({ obj, home: obj.position.clone(), from: new THREE.Vector3(...from), to: new THREE.Vector3(...(to ?? [from[0] * 0.6, from[1] * 0.6 + 0.6, from[2] * 0.6])), spin, lag, rot0: obj.rotation.y });
+    this.list.push({ obj, home: obj.position.clone(), from: new THREE.Vector3(...from), to: new THREE.Vector3(...(to ?? [from[0] * 0.4, from[1] * 0.3 + 0.25, from[2] * 0.4])), spin, lag, rot0: obj.rotation.y });
     return obj;
   }
   apply(p: number) {
@@ -109,27 +108,26 @@ export class Drift {
   }
 }
 
-// Keeps a sphere of `radius` around `target` in frame at any aspect, from a fixed viewing direction, with a
-// slow ambient sway (period ~16 s). Allocation-free.
+// Keeps a box of half-width `hw` and half-height `hh` (metres, around `target`, margin included) in frame at
+// any aspect, from a fixed viewing direction, with a slow ambient sway (period ~16 s). Allocation-free.
 export class Framer {
   private dir: THREE.Vector3;
   private aspect = 0;
   private dist = 10;
-  constructor(public cam: THREE.PerspectiveCamera, public target: THREE.Vector3, dir: [number, number, number], public radius: number, public sway = 0.035) {
+  constructor(public cam: THREE.PerspectiveCamera, public target: THREE.Vector3, dir: [number, number, number], public hw: number, public hh: number, public sway = 0.035) {
     this.dir = new THREE.Vector3(...dir).normalize();
   }
-  update(time: number, extraYaw = 0) {
+  update(time: number) {
     const c = this.cam;
     if (c.aspect !== this.aspect) {
       this.aspect = c.aspect;
-      const v = THREE.MathUtils.degToRad(c.fov) / 2;
-      const h = Math.atan(Math.tan(v) * c.aspect);
-      this.dist = this.radius / Math.sin(Math.min(v, h));
+      const v = Math.tan(THREE.MathUtils.degToRad(c.fov) / 2);
+      this.dist = Math.max(this.hw / (v * c.aspect), this.hh / v);
     }
-    const yaw = Math.sin(time * 0.39) * this.sway + extraYaw;
+    const yaw = Math.sin(time * 0.39) * this.sway;
     const cy = Math.cos(yaw), sy = Math.sin(yaw), d = this.dir;
     c.position.set(d.x * cy + d.z * sy, d.y, -d.x * sy + d.z * cy).multiplyScalar(this.dist).add(this.target);
-    c.position.y += Math.sin(time * 0.27) * 0.04;
+    c.position.y += Math.sin(time * 0.27) * 0.01 * this.dist;
     c.lookAt(this.target);
   }
 }
@@ -153,51 +151,6 @@ export function rr(x: CanvasRenderingContext2D, X: number, Y: number, W: number,
   x.roundRect(X, Y, W, H, r);
 }
 
-// Code-built monitor on a stand: navy frame, gold edge, a child mesh named "screen" (16:10, 1.0 x 0.625).
-// Used until/unless a monitor GLB appears in public/three/CATALOG.md.
-export function codeMonitor(bag: Bag, kit: Kit, screen: THREE.Material, w = 1.0) {
-  const P = kit.palette, h = w * 0.625, g = new THREE.Group();
-  const frameG = bag.add(roundedSlab(w + 0.07, h + 0.07, 0.05, 0.035));
-  const frame = new THREE.Mesh(frameG, P.navy);
-  frame.position.y = h / 2 + 0.32;
-  frame.add(goldEdges(bag, kit, frameG, 40));
-  const scr = new THREE.Mesh(bag.add(new THREE.PlaneGeometry(w, h)), screen);
-  scr.name = 'screen';
-  scr.position.z = 0.0255;
-  frame.add(scr);
-  const stand = new THREE.Mesh(merge(bag, [
-    placed(new THREE.BoxGeometry(0.07, 0.36, 0.04), 0, 0.18, -0.03),
-    placed(new THREE.CylinderGeometry(0.2, 0.22, 0.025, 40), 0, 0.0125, -0.02, 0, 0, 0, [1, 1, 0.7]),
-  ]), P.slate);
-  g.add(frame, stand);
-  return g;
-}
-// Code-built laptop: base + hinged lid (opened `open` rad), lid face has the "screen" child.
-export function codeLaptop(bag: Bag, kit: Kit, screen: THREE.Material, w = 0.9, open = 1.85) {
-  const P = kit.palette, d = w * 0.66, g = new THREE.Group();
-  const baseG = bag.add(roundedSlab(w, d, 0.035, 0.03));
-  const base = new THREE.Mesh(baseG, P.slate);
-  base.rotation.x = -Math.PI / 2;
-  base.position.y = 0.0175;
-  base.add(goldEdges(bag, kit, baseG, 40));
-  const deck = new THREE.Mesh(bag.add(new THREE.PlaneGeometry(w * 0.86, d * 0.5)), P.navy);
-  deck.position.set(0, d * 0.12, 0.018);
-  base.add(deck);
-  const lid = new THREE.Group();
-  lid.position.set(0, 0.03, -d / 2);
-  lid.rotation.x = -(open - Math.PI / 2);
-  const lidG = bag.add(roundedSlab(w, d, 0.02, 0.03));
-  const lidM = new THREE.Mesh(lidG, P.navy);
-  lidM.position.y = d / 2;
-  lidM.add(goldEdges(bag, kit, lidG, 40));
-  const scr = new THREE.Mesh(bag.add(new THREE.PlaneGeometry(w * 0.92, d * 0.86)), screen);
-  scr.name = 'screen';
-  scr.position.z = 0.0105;
-  lidM.add(scr);
-  lid.add(lidM);
-  g.add(base, lid);
-  return g;
-}
 // A slab with rounded corners in XY, thickness along Z (centred).
 export function roundedSlab(w: number, h: number, t: number, r: number) {
   const s = new THREE.Shape();
@@ -212,7 +165,22 @@ export function roundedSlab(w: number, h: number, t: number, r: number) {
   return g;
 }
 
-// Tries a GLB from public/three; resolves undefined if it is not there yet (another agent is producing them).
-export async function tryGLB(kit: Kit, name: string) {
-  try { return (await kit.loadGLB(name)).scene; } catch { return undefined; }
+// A GLB display ("monitor"/"laptop"): finds its "screen" quad, gives it planar UVs (the Kenney quads ship
+// without any; u runs along +X, v up the screen) and our own screen material; gold edges on the body.
+export function fitScreen(bag: Bag, kit: Kit, root: THREE.Object3D, mat: THREE.Material) {
+  const screen = root.getObjectByName('screen') as THREE.Mesh | undefined;
+  const mesh = (screen?.isMesh ? screen : screen?.children.find((c) => (c as THREE.Mesh).isMesh)) as THREE.Mesh | undefined;
+  if (!mesh) return;
+  const g = mesh.geometry, pos = g.attributes.position, nrm = g.attributes.normal;
+  const N = new THREE.Vector3(nrm.getX(0), nrm.getY(0), nrm.getZ(0)).normalize();
+  const U = new THREE.Vector3(1, 0, 0), V = new THREE.Vector3().crossVectors(N, U).normalize();
+  const p = new THREE.Vector3(), us: number[] = [], vs: number[] = [];
+  for (let i = 0; i < pos.count; i++) { p.fromBufferAttribute(pos, i); us.push(p.dot(U)); vs.push(p.dot(V)); }
+  const [u0, u1, v0, v1] = [Math.min(...us), Math.max(...us), Math.min(...vs), Math.max(...vs)];
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(us.flatMap((u, i) => [(u - u0) / (u1 - u0), (vs[i] - v0) / (v1 - v0)]), 2));
+  mesh.material = mat;
+  root.traverse((o) => {
+    const m = o as THREE.Mesh;
+    if (m.isMesh && m !== mesh && !(o as THREE.LineSegments).isLineSegments) m.add(goldEdges(bag, kit, m.geometry, 40));
+  });
 }

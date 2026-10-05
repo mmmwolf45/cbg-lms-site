@@ -247,7 +247,7 @@ const iosh: SceneFactory = async (kit) => {
   rings[2].m.position.set(1.85, 0.014, 0.05);
   for (const r of rings) site.add(r.m);
 
-  const framer = new Framer(camera, new THREE.Vector3(0, 0.17, -0.1), [0, 0.62, 1], 1.36);
+  const framer = new Framer(camera, new THREE.Vector3(0, 0.22, -0.2), [0, 0.62, 1], 1.44, 0.66);
   let ticks = -1, active = -2;
 
   return {
