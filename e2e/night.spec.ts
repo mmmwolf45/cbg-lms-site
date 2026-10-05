@@ -24,6 +24,10 @@ async function openHome(page: Page) {
   await expect.poll(() => page.evaluate(() => (window as { __cbg?: number }).__cbg)).toBe(1);
 }
 
+// The outlined strip is off in Build B (lite): OUTLINED in templates/sections/home-disciplines.ts. Its checks
+// run whenever the page has it.
+const outlined = async (page: Page) => (await page.locator('.cbg-strip').count()) > 0;
+
 const center = async (page: Page, sel: string) => {
   const b = (await page.locator(sel).first().boundingBox())!;
   return { x: b.x + b.width / 2, y: b.y + b.height / 2 };
@@ -37,6 +41,7 @@ test.describe('laptop, full motion', () => {
     test.setTimeout(60000);
     const errors = watchErrors(page);
     await openHome(page);
+    if (!(await outlined(page))) test.skip(true, 'plain strip in this build');
     const first = page.locator('.cbg-strip__n').first();
     await first.scrollIntoViewIfNeeded();
     await page.evaluate(() => scrollBy(0, 200));
@@ -121,7 +126,7 @@ test.describe('reduced motion', () => {
     const errors = watchErrors(page);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await openHome(page);
-    expect(await page.locator('.cbg-strip__n > span').first().evaluate((l) => getComputedStyle(l).opacity)).toBe('1');
+    if (await outlined(page)) expect(await page.locator('.cbg-strip__n > span').first().evaluate((l) => getComputedStyle(l).opacity)).toBe('1');
     await expect(page.locator('.cbg-cursor')).toHaveCount(0);
     const plate = page.locator('.cbg-plate');
     await plate.scrollIntoViewIfNeeded();
@@ -147,10 +152,12 @@ test.describe('phone', () => {
     const errors = watchErrors(page);
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await openHome(page);
-    const first = page.locator('.cbg-strip__n').first();
-    await first.scrollIntoViewIfNeeded();
-    await page.evaluate(() => scrollBy(0, 200));
-    await expect(first).toHaveClass(/is-in/);
+    if (await outlined(page)) {
+      const first = page.locator('.cbg-strip__n').first();
+      await first.scrollIntoViewIfNeeded();
+      await page.evaluate(() => scrollBy(0, 200));
+      await expect(first).toHaveClass(/is-in/);
+    }
     await expect(page.locator('.cbg-cursor')).toHaveCount(0);
     const plate = page.locator('.cbg-plate');
     await plate.scrollIntoViewIfNeeded();

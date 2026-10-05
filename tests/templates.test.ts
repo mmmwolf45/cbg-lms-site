@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { homeSections, loadCourseFiles, loadHome, type CardOnly, type CourseFile, type Home } from '../content/schema';
 import images from '../src/images.json';
 import { home } from '../templates/home';
-import { letters } from '../templates/sections/home-disciplines';
+import { OUTLINED, disciplines, letters } from '../templates/sections/home-disciplines';
 
 const h = loadHome();
 const courses = loadCourseFiles();
@@ -141,8 +141,13 @@ describe('home disciplines strip', () => {
     expect(strip).not.toMatch(/<(a|button)\b|tabindex/);
   });
 
-  it('shows every course title, in two identical sets, split into letters', () => {
-    const names = [...strip.matchAll(/<span class="cbg-strip__n">(.*?)<\/span><\/span>/g)].map((m) => m[1].replace(/<[^>]+>/g, '').replace(/&amp;/g, '&'));
+  it('shows every course title, in two identical sets: plain, or split into letters when outlined', () => {
+    const plain = OUTLINED ? disciplines(courses.map((c) => c.card)) : strip;
+    for (const c of courses) expect(count(plain, new RegExp(`<span>${c.card.title.replace(/[()]/g, '\\$&')}</span>`, 'g'))).toBe(2);
+    expect(plain).not.toContain('cbg-strip');
+    const outlined = OUTLINED ? strip : disciplines(courses.map((c) => c.card), true);
+    expect(outlined).toContain('class="cbg-marquee cbg-strip"');
+    const names = [...outlined.matchAll(/<span class="cbg-strip__n">(.*?)<\/span><\/span>/g)].map((m) => m[1].replace(/<[^>]+>/g, '').replace(/&amp;/g, '&'));
     expect(names).toHaveLength(2 * courses.length);
     for (const c of courses) expect(names.filter((n) => n === c.card.title)).toHaveLength(2);
     expect(count(strip, /class="cbg-marquee__set"/g)).toBe(2);

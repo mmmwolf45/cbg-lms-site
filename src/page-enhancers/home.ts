@@ -5,10 +5,11 @@ import { bandDesk } from '../motion/band-desk';
 import { gallery } from '../motion/gallery';
 import { goldTrack } from '../motion/gold-track';
 import { cardTilt } from '../motion/card-tilt';
-import { strip } from '../motion/strip';
 import { support } from '../motion/support';
 import { cursor } from '../motion/cursor';
 import { globe } from '../motion/globe';
 import { loginAction } from '../actions';
 
-export const enhancers = [explode, parallax, bandDesk, gallery, goldTrack, cardTilt, strip, support, cursor, globe, loginAction];
+// The outlined course-names strip is off in this build: see OUTLINED in templates/sections/home-disciplines.ts
+// (add `strip` from '../motion/strip' here when it is on).
+export const enhancers = [explode, parallax, bandDesk, gallery, goldTrack, cardTilt, support, cursor, globe, loginAction];
