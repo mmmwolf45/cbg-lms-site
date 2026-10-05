@@ -154,7 +154,8 @@ picture.cbg-band__media img { width: 100%; height: 100%; object-fit: cover; }
 .is-pan .cbg-section-head { margin-bottom: var(--cbg-s5); }
 .is-pan .cbg-gallery__track { position: relative; display: flex; }
 .is-pan .cbg-gallery__track > li { flex: none; width: clamp(300px, 27vw, 360px); }
-.is-pan .cbg-course__media { max-height: max(140px, calc(100vh - 660px)); }
+/* 44px lower than the panel alone needs: the room under the cards for the gold track (gold-track.css) */
+.is-pan .cbg-course__media { max-height: max(96px, calc(100vh - 704px)); }
 .is-pan .cbg-gallery__bar { display: block; height: 2px; margin-top: var(--cbg-s5); background: var(--cbg-line); }
 .is-pan .cbg-gallery__bar i { display: block; height: 100%; background: var(--cbg-gold); transform-origin: 0 50%; transform: scaleX(0); }
 
