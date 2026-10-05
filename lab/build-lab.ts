@@ -50,11 +50,25 @@ if (ARTIFACT) page = page.replace(/<source type="image\/webp"[^>]*>/g, '').repla
 mkdirSync(`${OUT}/site/img`);
 for (const f of readdirSync('dist/img')) if (page.includes(`img/${f}`)) cpSync(`dist/img/${f}`, `${OUT}/site/img/${f}`);
 
-// Before the loader runs: remember the real URL, then pretend to be course.link's home ("/"), which is
-// how the loader and the bundle pick the home route. lab.js navigates back to the real URL to reload.
-const boot = `<script>window.__labHref=location.href;window.__labCss=${JSON.stringify(css)};`
-  + `try{history.replaceState(history.state,'','/'+location.hash)}catch(e){}</script>`;
-page = page.replace(/<head>/, `<head>${boot}`);
+// The loader and the bundle pick the home route from location.pathname === "/". The lab's URL is never
+// "/" in an Artifact (a token URL), so both read a fixed "/" instead: in the page's inline loader and in
+// this copy of the bundle. No history rewrite, so relative URLs and reloads keep working.
+const boot = `<script>window.__labHref=location.href;window.__labCss=${JSON.stringify(css)};</script>`;
+// --debug: a visible status line (boot stage and any error), for checking a build inside the Artifact viewer.
+const DEBUG = process.argv.includes('--debug') ? `<script>(function(){var d=document.createElement('pre');`
+  + `d.style.cssText='position:fixed;top:0;right:0;z-index:2147483647;margin:0;padding:6px 8px;max-width:60vw;white-space:pre-wrap;font:12px monospace;background:#ff0;color:#000';`
+  + `function log(m){d.textContent+=m+String.fromCharCode(10)}window.__labLog=log;log('boot '+location.pathname+' '+document.readyState);`
+  + `addEventListener('error',function(e){log('ERR '+(e.message||e.target&&(e.target.src||e.target.href)))},true);`
+  + `addEventListener('unhandledrejection',function(e){log('REJ '+e.reason)});`
+  + `var t=setInterval(function(){log('t '+document.documentElement.className+' cbg='+window.__cbg+' lab='+!!window.__lab)},1500);setTimeout(function(){clearInterval(t)},9000);`
+  + `(document.body||document.documentElement).appendChild(d)})();</script>` : '';
+page = page.replace('location.pathname.replace(', '"/".replace(');
+for (const f of readdirSync(`${OUT}/site`)) {
+  if (!/^cbg[.-].*\.js$/.test(f)) continue;
+  const js = readFileSync(`${OUT}/site/${f}`, 'utf8');
+  writeFileSync(`${OUT}/site/${f}`, js.replaceAll('location.pathname', '"/"'));
+}
+page = page.replace(/<head>/, `<head>${DEBUG}${boot}`);
 
 page = page.replace('</head>', '<link rel="stylesheet" href="./lab.css"></head>').replace(
   '</body>',

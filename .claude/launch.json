@@ -31,6 +31,17 @@
         "4320"
       ],
       "port": 4320
+    },
+    {
+      "name": "lab-sub",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "tsx",
+        "lab/serve.ts",
+        "lab",
+        "4330"
+      ],
+      "port": 4330
     }
   ]
 }
