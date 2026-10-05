@@ -17,6 +17,10 @@ const OMEGA = 2.8; // rad/s: settles about 1.7 s after the scroll stops
 const MIN_S = 3.2; // the whole half turn takes at least this long, however hard the fling
 const BATCH = 6;
 
+// Settles once the band's frames are all in (or it gave up); the course story's films queue behind it
+// (course-story.ts), since the band is on screen first and both are a few MB.
+export let bandLoading: Promise<void> = Promise.resolve();
+
 function run(section: HTMLElement): () => void {
   const pin = section.querySelector<HTMLElement>('.cbg-orbit');
   const stage = section.querySelector<HTMLElement>('.cbg-orbit__stage');
@@ -128,7 +132,7 @@ function run(section: HTMLElement): () => void {
     cur = goal();
     vel = 0;
     painted = -1;
-    if (!loading) void loadAll();
+    if (!loading) bandLoading = loadAll();
     kick();
   }, { rootMargin: '100% 0px' });
   io.observe(section);

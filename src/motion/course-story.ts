@@ -1,6 +1,7 @@
 import { gallery } from './gallery';
 import { goldTrack } from './gold-track';
 import { all } from './reveal';
+import { bandLoading } from './site-orbit';
 import type { Enhancer } from './setup';
 import { clamp01, fullMotion, progress, smooth } from './tokens';
 
@@ -13,9 +14,11 @@ import { clamp01, fullMotion, progress, smooth } from './tokens';
 // a card without a film shows its photo, still. The position follows the scroll on a critically damped
 // spring with a speed limit (as the band, site-orbit.ts), in real time; a jump of more than a chapter and a
 // half snaps there and the cross-fade covers it. Frames of the active chapter and the next load when the
-// story is within a screen: frame 1, every 4th, then the rest. Phones (under 768px) get the small set.
+// story is within a screen: frame 1, then (after the band's frames, or once the story reaches the navbar)
+// every 4th and the rest. Phones (under 768px) get the small set.
 // Fallback, the card gallery and its gold track (gallery.ts, gold-track.ts): reduced motion, Save-Data, no
-// canvas 2D, the section already on screen when this runs, or the first film failing to load.
+// canvas 2D, the section already on screen when this runs, or the first film failing to load while the
+// section is still below the screen (later, films that fail show their photos: no page jump).
 
 const STICKY_TOP = 56; // course.link's sticky navbar (story.css)
 const OMEGA = 2.8; // rad/s: settles about 1.7 s after the scroll stops
@@ -87,7 +90,9 @@ function run(section: HTMLElement, fail: () => void): (() => void) | undefined {
   };
 
   // ---- Loading --------------------------------------------------------------------------------------
-  let queue = Promise.resolve();
+  let queue: Promise<unknown> = Promise.resolve();
+  let reach = () => {};
+  const reached = new Promise<void>((r) => (reach = r)); // the story is at the navbar: the band is behind
   const load = (c: Chapter, i: number) =>
     new Promise<boolean>((done) => {
       const img = new Image();
@@ -122,20 +127,27 @@ function run(section: HTMLElement, fail: () => void): (() => void) | undefined {
       return;
     }
     if (!c.base) return;
-    // Frame 1 now, ahead of any queue; then every 4th and the rest, a batch at a time, one film after another.
-    void load(c, 0).then((ok) => {
+    // Frame 1 now, ahead of any queue; then every 4th and the rest, a batch at a time, one film after another,
+    // after the band's frames (site-orbit.ts), which are on screen first, unless the story is already here.
+    // A film whose chapter the reader has left (neither active nor next) stops; coming back resumes it.
+    void (c.ok[0] ? Promise.resolve(true) : load(c, 0)).then((ok) => {
       if (off.signal.aborted) return;
-      if (!ok && !filmSeen) return fail(); // AVIF unsupported or the films unreachable: the gallery instead
+      // AVIF unsupported or the films unreachable: the gallery instead, but only while the whole section is
+      // still below the screen; the gallery is screens shorter, so swapping it in later shifts the page.
+      if (!ok && !filmSeen && section.getBoundingClientRect().top >= win.innerHeight) return fail();
       if (!ok) {
-        c.base = undefined; // only this film failed: its photo instead
+        c.base = undefined; // this film failed (or the gallery came too late): its photo instead
         c.wanted = false;
         return want(k);
       }
       filmSeen = true;
       const order: number[] = [];
       for (const step of [4, 1]) for (let i = 0; i < c.n; i += step) if (i && !order.includes(i)) order.push(i);
-      queue = queue.then(async () => {
-        for (let b = 0; b < order.length && !off.signal.aborted; b += BATCH) await Promise.all(order.slice(b, b + BATCH).map((i) => load(c, i)));
+      queue = Promise.all([queue, Promise.race([bandLoading, reached])]).then(async () => {
+        for (let b = 0; b < order.length && !off.signal.aborted; b += BATCH) {
+          if (k !== active && k !== active + 1) return void (c.wanted = false);
+          await Promise.all(order.slice(b, b + BATCH).filter((i) => !c.ok[i]).map((i) => load(c, i)));
+        }
       });
     });
   };
@@ -181,6 +193,7 @@ function run(section: HTMLElement, fail: () => void): (() => void) | undefined {
     const dt = (last ? Math.min(64, now - last) : 16.7) / 1000;
     last = now;
     const target = goal();
+    if (target > 0) reach();
     if (Math.abs(target - cur) > SNAP) { cur = target; vel = 0; }
     const vmax = 1 / MIN_S;
     vel += (OMEGA * OMEGA * (target - cur) - 2 * OMEGA * vel) * dt;

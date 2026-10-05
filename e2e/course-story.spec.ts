@@ -10,13 +10,17 @@ withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky
 const TYPES: Record<string, string> = { avif: 'image/avif', webp: 'image/webp', jpg: 'image/jpeg' };
 const FILM = /\/course-films\//;
 
-async function open(page: Page, films: 'serve' | 'fail' = 'serve') {
+// slow: requests matching it answer 300 ms late, like a slow network.
+async function open(page: Page, films: 'serve' | 'fail' = 'serve', slow?: RegExp) {
   const frames: string[] = [];
   const errors: string[] = [];
-  await page.route('https://mmmwolf45.github.io/cbg-lms-site/**', (r) => {
+  const order: string[] = []; // every film and band frame, in request order
+  await page.route('https://mmmwolf45.github.io/cbg-lms-site/**', async (r) => {
     const url = r.request().url();
     const file = 'dist/' + new URL(url).pathname.replace('/cbg-lms-site/', '');
     if (FILM.test(url)) frames.push(url);
+    if (/\/(course-films|site-orbit)\/.*\/f\d+\.avif$/.test(url)) order.push(url);
+    if (slow?.test(url)) await new Promise((d) => setTimeout(d, 300));
     if (!existsSync(file) || (films === 'fail' && FILM.test(url))) return r.fulfill({ status: 404, body: '' });
     return r.fulfill({ body: readFileSync(file), contentType: TYPES[file.split('.').pop()!] ?? 'application/octet-stream', headers: { 'access-control-allow-origin': '*' } });
   });
@@ -27,7 +31,7 @@ async function open(page: Page, films: 'serve' | 'fail' = 'serve') {
   await page.goto('/', { waitUntil: 'load' });
   if ((await page.locator('[data-cbg-story]').count()) === 0) test.skip(true, 'story not built yet');
   await expect.poll(() => page.evaluate(() => (window as { __cbg?: number }).__cbg)).toBe(1);
-  return { frames, errors };
+  return { frames, errors, order };
 }
 
 const state = (page: Page) =>
@@ -77,11 +81,14 @@ test.describe('laptop, full motion', () => {
 
     await scrollStory(page, 0, 4000);
     expect(frames.length).toBeGreaterThan(0);
-    expect(frames.every((u) => u.includes('/course-films/iosh/l/'))).toBe(true); // the active film and the next
+    // The active film and the next (IOSH, then QS; when this was written QS had no film yet).
+    expect(frames.every((u) => /\/course-films\/(iosh|qs)\/l\//.test(u))).toBe(true);
+    // The nearest loaded frame shows until the rest decode; with the suite's parallel workers decoding six
+    // films and the band, that can outlast the settle, and loading speed isn't what this checks.
+    await expect.poll(async () => (await state(page)).frame, { timeout: 15000 }).toBeGreaterThan(10); // half way through IOSH's 40 frames
     const a = await state(page);
     expect(a.panelTop).toBe(56);
     expect(a).toMatchObject({ chapter: 0, active: 0, shown: 1, on: true });
-    expect(a.frame).toBeGreaterThan(10); // half way through IOSH's 40 frames
     expect(a.frame).toBeLessThan(30);
 
     await scrollStory(page, 1, 4000);
@@ -143,6 +150,41 @@ test.describe('laptop, full motion', () => {
     await expect(page.locator('.cbg-track__node')).not.toHaveCount(0);
     expect(errors).toEqual([]);
   });
+
+  test('a film that fails once the reader is past the story: the story stays put (no jump), photos instead', async ({ page }) => {
+    const { errors } = await open(page, 'fail');
+    const support = page.locator('#cbg-support');
+    await support.scrollIntoViewIfNeeded(); // straight past the story: it is near, so it loads its last film
+    const top = await support.evaluate((e) => e.getBoundingClientRect().top);
+    await page.waitForTimeout(2000);
+    expect((await state(page)).story).toBe(true); // the gallery would make the page 3,000 px shorter above the reader
+    expect(await support.evaluate((e) => e.getBoundingClientRect().top)).toBeCloseTo(top, 0);
+    expect(errors).toEqual([]);
+  });
+
+  test('on a slow network the films wait for the band, which is on screen first', async ({ page }) => {
+    const { order } = await open(page, 'serve', /\/site-orbit\//);
+    await scrollStory(page, -1.5, 0); // the band's end: the story is a screen away
+    const count = (dir: string) => order.filter((u) => u.includes(dir)).length;
+    await expect.poll(() => count('/site-orbit/') === 64 && count('/course-films/') > 10, { timeout: 30000 }).toBe(true);
+    const lastBand = order.map((u) => u.includes('/site-orbit/')).lastIndexOf(true);
+    const firstRest = order.findIndex((u) => u.includes('/course-films/') && !u.endsWith('/f01.avif'));
+    expect(firstRest).toBeGreaterThan(lastBand); // only each film's frame 1 may go first
+  });
+
+  test('a jump ahead: the films of chapters left behind stop loading, the film jumped to goes first', async ({ page }) => {
+    const { frames } = await open(page, 'serve', /\/course-films\//);
+    await scrollStory(page, 0, 1500); // IOSH (and QS's frame 1) start loading
+    await page.evaluate(() => { // straight to the last chapter, in one go (the story snaps there)
+      const s = document.querySelector<HTMLElement>('[data-cbg-story]')!, w = s.querySelector<HTMLElement>('.cbg-wrap')!;
+      const n = s.querySelectorAll('.cbg-gallery__track > li').length;
+      scrollTo(0, scrollY + s.getBoundingClientRect().top - 56 + ((n - 0.5) / n) * (s.offsetHeight - w.offsetHeight));
+    });
+    const count = (film: string) => new Set(frames.filter((u) => u.includes(`/course-films/${film}/`))).size;
+    await expect.poll(() => count('interior'), { timeout: 30000 }).toBe(40);
+    expect(count('iosh')).toBeLessThan(40);
+    expect(count('qs')).toBe(1);
+  });
 });
 
 test.describe('phone, full motion', () => {
@@ -152,7 +194,7 @@ test.describe('phone, full motion', () => {
     const { frames, errors } = await open(page);
     await scrollStory(page, 0, 4000);
     expect(frames.length).toBeGreaterThan(0);
-    expect(frames.every((u) => u.includes('/course-films/iosh/s/'))).toBe(true);
+    expect(frames.every((u) => /\/course-films\/(iosh|qs)\/s\//.test(u))).toBe(true); // the active film and the next
     const s = await state(page);
     expect(s).toMatchObject({ chapter: 0, active: 0, shown: 1, panelTop: 56, on: true });
     const [film, card] = await page.evaluate(() => [
