@@ -69,7 +69,7 @@ export function goldEdges(bag: Bag, kit: Kit, g: THREE.BufferGeometry, angle = 3
 export function blob(bag: Bag, w: number, d: number, strength = 0.55) {
   const c = document.createElement('canvas');
   c.width = c.height = 128;
-  const x = c.getContext('2d')!;
+  const x = c.getContext('2d', { willReadFrequently: true })!;
   const gr = x.createRadialGradient(64, 64, 0, 64, 64, 64);
   gr.addColorStop(0, `rgba(2,6,16,${strength})`);
   gr.addColorStop(0.55, `rgba(2,6,16,${strength * 0.45})`);
@@ -136,7 +136,7 @@ export class Framer {
 export function canvasTex(bag: Bag, w: number, h: number, draw: (x: CanvasRenderingContext2D, w: number, h: number) => void) {
   const c = document.createElement('canvas');
   c.width = w; c.height = h;
-  draw(c.getContext('2d')!, w, h);
+  draw(c.getContext('2d', { willReadFrequently: true })!, w, h);
   const t = bag.add(new THREE.CanvasTexture(c));
   t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = 4;

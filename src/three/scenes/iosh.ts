@@ -46,7 +46,7 @@ function tabletTex(bag: Bag) {
   const W = 640, H = 440;
   const c = document.createElement('canvas');
   c.width = W; c.height = H;
-  const x = c.getContext('2d')!;
+  const x = c.getContext('2d', { willReadFrequently: true })!;
   const tex = bag.add(new THREE.CanvasTexture(c));
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = 4;
@@ -127,7 +127,7 @@ function sign(bag: Bag, kit: Kit) {
 function hazardRing(bag: Bag, r: number, sx = 1) {
   const c = document.createElement('canvas');
   c.width = c.height = 256;
-  const x = c.getContext('2d')!;
+  const x = c.getContext('2d', { willReadFrequently: true })!;
   const gr = x.createRadialGradient(128, 128, 0, 128, 128, 128);
   gr.addColorStop(0, 'rgba(255,190,90,0.0)');
   gr.addColorStop(0.55, 'rgba(255,190,90,0.35)');

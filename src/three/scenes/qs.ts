@@ -7,7 +7,7 @@
 import * as THREE from 'three';
 import type { Kit, SceneFactory } from '../types';
 import { COLOURS } from '../palette';
-import { Bag, Drift, Framer, blob, canvasTex, ease, FONT, fitScreen, goldEdges, hump, lights, merge, placed, roundedSlab, rr, screenMat } from './lib/course-a-kit';
+import { Bag, Drift, Framer, blob, canvasTex, ease, FONT, fitScreen, goldEdges, lights, merge, placed, roundedSlab, rr, screenMat } from './lib/course-a-kit';
 
 const CONCRETE = 95; // m³, the example take-off's concrete line
 const BOQ: [string, string][] = [['Excavation', '180 m³'], ['Concrete', '95 m³'], ['Reinforcement', '9,500 kg'], ['Blockwork', '620 m²'], ['Plaster', '1,300 m²']];
@@ -75,50 +75,42 @@ function drawPlan(x: CanvasRenderingContext2D, W: number, H: number) {
   x.font = `500 22px ${FONT}`; x.fillText('Villa  ·  Scale 1:100', W - 380, H - 66);
 }
 
-// The sheet as a strip of columns: flat up to the unroll front, then wound into a spiral roll.
+// The sheet as a strip of columns: flat up to the unroll front, then wound into a spiral roll. The geometry is
+// static (x = distance along the sheet); the vertex shader winds it from two uniforms, so unrolling while
+// scrolling uploads nothing. Spiral: r = R - cθ, arc length s = Rθ - cθ²/2, radius floored at the core.
+const T = 0.0032, RC = 0.011; // paper thickness per layer, core radius
+const ROLL_GLSL = `
+  uniform float uFlat;
+  uniform float uR;
+  vec4 paperRoll(float s) {
+    float a = s - uFlat;
+    if (a <= 0.0) return vec4(s, 0.0, 0.0, 1.0);
+    const float C = ${(T / (2 * Math.PI)).toFixed(8)}, RM = ${(RC * 0.8).toFixed(6)};
+    float thF = (uR - RM) / C, sF = uR * thF - 0.5 * C * thF * thF;
+    float th = a <= sF ? (uR - sqrt(max(0.0, uR * uR - 2.0 * C * a))) / C : thF + (a - sF) / RM;
+    float r = max(RM, uR - C * th);
+    return vec4(uFlat + r * sin(th), uR - r * cos(th), -sin(th), cos(th));
+  }`;
 function paper(bag: Bag, L: number, W: number, seg: number) {
-  const g = new THREE.BufferGeometry();
-  const n = (seg + 1) * 2, pos = new Float32Array(n * 3), nor = new Float32Array(n * 3), uv = new Float32Array(n * 2), idx: number[] = [];
-  for (let j = 0; j <= seg; j++) {
-    uv.set([j / seg, 1, j / seg, 0], j * 4);
-    if (j < seg) { const a = j * 2; idx.push(a, a + 1, a + 2, a + 2, a + 1, a + 3); }
-  }
-  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  g.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
-  g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
-  g.setIndex(idx);
-  bag.add(g);
-  const T = 0.0032, RC = 0.011; // layer thickness, core radius
-  let last = -1;
+  const g = bag.add(new THREE.PlaneGeometry(L, W, seg, 1));
+  g.rotateX(-Math.PI / 2).translate(L / 2, 0, 0); // x: 0..L, normal +y, v = 1 at the far edge
+  const uniforms = { uFlat: { value: 0 }, uR: { value: RC } };
+  const roll = (m: THREE.Material) => {
+    m.onBeforeCompile = (sh) => {
+      Object.assign(sh.uniforms, uniforms);
+      sh.vertexShader = sh.vertexShader
+        .replace('#include <common>', `#include <common>${ROLL_GLSL}`)
+        .replace('#include <beginnormal_vertex>', 'vec4 pr = paperRoll(position.x); vec3 objectNormal = vec3(pr.z, pr.w, 0.0);')
+        .replace('#include <begin_vertex>', 'vec3 transformed = vec3(pr.x, pr.y, position.z);');
+    };
+    return m;
+  };
   // u: 0 = fully rolled at x = 0, 1 = flat out to x = L
   const set = (u: number) => {
-    if (u === last) return;
-    last = u;
-    const flat = u * L, R = Math.sqrt(RC * RC + (T * L * (1 - u)) / Math.PI);
-    const rAt = (th: number) => Math.max(RC * 0.8, R - (T * th) / (Math.PI * 2));
-    let th = 0, prev = flat;
-    for (let j = 0; j <= seg; j++) {
-      const s = (j / seg) * L;
-      let px: number, py: number, nx = 0, ny = 1;
-      if (s <= flat) { px = s; py = 0; }
-      else {
-        th += (s - prev) / rAt(th);
-        prev = s;
-        const r = rAt(th);
-        px = flat + r * Math.sin(th); py = R - r * Math.cos(th);
-        nx = -Math.sin(th); ny = Math.cos(th);
-      }
-      for (let k = 0; k < 2; k++) {
-        const i = j * 2 + k;
-        pos[i * 3] = px; pos[i * 3 + 1] = py; pos[i * 3 + 2] = k === 0 ? -W / 2 : W / 2;
-        nor[i * 3] = nx; nor[i * 3 + 1] = ny; nor[i * 3 + 2] = 0;
-      }
-    }
-    g.attributes.position.needsUpdate = true;
-    g.attributes.normal.needsUpdate = true;
-    g.computeBoundingSphere();
+    uniforms.uFlat.value = u * L;
+    uniforms.uR.value = Math.sqrt(RC * RC + (T * L * (1 - u)) / Math.PI);
   };
-  return { g, set };
+  return { g, set, roll };
 }
 
 // ---- the take-off model: footings, columns, beams, slabs as one fill mesh + one edge mesh, coloured per vertex ----
@@ -152,34 +144,52 @@ function takeoffModel(bag: Bag) {
   let o = 0;
   for (const e of edge) { ep.set(e.attributes.position.array as Float32Array, o); o += e.attributes.position.count * 3; e.dispose(); }
   edgeG.setAttribute('position', new THREE.BufferAttribute(ep, 3));
-  const fc = new Float32Array(fv * 4), ec = new Float32Array(ev * 3);
-  fillG.setAttribute('color', new THREE.BufferAttribute(fc, 4));
-  edgeG.setAttribute('color', new THREE.BufferAttribute(ec, 3));
-  const fillM = bag.add(new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, toneMapped: false }));
-  const edgeM = bag.add(new THREE.LineBasicMaterial({ vertexColors: true, toneMapped: false }));
+  // each vertex carries its member's measuring time; the shader lights it from one progress uniform, so
+  // scrubbing re-uploads nothing (same formulas as ease/hump in course-a-kit)
+  const at = (n: number, r: (m: Member) => [number, number]) => {
+    const a = new Float32Array(n);
+    for (const m of members) { const [i0, i1] = r(m); a.fill(m.at, i0, i1); }
+    return new THREE.BufferAttribute(a, 1);
+  };
+  fillG.setAttribute('aAt', at(fv, (m) => [m.f0, m.f1]));
+  edgeG.setAttribute('aAt', at(ev, (m) => [m.e0, m.e1]));
+  const uniforms = { uP: { value: 0 }, uDim: { value: new THREE.Color(COLOURS.clay) }, uGold: { value: new THREE.Color(COLOURS.gold) } };
+  const vert = `
+    attribute float aAt;
+    uniform float uP;
+    varying float vK;
+    varying float vFlash;
+    float ease(float a, float b, float x) { float t = clamp((x - a) / (b - a), 0.0, 1.0); return t * t * t * (t * (t * 6.0 - 15.0) + 10.0); }
+    void main() {
+      vK = ease(aAt, aAt + 0.03, uP);
+      vFlash = ease(aAt - 0.004, aAt + 0.015, uP) * (1.0 - ease(aAt + 0.02, aAt + 0.06, uP));
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }`;
+  const fillM = bag.add(new THREE.ShaderMaterial({
+    uniforms, vertexShader: vert, transparent: true, depthWrite: false, toneMapped: false,
+    fragmentShader: `
+      uniform vec3 uDim; uniform vec3 uGold; varying float vK; varying float vFlash;
+      void main() {
+        gl_FragColor = vec4(mix(uDim, uGold, vK) * (1.0 + vFlash), 0.07 * (1.0 - vK) + 0.42 * vK + 0.25 * vFlash);
+        #include <colorspace_fragment>
+      }`,
+  }));
+  const edgeM = bag.add(new THREE.ShaderMaterial({
+    uniforms, vertexShader: vert, toneMapped: false,
+    fragmentShader: `
+      uniform vec3 uDim; uniform vec3 uGold; varying float vK; varying float vFlash;
+      void main() {
+        gl_FragColor = vec4(mix(uDim, uGold, vK) * (0.32 * (1.0 - vK) + 1.5 * vK + 1.6 * vFlash), 1.0); // above 1 blooms
+        #include <colorspace_fragment>
+      }`,
+  }));
   const group = new THREE.Group();
   group.add(new THREE.Mesh(fillG, fillM), new THREE.LineSegments(edgeG, edgeM));
-  const gold = new THREE.Color(COLOURS.gold), dim = new THREE.Color(COLOURS.clay);
-  let last = -1;
-  // returns the measured quantity so far (m³)
+  // sets the lighting and returns the measured quantity so far (m³)
   const measure = (p: number) => {
+    uniforms.uP.value = p;
     let q = 0;
     for (const m of members) q += m.vol * ease(m.at, m.at + 0.03, p);
-    if (p === last) return q;
-    last = p;
-    for (const m of members) {
-      const k = ease(m.at, m.at + 0.03, p), flash = hump(m.at - 0.004, m.at + 0.015, m.at + 0.02, m.at + 0.06, p);
-      const eb = 0.32 * (1 - k) + 1.5 * k + 1.6 * flash; // edge brightness (above 1 blooms)
-      const fa = 0.07 * (1 - k) + 0.42 * k + 0.25 * flash;
-      for (let i = m.e0; i < m.e1; i++) {
-        ec[i * 3] = (dim.r * (1 - k) + gold.r * k) * eb; ec[i * 3 + 1] = (dim.g * (1 - k) + gold.g * k) * eb; ec[i * 3 + 2] = (dim.b * (1 - k) + gold.b * k) * eb;
-      }
-      for (let i = m.f0; i < m.f1; i++) {
-        fc[i * 4] = (dim.r * (1 - k) + gold.r * k) * (1 + flash); fc[i * 4 + 1] = (dim.g * (1 - k) + gold.g * k) * (1 + flash); fc[i * 4 + 2] = (dim.b * (1 - k) + gold.b * k) * (1 + flash); fc[i * 4 + 3] = fa;
-      }
-    }
-    fillG.attributes.color.needsUpdate = true;
-    edgeG.attributes.color.needsUpdate = true;
     return q;
   };
   return { group, measure };
@@ -206,18 +216,19 @@ function calculator(bag: Bag, kit: Kit) {
   eq.position.set(-0.045 + 3 * 0.03, 0.024, -0.012 + 4 * 0.024);
   const c = document.createElement('canvas');
   c.width = 512; c.height = 176;
-  const x = c.getContext('2d')!;
+  const x = c.getContext('2d', { willReadFrequently: true })!;
   const tex = bag.add(new THREE.CanvasTexture(c));
   tex.colorSpace = THREE.SRGBColorSpace;
   const disp = new THREE.Mesh(bag.add(new THREE.PlaneGeometry(0.12, 0.041)), screenMat(bag, tex));
   disp.rotation.x = -Math.PI / 2;
   disp.position.set(0, 0.0225, -0.068);
   g.add(body, keys, eq, disp);
-  let shown = -1;
-  const show = (q: number) => {
+  let shown = -1, drawnAt = -1;
+  // redraws only when the digits change, and at most ten times a second while scrolling
+  const show = (q: number, t: number) => {
     const n = Math.round(q * 10);
-    if (n === shown) return;
-    shown = n;
+    if (n === shown || (t - drawnAt < 0.1 && t >= drawnAt)) return;
+    shown = n; drawnAt = t;
     x.fillStyle = '#0a1326'; x.fillRect(0, 0, 512, 176);
     x.fillStyle = 'rgba(233,226,212,.7)'; x.font = `700 34px ${FONT}`; x.textAlign = 'left'; x.textBaseline = 'alphabetic';
     x.fillText('CONCRETE', 26, 52);
@@ -268,7 +279,7 @@ function tape(bag: Bag, kit: Kit) {
 function boqTex(bag: Bag) {
   const W = 640, H = 420, c = document.createElement('canvas');
   c.width = W; c.height = H;
-  const x = c.getContext('2d')!;
+  const x = c.getContext('2d', { willReadFrequently: true })!;
   const tex = bag.add(new THREE.CanvasTexture(c));
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = 4;
@@ -312,8 +323,8 @@ const qs: SceneFactory = async (kit) => {
   const L = 0.78, Wd = 0.544, sheet = new THREE.Group();
   const planTex = canvasTex(bag, 1434, 1000, drawPlan);
   const pp = paper(bag, L, Wd, kit.quality === 'low' ? 72 : 140);
-  const front = new THREE.Mesh(pp.g, bag.add(new THREE.MeshStandardMaterial({ map: planTex, roughness: 0.85, emissiveMap: planTex, emissive: 0xffffff, emissiveIntensity: 0.22 })));
-  const back = new THREE.Mesh(pp.g, bag.add(new THREE.MeshStandardMaterial({ color: COLOURS.clay, roughness: 0.85, side: THREE.BackSide })));
+  const front = new THREE.Mesh(pp.g, pp.roll(bag.add(new THREE.MeshStandardMaterial({ map: planTex, roughness: 0.85, emissiveMap: planTex, emissive: 0xffffff, emissiveIntensity: 0.22 }))));
+  const back = new THREE.Mesh(pp.g, pp.roll(bag.add(new THREE.MeshStandardMaterial({ color: COLOURS.clay, roughness: 0.85, side: THREE.BackSide }))));
   front.position.y = back.position.y = 0.002;
   const sheetShadow = blob(bag, 1, Wd + 0.12, 0.55);
   sheetShadow.position.set(L / 2, 0.001, 0);
@@ -355,7 +366,7 @@ const qs: SceneFactory = async (kit) => {
   calc.g.add(calcShadow);
   world.add(calc.g);
   drift.add(calc.g, [0.35, 0.4, 0.2], 0.4, -0.7);
-  calc.show(0);
+  calc.show(0, -1);
 
   // laptop (GLB) back right, showing the bill of quantities
   const boq = boqTex(bag);
@@ -389,7 +400,7 @@ const qs: SceneFactory = async (kit) => {
       modelBase.visible = rise > 0.002;
       modelBase.scale.set(1, Math.max(0.001, rise), 1);
       const q = model.measure(p);
-      calc.show(q * (1 - ease(0.84, 0.9, p)));
+      calc.show(q * (1 - ease(0.84, 0.9, p)), t);
       const f = p > 0.76;
       if (f !== filled) { filled = f; boq.draw(f); }
       framer.update(t);

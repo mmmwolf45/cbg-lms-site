@@ -153,7 +153,7 @@ function joint(bag: Bag, kit: Kit) {
 function analysisTex(bag: Bag) {
   const W = 768, H = 480, c = document.createElement('canvas');
   c.width = W; c.height = H;
-  const x = c.getContext('2d')!;
+  const x = c.getContext('2d', { willReadFrequently: true })!;
   const tex = bag.add(new THREE.CanvasTexture(c));
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = 4;
@@ -245,7 +245,7 @@ const structural: SceneFactory = async (kit) => {
   item(jt.g, -0.2, 0.22, -0.3, 0.55, 0.3, [0, 0.4, 0.3], 0.7, 0.5);
 
   const framer = new Framer(camera, new THREE.Vector3(0, 0.15, -0.02), [0, 0.5, 1], 0.98, 0.52);
-  let amp = -1;
+  let amp = -1, drawnAt = -1;
 
   return {
     scene,
@@ -258,7 +258,7 @@ const structural: SceneFactory = async (kit) => {
       jt.explode(ease(0.26, 0.42, p) * (1 - ease(0.6, 0.76, p)));
       // the deflected shape grows on the monitor while the joint is open (redrawn in 30 steps only)
       const a = Math.round(30 * ease(0.24, 0.46, p) * (1 - ease(0.78, 0.86, p))) / 30;
-      if (a !== amp) { amp = a; an.draw(a); }
+      if (a !== amp && (t - drawnAt >= 0.1 || t < drawnAt)) { amp = a; drawnAt = t; an.draw(a); } // at most 10 redraws a second
       framer.update(t);
     },
     dispose() { bag.dispose(); monitor.traverse((m) => (m as THREE.Mesh).geometry?.dispose()); },
