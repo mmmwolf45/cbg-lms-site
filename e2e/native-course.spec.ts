@@ -1,5 +1,8 @@
 import { mkdirSync } from 'node:fs';
 import { expect, test, type Page, type Route } from '@playwright/test';
+import { withoutSky } from './no-sky';
+
+withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
 
 // T20: course.link's own course page (header band, main wrapper, enrol card, Course Content
 // accordion) goes dark on the course route only. The live behaviour checks (accordion opens and

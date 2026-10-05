@@ -1,4 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
+import { withoutSky } from './no-sky';
+
+withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
 
 // Motion layer (T14) on the home mock. The static mock has no React, so a "route change" here is a
 // pushState the router reacts to while our block stays in the DOM: enough to check teardown and re-setup.

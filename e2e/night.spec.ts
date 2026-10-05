@@ -1,4 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
+import { withoutSky } from './no-sky';
+
+withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
 
 // The night-sky effects on the home mock (picked 6 Oct 2026): strip (rise, gold near the mouse), support card
 // (tilt, spotlight, border light), cursor (invert disc), About globe (cobe). Slow by design, so the polls wait.

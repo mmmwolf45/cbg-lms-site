@@ -1,5 +1,8 @@
 import { expect, test, type Page } from '@playwright/test';
+import { withoutSky } from './no-sky';
 import { loadCourse } from '../content/schema';
+
+withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
 
 // Hazard Scan on the course hero (T22), on the course mock.
 

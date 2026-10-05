@@ -1,4 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
+import { withoutSky } from './no-sky';
+
+withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
 
 // The home page's 3D sections (src/motion/three-sections.ts, src/three/*) on the mock. Headless Chromium has
 // WebGL2 through SwiftShader, so the 3D runs here (slowly): these check wiring and behaviour, not looks.

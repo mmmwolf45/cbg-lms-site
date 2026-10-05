@@ -4,6 +4,9 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
+import { withoutSky } from './no-sky';
+
+withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
 
 // The QS build-scrub hero (src/motion/scrub.ts) on a QS mock page, built here in isolation: the bundle into
 // its own temp folder (so the shared dist/ and other builds are untouched), and a page from the real

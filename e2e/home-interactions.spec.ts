@@ -1,4 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
+import { withoutSky } from './no-sky';
+
+withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
 
 // Home interactions on the mock. The mock has course.link's navbar markup but none of its JS, so clicking
 // the native Login button opens nothing here: we check that our link clicks it.

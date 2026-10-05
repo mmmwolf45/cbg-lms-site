@@ -2,6 +2,9 @@
 // open here: we check that Start here clicks the right trigger and scrolls to Course Content.
 // (The accordion itself opening on click is verified on the live draft in probe-native-course.spec.ts.)
 import { expect, test } from '@playwright/test';
+import { withoutSky } from './no-sky';
+
+withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
 
 test('Start here clicks the Start Here trigger and brings Course Content into view', async ({ page }) => {
   const errors: string[] = [];

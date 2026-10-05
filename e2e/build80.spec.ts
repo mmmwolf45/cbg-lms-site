@@ -1,5 +1,8 @@
 import { mkdirSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
+import { withoutSky } from './no-sky';
+
+withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
 
 // T24: the 80-hour build on the course mock. Laptop: floors build with the unit list's scroll while the
 // drawing stays sticky beside it (no pin); phone: the drawing builds once in view; reduced motion: final.

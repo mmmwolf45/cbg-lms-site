@@ -1,5 +1,8 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
+import { withoutSky } from './no-sky';
+
+withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
 
 // The exploding-building home hero (SPEC section 5.1.1, src/motion/explode.ts) on the home mock.
 // The block names its poster and frames on the Pages base; until they are deployed, this test serves

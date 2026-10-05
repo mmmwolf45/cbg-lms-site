@@ -1,5 +1,8 @@
 import { mkdirSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
+import { withoutSky } from './no-sky';
+
+withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
 
 // T23 + T25 on the course mock: the hand of cards, assessment cards and quadrants, the field-guide shelf.
 // Every motion has to land exactly on the reduced-motion layout, with no inline styles left behind.
@@ -110,7 +113,10 @@ for (const width of [1440, 390]) {
     for (const c of after.covers) expect(c).toMatchObject({ opacity: '1', style: '' });
 
     // Assessment cards and quadrants: all in, numbers on 25, rings and wedges drawn.
-    for (const e of await examStyles(page)) expect(e).toEqual({ transform: 'none', opacity: '1' });
+    // Polled, not read once: under the full suite's load the last card's tween can still be finishing
+    // after the 2 s settle (seen as an identity matrix before GSAP clears it to none).
+    const exams = await examStyles(page);
+    await expect.poll(() => examStyles(page)).toEqual(exams.map(() => ({ transform: 'none', opacity: '1' })));
     const q = await quads(page);
     expect(q).toHaveLength(4);
     for (const tile of q) {

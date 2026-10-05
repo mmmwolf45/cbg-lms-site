@@ -1,6 +1,9 @@
 import { existsSync, mkdirSync } from 'node:fs';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { withoutSky } from './no-sky';
+
+withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
 
 // The QS sections (certificates, trainers, testimonials, placements, careers) on the course mock: the QS
 // preview page (dist/preview/qs.html, scripts/build-preview.ts), which scripts/serve.ts serves at the QS path.

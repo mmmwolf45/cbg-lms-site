@@ -141,6 +141,10 @@ test('navbar does not move or resize when the main CSS lands', async ({ page }) 
       ),
     );
   await page.locator('#navbar .navbar-title-container img').evaluate((img: HTMLImageElement) => img.decode().catch(() => {}));
+  // Let course.link's own webfont (Plus Jakarta Sans from gstatic) finish first: its swap from our metric
+  // fallback moves the buttons by ~1px, which is the font's doing, not the main CSS's. Whether it landed
+  // inside the window used to depend on network timing.
+  await page.evaluate(() => document.fonts.ready);
   const before = await boxes();
   expect(await mainCssApplied(page)).toBe('none');
   release();

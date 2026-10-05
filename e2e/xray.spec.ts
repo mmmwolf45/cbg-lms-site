@@ -1,7 +1,10 @@
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
+import { withoutSky } from './no-sky';
 import type { Section } from '../content/schema';
+
+withoutSky(); // the sky's software WebGL starves these timing tests (e2e/no-sky.ts)
 
 // Rebar X-ray (PLAN.md E5) on the course mock. The section is rendered from fixture content and put at
 // the top of the mock's main block, with the photo pair served from brand/assets/photos, so this runs
