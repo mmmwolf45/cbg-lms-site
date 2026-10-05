@@ -73,6 +73,9 @@ function mount(section: HTMLElement, reduced: boolean): () => void {
   svg.setAttribute('class', 'cbg-track');
   svg.setAttribute('aria-hidden', 'true');
   svg.setAttribute('focusable', 'false');
+  // Out of the flow inline (like flow.ts's canvas): before our CSS lands, or if it never does, the SVG must not
+  // take room in the page (in the flow it even changed course.link's navbar height, e2e/native-home.spec.ts).
+  svg.style.cssText = 'position:absolute;left:0;top:0';
   svg.innerHTML = `<defs><radialGradient id="cbg-track-glow"><stop offset="0" stop-color="#D6B160" stop-opacity=".55"/><stop offset=".45" stop-color="#D6B160" stop-opacity=".16"/><stop offset="1" stop-color="#D6B160" stop-opacity="0"/></radialGradient></defs>
 <path class="cbg-track__guide"/><path class="cbg-track__line"/><g></g><circle class="cbg-track__pulse" r="16" fill="url(#cbg-track-glow)" opacity="0"/>`;
   gallery.prepend(svg);

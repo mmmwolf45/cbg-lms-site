@@ -5,7 +5,7 @@
 .cbg-courses .cbg-gallery { position: relative; }
 .cbg-courses .cbg-gallery__track { position: relative; padding-bottom: 44px; row-gap: 56px; }
 
-.cbg-track { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; will-change: transform; }
+.cbg-track { overflow: visible; pointer-events: none; will-change: transform; } /* placed inline (gold-track.ts) */
 .cbg-track__guide { fill: none; stroke: rgba(243, 245, 249, 0.1); stroke-width: 1; }
 .cbg-track__line { fill: none; stroke: var(--cbg-gold); stroke-width: 1.25; stroke-linecap: round; }
 .cbg-track__dot {
