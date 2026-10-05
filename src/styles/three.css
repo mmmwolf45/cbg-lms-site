@@ -31,9 +31,10 @@
 .cbg-story__stage { display: none; }
 .is-story .cbg-story__stage { display: block; }
 
-.is-story .cbg-gallery__track { display: block; position: relative; height: 100%; padding: 0; width: auto; }
+/* All cards share one grid cell, so the cell is as tall as the tallest card and nothing overlaps below. */
+.is-story .cbg-gallery__track { display: grid; align-items: start; padding: 0; width: auto; }
 .is-story .cbg-gallery__track > li {
-  position: absolute; inset: 0 0 auto; width: auto;
+  grid-area: 1 / 1; width: auto;
   opacity: 0; transform: translateY(18px); pointer-events: none;
   transition: opacity 0.9s var(--cbg-ease), transform 1.2s var(--cbg-ease);
 }
@@ -50,7 +51,7 @@
   .is-story .cbg-section-head { grid-row: 1; margin-bottom: var(--cbg-s3); }
   .is-story .cbg-section-head p { display: none; }
   .is-story .cbg-story__stage { grid-column: 1; grid-row: 2; }
-  .is-story .cbg-gallery { grid-row: 3; min-height: 260px; }
+  .is-story .cbg-gallery { grid-row: 3; }
   .is-story .cbg-gallery__bar { grid-row: 4; margin-top: var(--cbg-s3); }
   .is-story .cbg-course__body { padding: var(--cbg-s4); gap: var(--cbg-s2); }
 }
