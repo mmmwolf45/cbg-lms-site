@@ -11,3 +11,4 @@ lab/out*/
 lab/shots/
 .playwright-cli/
 lab/out-preview/
+lab/course-film/out/
