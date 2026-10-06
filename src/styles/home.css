@@ -13,15 +13,20 @@
 /* Poster scale, capped by width (the widest line must fit a phone) and by height (three lines must fit
    between the chip and the subtitle on short laptop screens). */
 .cbg-explode { --cbg-h1: min(clamp(4rem, 13vw, 12rem), calc((100vw - 32px) / 6.1), calc((100svh - 56px) * 0.2)); }
+/* Phones (Maasoom, 6 Oct 2026): "classroom" spans the screen with about 12px to spare, so as the letters open they
+   reach its edges. It is the widest line at about 4.65em. */
+@media (max-width: 599px) { .cbg-explode { --cbg-h1: min(calc((100vw - 24px) / 4.7), calc((100svh - 56px) * 0.2)); } }
 .cbg-explode__stage { position: relative; height: calc(100svh - 56px); min-height: 520px; overflow: hidden; perspective: 1400px; }
 @media (prefers-reduced-motion: no-preference) {
   html.cbg-js .cbg-explode { height: calc(150svh - 56px); }
   html.cbg-js .cbg-explode__stage { position: sticky; top: 56px; }
 }
 .cbg-explode__film { position: absolute; inset: 0; transform-style: preserve-3d; pointer-events: none; }
-/* Absolutely centred, never grid-centred: a grid row would size to the canvas's 960px intrinsic height. */
+/* Absolutely centred, never grid-centred: a grid row would size to the canvas's 960px intrinsic height. On a narrow
+   screen the width caps it at 150vw: the building (about 63% of the frame) then reaches nearly to the screen's sides
+   at rest and the explosion spreads past them (Maasoom, 6 Oct 2026; it was 118vw). */
 .cbg-explode__poster, .cbg-explode__canvas {
-  position: absolute; left: 50%; top: 50%; height: min(94%, 118vw); width: auto; aspect-ratio: 1; max-width: none;
+  position: absolute; left: 50%; top: 50%; height: min(94%, 150vw); width: auto; aspect-ratio: 1; max-width: none;
   transform: translate(-50%, -52%);
 }
 /* The canvas draws this edge into its frames (explode.ts). */
@@ -33,7 +38,7 @@
    lighten, so the mark shows through the navy sky and the gaps between floors while the lit building
    stays in front. All three share the film's stacking context (its tilt), so the blend reaches the mark. */
 .cbg-explode__mark {
-  position: absolute; left: 50%; top: 50%; height: min(78%, 96vw); width: auto; aspect-ratio: 1; max-width: none;
+  position: absolute; left: 50%; top: 50%; height: min(78%, 122vw); width: auto; aspect-ratio: 1; max-width: none;
   transform: translate(-50%, -54%); opacity: 0.04;
 }
 .cbg-explode__poster, .cbg-explode__canvas { mix-blend-mode: lighten; }
@@ -73,7 +78,7 @@ html.cbg-js .cbg-explode__words:not(.is-ready) { visibility: hidden; }
 .cbg-w--gold { color: var(--cbg-gold); }
 .cbg-w--dim { color: var(--cbg-text-3); }
 .cbg-explode__chip {
-  position: absolute; left: 50%; top: max(14px, calc(50% - min(48.9%, 61.4vw) - 30px)); transform: translateX(-50%);
+  position: absolute; left: 50%; top: max(14px, calc(50% - min(48.9%, 78vw) - 30px)); /* above the building's roof */ transform: translateX(-50%);
   white-space: nowrap; background: rgba(8, 18, 38, 0.6);
 }
 /* The subtitle: under the headline, just above the buttons; it stays still while the headline moves. */
