@@ -249,7 +249,7 @@ picture.cbg-band__media img { width: 100%; height: 100%; object-fit: cover; }
 
 /* Support: a framed photo plate, darkened so white text passes contrast */
 .cbg-plate { position: relative; display: grid; min-height: 560px; border: 1px solid var(--cbg-line); background: var(--cbg-surface); }
-.cbg-plate__bg { position: absolute; inset: 0; }
+.cbg-plate__bg { position: absolute; inset: 0; max-width: none; } /* not capped (base.css): the tilt makes it 7% larger (night.css) */
 .cbg-plate__bg img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
 .cbg-plate__bg::after {
   content: ""; position: absolute; inset: 0;
