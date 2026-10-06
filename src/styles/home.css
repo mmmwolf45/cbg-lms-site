@@ -130,14 +130,28 @@ html.cbg-js .cbg-explode__words:not(.is-ready) { visibility: hidden; }
 .cbg-band > .cbg-wrap { max-width: none; padding: 0; }
 .cbg-band__view {
   position: relative; height: clamp(320px, 42vw, 640px); overflow: hidden;
-  -webkit-mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent);
-  mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent);
+  /* A longer, softer top fade (Maasoom, 7 Oct 2026): the desk photo's dusk-blue sky met the night sky in a
+     visible edge. */
+  -webkit-mask-image: linear-gradient(transparent, rgba(0, 0, 0, 0.55) 12%, #000 26%, #000 86%, transparent);
+  mask-image: linear-gradient(transparent, rgba(0, 0, 0, 0.55) 12%, #000 26%, #000 86%, transparent);
 }
 .cbg-band__media { position: absolute; inset: -10% 0; }
 /* The plain photo band (before the floating desk) kept for an older saved block. */
 picture.cbg-band__media img { width: 100%; height: 100%; object-fit: cover; }
 .cbg-desk__plate img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; }
 .cbg-desk__plate { position: absolute; inset: 0; }
+/* ...and the photo's bright blue sky is tinted down toward the page's navy, so it melts into the night sky above
+   (the site's lights and the desk below stay untouched). */
+.cbg-desk__plate::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(rgba(8, 18, 38, 0.92) 8%, rgba(8, 18, 38, 0.55) 20%, rgba(8, 18, 38, 0.18) 30%, transparent 40%);
+}
+/* Phones crop the photo shorter, so its sky sits lower in the band: a deeper tint over the top third. */
+@media (max-width: 720px) {
+  .cbg-desk__plate::after {
+    background: linear-gradient(rgba(8, 18, 38, 0.95) 20%, rgba(8, 18, 38, 0.75) 27%, rgba(8, 18, 38, 0.3) 33%, transparent 39%);
+  }
+}
 
 /* The floating desk (src/motion/band-desk.ts): the plans, laptop and hard hat as separate cut-outs on the
    empty-desk photo. Their resting places are percentages of the media layer (which the parallax moves,
