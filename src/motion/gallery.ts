@@ -24,8 +24,8 @@ const whenIdle = (f: () => void) => {
 };
 
 // [data-cbg-gallery]: the section pins at the top of the screen and vertical scroll pans the card row
-// (.cbg-gallery__track) until the last card's edge meets the column's right edge; the gold bar under it
-// shows how far. Keyboard focus on a card the pan has moved off screen scrolls the page to that card.
+// (.cbg-gallery__track) until the last card's edge meets the column's right edge; the light ribbon under it
+// (ribbon.ts) shows how far. Keyboard focus on a card the pan has moved off screen scrolls the page to that card.
 // The gallery starts below the fold, so the pin (and the refresh of every trigger it needs) waits for an
 // idle moment instead of lengthening the task that loads this chunk.
 export const gallery: Enhancer = (roots) => {
@@ -74,8 +74,6 @@ export const gallery: Enhancer = (roots) => {
           },
         });
         tl.to(track, { x: () => -max() }, 0);
-        const bar = section.querySelector('.cbg-gallery__bar i');
-        if (bar) tl.fromTo(bar, { scaleX: 0 }, { scaleX: 1 }, 0);
 
         section.addEventListener('focusin', (e) => {
           const card = (e.target as Element).closest('.cbg-gallery__track > li');

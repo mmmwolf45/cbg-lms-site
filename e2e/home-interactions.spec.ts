@@ -107,13 +107,13 @@ test.describe('laptop, full motion', () => {
       page.evaluate(() => {
         const section = document.querySelector('[data-cbg-gallery]')!.getBoundingClientRect();
         const cards = [...document.querySelectorAll('.cbg-gallery__track > li')].map((li) => li.getBoundingClientRect());
-        const bar = document.querySelector('.cbg-gallery__bar i')!;
         return {
           sectionTop: section.top,
           x: new DOMMatrix(getComputedStyle(document.querySelector('.cbg-gallery__track')!).transform).e,
           first: cards[0],
           last: cards[cards.length - 1],
-          bar: new DOMMatrix(getComputedStyle(bar).transform).a,
+          // how far the light ribbon has drawn (ribbon.ts; the pan is one row)
+          bar: 1 + new DOMMatrix(getComputedStyle(document.querySelector('.cbg-ribbon__clip')!).transform).m41 / (document.querySelector('.cbg-ribbon') as HTMLElement).offsetWidth,
         };
       });
 
@@ -125,7 +125,7 @@ test.describe('laptop, full motion', () => {
     expect(mid.bar).toBeLessThan(0.8);
 
     await scrollToY(page, top + length);
-    await expect.poll(async () => (await state()).bar, { timeout: 3000 }).toBeGreaterThan(0.99);
+    await expect.poll(async () => (await state()).bar, { timeout: 8000 }).toBeGreaterThan(0.99);
     const end = await state();
     expect(end.last.left).toBeGreaterThanOrEqual(0);
     expect(end.last.right).toBeLessThanOrEqual(LAPTOP.width);

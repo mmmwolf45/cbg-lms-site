@@ -3,7 +3,7 @@ import { explode } from '../motion/explode';
 import { parallax } from '../motion/parallax';
 import { bandDesk } from '../motion/band-desk';
 import { gallery } from '../motion/gallery';
-import { goldTrack } from '../motion/gold-track';
+import { ribbon } from '../motion/ribbon';
 import { cardTilt } from '../motion/card-tilt';
 import { support } from '../motion/support';
 import { cursor } from '../motion/cursor';
@@ -12,4 +12,4 @@ import { loginAction } from '../actions';
 
 // The outlined course-names strip is off in this build: see OUTLINED in templates/sections/home-disciplines.ts
 // (add `strip` from '../motion/strip' here when it is on).
-export const enhancers = [explode, parallax, bandDesk, gallery, goldTrack, cardTilt, support, cursor, globe, loginAction];
+export const enhancers = [explode, parallax, bandDesk, gallery, ribbon, cardTilt, support, cursor, globe, loginAction];

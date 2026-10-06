@@ -25,8 +25,8 @@ ${cta ? `<a class="cbg-btn cbg-btn--primary cbg-course__link" href="${esc(cta.hr
 }
 
 // The cards sit in one row (src/motion/gallery.ts pans it on a laptop; phones swipe it, home.css), so the
-// row is a focusable, labelled region: keyboard users can scroll it with the arrow keys. A gold line runs
-// under the cards (src/motion/gold-track.ts).
+// row is a focusable, labelled region: keyboard users can scroll it with the arrow keys. A light ribbon runs
+// under the cards (src/motion/ribbon.ts).
 export const courses = ({ courses: s }: Home, cards: Card[]) => section('courses', `
 <div class="cbg-section-head" data-cbg-reveal><h2 class="cbg-h2" id="cbg-courses-heading">${esc(s.heading)}</h2><p>${esc(s.intro)}</p></div>
 <div class="cbg-gallery" role="region" aria-labelledby="cbg-courses-heading" tabindex="0">

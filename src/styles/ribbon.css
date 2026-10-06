@@ -1,0 +1,58 @@
+/* The light ribbon under the course cards (src/motion/ribbon.ts). The row leaves 44px under the cards for it (and
+   56px between grid rows); on the pinned laptop pan the photos give that room back (home.css), so the panel's
+   height and the pin are unchanged. The gallery and track are positioned so the ribbons and the card offsets share
+   one origin. Each ribbon is two layers moved only by transforms (the clip and the art inside it): the strands
+   are rasterised once and a frame of the pan repaints nothing. */
+.cbg-courses .cbg-gallery { position: relative; }
+.cbg-courses .cbg-gallery__track { position: relative; padding-bottom: 44px; row-gap: 56px; }
+
+.cbg-ribbons { pointer-events: none; will-change: transform; } /* placed inline (ribbon.ts) */
+.cbg-ribbon { position: absolute; left: 0; top: 0; }
+.cbg-ribbon__clip {
+  height: 100%; overflow: hidden; will-change: transform;
+  /* the drawn end fades out over 72px rather than stopping on a hard edge */
+  -webkit-mask: linear-gradient(to left, transparent, #000 72px); mask: linear-gradient(to left, transparent, #000 72px);
+}
+.cbg-ribbon__art {
+  display: block; will-change: transform;
+  /* both ends of the ribbon fade in and out */
+  -webkit-mask: linear-gradient(to right, transparent, #000 56px, #000 calc(100% - 56px), transparent);
+  mask: linear-gradient(to right, transparent, #000 56px, #000 calc(100% - 56px), transparent);
+}
+/* the front light and the drifting one: warm white into gold, faint */
+.cbg-ribbon__head, .cbg-ribbon__spark {
+  position: absolute; left: 0; top: 0; width: 56px; height: 56px; border-radius: 50%; opacity: 0; will-change: transform, opacity;
+  background: radial-gradient(closest-side, rgba(255, 243, 214, 0.75), rgba(214, 177, 96, 0.28) 45%, rgba(214, 177, 96, 0));
+}
+.cbg-ribbon__spark { width: 40px; height: 40px; background: radial-gradient(closest-side, rgba(255, 243, 214, 0.5), rgba(169, 193, 238, 0.16) 50%, rgba(169, 193, 238, 0)); }
+
+/* Border beam on live cards: a short gold gradient riding the card's edge (offset-path), seen only through a
+   hairline ring mask. Hover or keyboard focus, faint, one lap per 18 s. Browsers without offset-path rect()
+   get no beam rather than a still blob in the corner. */
+.cbg-beam { display: none; }
+@supports (offset-path: rect(0 auto auto 0 round 18px)) {
+  .cbg-beam {
+    display: block; position: absolute; inset: 0; z-index: 2; padding: 1.5px; border-radius: inherit;
+    pointer-events: none; opacity: 0;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    transition: opacity 1.4s var(--cbg-ease);
+  }
+  .cbg-beam::before {
+    content: ""; position: absolute; width: 140px; aspect-ratio: 1;
+    offset-path: rect(0 auto auto 0 round var(--cbg-r-card));
+    background: linear-gradient(to left, #E6C67E, rgba(214, 177, 96, 0.35) 45%, transparent);
+    animation: cbg-beam 18s linear infinite paused;
+  }
+  .cbg-course--live:focus-within .cbg-beam { opacity: 0.75; }
+  .cbg-course--live:focus-within .cbg-beam::before { animation-play-state: running; }
+  @media (hover: hover) {
+    .cbg-course--live:hover .cbg-beam { opacity: 0.75; }
+    .cbg-course--live:hover .cbg-beam::before { animation-play-state: running; }
+  }
+}
+@keyframes cbg-beam { to { offset-distance: 100%; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cbg-beam { display: none; }
+}

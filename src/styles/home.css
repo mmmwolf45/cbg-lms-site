@@ -178,7 +178,7 @@ picture.cbg-band__media img { width: 100%; height: 100%; object-fit: cover; }
    columns, or (.is-pan below) one row that src/motion/gallery.ts pans. */
 .cbg-gallery__track { display: grid; gap: var(--cbg-s5); }
 .cbg-gallery__track > li { min-width: 0; }
-.cbg-gallery__bar { display: none; }
+.cbg-gallery__bar { display: none; } /* the pan's progress bar: hidden since the light ribbon (ribbon.css) shows the progress, 6 Oct 2026 */
 /* The row itself is focusable (on phones the arrow keys scroll it): a gold ring inside its edge */
 .cbg-gallery:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--cbg-gold); border-radius: 4px; }
 @media (max-width: 767px) {
@@ -204,10 +204,8 @@ picture.cbg-band__media img { width: 100%; height: 100%; object-fit: cover; }
 .is-pan .cbg-section-head { margin-bottom: var(--cbg-s5); }
 .is-pan .cbg-gallery__track { position: relative; display: flex; }
 .is-pan .cbg-gallery__track > li { flex: none; width: clamp(300px, 27vw, 360px); }
-/* 44px lower than the panel alone needs: the room under the cards for the gold track (gold-track.css) */
+/* 44px lower than the panel alone needs: the room under the cards for the light ribbon (ribbon.css) */
 .is-pan .cbg-course__media { max-height: max(96px, calc(100vh - 704px)); }
-.is-pan .cbg-gallery__bar { display: block; height: 2px; margin-top: var(--cbg-s5); background: var(--cbg-line); }
-.is-pan .cbg-gallery__bar i { display: block; height: 100%; background: var(--cbg-gold); transform-origin: 0 50%; transform: scaleX(0); }
 
 /* The card: photo on top, then status, title, line, chips and (live courses) the button */
 .cbg-course.cbg-card { display: flex; flex-direction: column; height: 100%; padding: 0; overflow: hidden; }
