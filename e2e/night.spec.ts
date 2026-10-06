@@ -73,7 +73,8 @@ test.describe('laptop, full motion', () => {
     const plate = page.locator('.cbg-plate');
     await plate.scrollIntoViewIfNeeded();
     await expect(plate).toHaveClass(/is-on/);
-    expect(await page.locator('.cbg-plate__beam > i').evaluate((i) => getComputedStyle(i).animationPlayState)).toBe('running');
+    // Running once the page holds still (it holds while scrolling, support.ts).
+    await expect.poll(() => page.locator('.cbg-plate__beam > i').evaluate((i) => getComputedStyle(i).animationPlayState)).toBe('running');
     const b = (await plate.boundingBox())!;
     await page.mouse.move(b.x + b.width * 0.85, b.y + b.height * 0.2, { steps: 12 });
     await expect(plate).toHaveClass(/is-lit/);

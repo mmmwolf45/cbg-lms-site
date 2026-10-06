@@ -17,7 +17,6 @@ import './styles/sky.css';
 import { routeOf, type Route } from './pages';
 import { watchRoutes } from './router';
 import { failOpen, failed, setupMotion, type Enhancer } from './motion/setup';
-import { flowBackground } from './motion/flow';
 import { skyBackground } from './motion/sky';
 
 export type Teardown = () => void;
@@ -102,12 +101,7 @@ function start() {
       warn(err);
     }
     try {
-      flowBackground(); // decorative: if it fails, the still gradient stays
-    } catch (err) {
-      warn(err);
-    }
-    try {
-      skyBackground(); // the stars over the waves; if it fails, the waves stay
+      skyBackground(); // the waves and the stars; if it fails, the still gradient stays
     } catch (err) {
       warn(err);
     }

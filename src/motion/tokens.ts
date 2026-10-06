@@ -8,6 +8,17 @@ export const ease = {
 
 export const stagger = 0.07;
 
+// Canvas redraw caps (ms between draws). On the Intel UHD laptop (Chrome, D3D11, a 165 Hz panel; 6 Oct 2026,
+// lab/scroll-perf.mjs in a real window) every canvas redraw costs the GPU a fixed slice whatever its size: the
+// flow waves at a tenth of the screen cost as much as at a third, and redrawn on each of 165 frames a second
+// they alone took scroll frames from 6 to 24-36 ms. So the hero film redraw at most 60
+// times a second and the page background (waves, sky) at most 30; a 60 Hz screen loses nothing
+// to the first cap (the 2 ms slack keeps rAF jitter from halving it).
+export const FILM_MS = 14.7; // 1000 / 60 - 2
+export const BACKDROP_MS = 31.3; // 1000 / 30 - 2
+// Whether a loop that last drew at `last` (rAF ms) may draw again at `now`.
+export const due = (now: number, last: number, ms: number) => now - last >= ms;
+
 export const reducedMotion = '(prefers-reduced-motion: reduce)';
 export const fullMotion = '(prefers-reduced-motion: no-preference)';
 
