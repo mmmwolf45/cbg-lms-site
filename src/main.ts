@@ -3,6 +3,7 @@ import './styles/base.css';
 import './styles/components.css';
 import './styles/home.css';
 import './styles/ribbon.css';
+import './styles/dock.css';
 import './styles/course.css';
 import './styles/motion.css';
 import './styles/night.css';

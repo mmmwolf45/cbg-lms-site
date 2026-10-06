@@ -35,8 +35,8 @@ Branch `home-lite` (from `home-night-sky` at d2e9cec), 6 Oct 2026, asked for by 
 - Hero: the exploding building, unchanged.
 - Course-names strip: the plain one that drifts only with scroll, as live at 56e2fa0 (CSS, motion.css).
 - Band: the floating desk, as live at 56e2fa0 (tag `build-c-live-2026-10-05`): the desk photo with the plans, laptop and hard hat as cut-outs that lift and turn away from the cursor, a tap turns one slowly, and the gentle scroll parallax (src/motion/band-desk.ts, parallax.ts, templates/sections/home-band.ts).
-- Courses: the card gallery for everyone (laptop pin and pan, phone swipe, tablet grid) with tilting cards (card-tilt.ts) and the gold track beneath (gold-track.ts).
-- Support: the "Questions? Talk to us" card light (support.ts).
+- Courses: the card gallery for everyone (laptop pin and pan, phone swipe, tablet grid) with tilting cards (card-tilt.ts) and, beneath, the light ribbon (ribbon.ts, ribbon.css; replaced the gold track and the pan's progress bar on branch home-ribbon-dock, 6 Oct 2026): fine strands in steel blue, starlight, a warm white core, gold and bronze that twist as they run and draw in with the pan.
+- Support: the "Questions? Talk to us" card light (support.ts). With full motion the card then holds in the middle of the screen and shrinks into a "Talk to us" WhatsApp dock fixed at the bottom left for the rest of the page (dock.ts, dock.css; branch home-ribbon-dock, 6 Oct 2026); reduced motion: the dock just appears once the card has scrolled up past the middle.
 - The invert cursor circle (cursor.ts) and the cobe globe in About (globe.ts).
 
 **Not in it** (sources kept in `brand/assets/` as the record; code in git history before this build):

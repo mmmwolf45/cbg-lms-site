@@ -1,0 +1,32 @@
+/* The support card that shrinks into the "Talk to us" dock (src/motion/dock.ts). .is-dock (set by the script only
+   when the card fits the screen, with full motion) holds the card still in the middle of the screen while a short
+   stretch of scroll (the wrap's ::after) shrinks it; the script moves only its transform and opacities. */
+.cbg-support.is-dock .cbg-frame { position: sticky; top: var(--cbg-dock-top, 72px); }
+.cbg-support.is-dock > .cbg-wrap::after { content: ""; display: block; height: var(--cbg-dock-run, 55vh); }
+.cbg-support.is-dock .cbg-plate { transform-origin: 50% 50%; will-change: transform, opacity; }
+.cbg-support.is-dock .cbg-plate__body { will-change: opacity; }
+/* the gold corner marks stay at the card's full size, so they leave as it starts to shrink */
+.cbg-support.is-dock .cbg-frame::before, .cbg-support.is-dock .cbg-frame::after { transition: opacity 0.9s var(--cbg-ease); }
+.cbg-support.is-docking .cbg-frame::before, .cbg-support.is-docking .cbg-frame::after { opacity: 0; }
+.cbg-support.is-docking .cbg-plate { pointer-events: none; }
+.cbg-support.is-docked .cbg-plate { visibility: hidden; }
+
+/* The dock: fixed at the bottom left for the rest of the page, opens WhatsApp. Laid out while hidden, so the script
+   can measure where the card goes. */
+.cbg-dock {
+  position: fixed; left: max(16px, env(safe-area-inset-left)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 1000;
+  display: flex; align-items: center; gap: 12px; width: 176px; height: 64px; padding: 0 18px;
+  border: 1px solid var(--cbg-gold-line); border-radius: var(--cbg-r-card);
+  background: rgba(15, 27, 51, 0.92); color: var(--cbg-gold); text-decoration: none;
+  box-shadow: 0 0 0 1px rgba(8, 18, 38, 0.6), 0 10px 32px rgba(4, 10, 23, 0.55), 0 0 28px rgba(214, 177, 96, 0.12);
+  opacity: 0; visibility: hidden; transition: border-color 0.6s var(--cbg-ease), background-color 0.6s var(--cbg-ease);
+}
+.cbg-dock.is-on { visibility: visible; opacity: 1; } /* the script's inline opacity wins while it fades in */
+.cbg-dock span { display: grid; line-height: 1.2; }
+.cbg-dock b { font: 600 0.9375rem / 1.2 var(--cbg-font-display); color: var(--cbg-text-1); }
+.cbg-dock small { font: 400 0.8125rem / 1.3 var(--cbg-font-body); color: var(--cbg-text-3); }
+.cbg-dock svg { flex: none; }
+.cbg-dock:focus-visible { outline: 2px solid var(--cbg-gold); outline-offset: 3px; }
+@media (hover: hover) { .cbg-dock:hover { border-color: var(--cbg-gold); background-color: rgba(20, 35, 64, 0.96); } }
+@media (max-width: 479px) { .cbg-dock { width: 156px; height: 56px; padding: 0 14px; gap: 10px; } }
+@media (prefers-reduced-motion: reduce) { .cbg-dock { transition: none; } }

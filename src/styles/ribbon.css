@@ -8,17 +8,8 @@
 
 .cbg-ribbons { pointer-events: none; will-change: transform; } /* placed inline (ribbon.ts) */
 .cbg-ribbon { position: absolute; left: 0; top: 0; }
-.cbg-ribbon__clip {
-  height: 100%; overflow: hidden; will-change: transform;
-  /* the drawn end fades out over 72px rather than stopping on a hard edge */
-  -webkit-mask: linear-gradient(to left, transparent, #000 72px); mask: linear-gradient(to left, transparent, #000 72px);
-}
-.cbg-ribbon__art {
-  display: block; will-change: transform;
-  /* both ends of the ribbon fade in and out */
-  -webkit-mask: linear-gradient(to right, transparent, #000 56px, #000 calc(100% - 56px), transparent);
-  mask: linear-gradient(to right, transparent, #000 56px, #000 calc(100% - 56px), transparent);
-}
+.cbg-ribbon__clip { height: 100%; overflow: hidden; will-change: transform; }
+.cbg-ribbon__art { display: block; will-change: transform; } /* its ends fade inside the SVG (ribbon.ts) */
 /* the front light and the drifting one: warm white into gold, faint */
 .cbg-ribbon__head, .cbg-ribbon__spark {
   position: absolute; left: 0; top: 0; width: 56px; height: 56px; border-radius: 50%; opacity: 0; will-change: transform, opacity;

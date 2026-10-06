@@ -8,7 +8,8 @@ import { clamp01, fullMotion, reducedMotion, smooth } from './tokens';
 // bundle of glowing strands that draws in with the row; palette A, gold and starlight). Per row of cards, an SVG
 // of fine strands drawn once at layout and revealed by two counter-moving transforms (the clip and the art), so a
 // frame of the pan only moves layers and never repaints: on the Intel UHD laptop any repaint during a scroll costs
-// the frame 40-90 ms (docs/builds.md). A soft light rides the front edge and a fainter one drifts slowly along the
+// the frame 40-90 ms (docs/builds.md). No CSS masks on those layers either (a mask on a moving layer cost that laptop
+// more than the ribbon itself, lab/ab-perf.mjs): the ends fade inside the SVG and the front light hides the cut. A soft light rides the front edge and a fainter one drifts slowly along the
 // drawn part. Progress: laptop pin = the pan; phones = the row's scrollLeft; grid = once, when in view. Live cards
 // get a faint border beam on hover or focus (CSS only, ribbon.css). Reduced motion: the ribbon whole and still.
 
@@ -83,8 +84,8 @@ function art(row: Row, k: number): string {
     })
     .join('');
   return `<svg class="cbg-ribbon__art" width="${row.w}" height="${BAND}" viewBox="0 0 ${row.w} ${BAND}" aria-hidden="true" focusable="false">
-<defs><filter id="cbg-rb-glow${k}" x="-2%" y="-50%" width="104%" height="200%"><feGaussianBlur stdDeviation="2.5"/><feComponentTransfer><feFuncA type="linear" slope="2.2"/></feComponentTransfer></filter></defs>
-<g fill="none" stroke-linecap="round"><g id="cbg-rb${k}">${paths}</g><use href="#cbg-rb${k}" filter="url(#cbg-rb-glow${k})" opacity=".8"/></g></svg>`;
+<defs><linearGradient id="cbg-rb-fade${k}" gradientUnits="userSpaceOnUse" x1="0" x2="${row.w}"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="${(56 / row.w).toFixed(4)}" stop-color="#fff"/><stop offset="${(1 - 56 / row.w).toFixed(4)}" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="cbg-rb-ends${k}" maskUnits="userSpaceOnUse" x="0" y="0" width="${row.w}" height="${BAND}"><rect width="${row.w}" height="${BAND}" fill="url(#cbg-rb-fade${k})"/></mask><filter id="cbg-rb-glow${k}" x="-2%" y="-50%" width="104%" height="200%"><feGaussianBlur stdDeviation="2.5"/><feComponentTransfer><feFuncA type="linear" slope="2.2"/></feComponentTransfer></filter></defs>
+<g fill="none" stroke-linecap="round" mask="url(#cbg-rb-ends${k})"><g id="cbg-rb${k}">${paths}</g><use href="#cbg-rb${k}" filter="url(#cbg-rb-glow${k})" opacity=".8"/></g></svg>`;
 }
 
 function mount(section: HTMLElement, reduced: boolean): () => void {
