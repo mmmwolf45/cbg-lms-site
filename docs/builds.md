@@ -44,3 +44,10 @@ still during a scroll and a navbar without backdrop blur; the cursor and the Tal
 while it scrolls. Still slow there, as on C: the hero while its film plays (p50 ~55 ms; C ~100), the course gallery's
 pan (raster of new cards), and in A the band and course films. For an in-session A/B of a change use
 `node lab/ab-perf.mjs` (the laptop's GPU clock drifts between runs).
+
+## Review previews (private Artifacts, 6-7 Oct 2026)
+- Build A (tuned): https://claude.ai/artifact/Gy19boHCrFfXkjnRyCrTem
+- Build B (lite): https://claude.ai/artifact/XqKiZJAoztjBZrPi7nBi2N
+Previews play the large frame sets on every device (an Artifact version holds at most 511 files); the real site
+sends phones the small sets. Build: `npx tsx lab/build-lab.ts --out lab/out-preview-<x> --artifact --plain`
+(Build B's band-desk folder is copied in by hand: `cp -r dist/band-desk lab/out-preview-b/site/`).
