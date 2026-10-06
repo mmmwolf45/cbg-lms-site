@@ -1,5 +1,31 @@
 # Home page builds
 
+## Status (7 Oct 2026)
+- **Live: Build B (lite)** = branch `main` (also tag `build-b-lite-v1`, commit c13052d), deployed 7 Oct 2026.
+  `home-lite` is the same commit; new Build B work goes on `main` (or a short branch merged into `main`).
+- **Build A (full)**: branch `home-night-sky` (tuned; v1 frozen as tag `build-a-full-v1`). Preview:
+  https://claude.ai/artifact/Gy19boHCrFfXkjnRyCrTem. Its docs/builds.md has the full A/B/C history and the
+  real-window scroll measurements.
+- **Build C (the home page live 3-7 Oct)**: tag `build-c-live-2026-10-05`.
+
+## Changing Build B (the live home page)
+1. `git switch main && git pull`, then edit (copy: `content/home.yaml`; layout: `templates/sections/home-*.ts`;
+   motion: `src/motion/*.ts`; styles: `src/styles/*.css`).
+2. `npm run dev` builds and serves the course.link mock at http://localhost:4173/ (the "mock" preview).
+3. `npm test`, `npm run build` (size gate), `npx playwright test --project=mock`.
+4. Deploy: commit, `git push` (GitHub Pages is live in about 2 minutes, browsers pick it up within ~10).
+   If `dist/blocks/home.html` changed, re-paste it into course.link (Website > Home page > Custom Block)
+   right after the deploy and Maasoom clicks Save; if only CSS/JS changed, the push alone is enough. If
+   `dist/loader-snippet.html` changed, re-paste the loader too (Settings > Integrations > Custom Script > All Pages).
+   Full routine: docs/go-live.md.
+5. Switching to Build A or back to C: see "Deploying a build" below.
+
+## Deploying a build
+- A: `git switch main && git merge home-night-sky` (resolve, test, push), then re-paste the home block (and the
+  loader if it changed).
+- C: `git switch main && git revert --no-edit build-c-live-2026-10-05..HEAD` (or reset to the tag and force-push,
+  only with Maasoom's OK), push, re-paste the home block.
+
 ## Build B (lite)
 
 Branch `home-lite` (from `home-night-sky` at d2e9cec), 6 Oct 2026, asked for by Maasoom: a lighter home page that keeps the night-sky look but none of the scroll-played films.
