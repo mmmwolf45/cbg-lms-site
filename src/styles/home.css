@@ -23,6 +23,9 @@
 .cbg-explode__poster, .cbg-explode__canvas {
   position: absolute; left: 50%; top: 50%; height: min(94%, 118vw); width: auto; aspect-ratio: 1; max-width: none;
   transform: translate(-50%, -52%);
+}
+/* The canvas draws this edge into its frames (explode.ts). */
+.cbg-explode__poster {
   -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
   mask-image: radial-gradient(closest-side, #000 72%, transparent 100%);
 }

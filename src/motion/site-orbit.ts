@@ -1,6 +1,6 @@
 import { frameSet } from './frames';
 import type { Enhancer } from './setup';
-import { fullMotion, pinned, progress } from './tokens';
+import { FILM_MS, due, fullMotion, pinned, progress } from './tokens';
 
 // The home band (SPEC section 5.1.2; Maasoom, 6 Oct 2026): a photoreal night construction site that turns
 // about 60 degrees with the scroll. [data-cbg-orbit] carries the frames' base URL and count. While the page
@@ -37,7 +37,7 @@ function run(section: HTMLElement): () => void {
   const off = new AbortController();
   const n = Number(section.dataset.cbgFrames) || N_DEFAULT;
   const dir = win.innerWidth < 768 ? 's' : 'l'; // phones: the 900px set
-  let raf = 0, last = 0, cur = 0, vel = 0, painted = -1, near = false, span = 1;
+  let raf = 0, drawn = 0, last = 0, cur = 0, vel = 0, painted = -1, near = false, span = 1;
   let sx = 0, sy = 0, sw = 0, sh = 0, iw = 0, ih = 0; // the source rectangle: the frame cropped like object-fit: cover
   const set = frameSet((i) => `${base}${dir}/f${String(i + 1).padStart(2, '0')}.avif`, n, () => {
     painted = -1;
@@ -93,6 +93,8 @@ function run(section: HTMLElement): () => void {
   const goal = () => progress(pin.getBoundingClientRect().top, STICKY_TOP, span) * (n - 1);
   const tick = (now: number) => {
     raf = 0;
+    if (!due(now, drawn, FILM_MS)) return void (raf = win.requestAnimationFrame(tick));
+    drawn = now;
     const dt = (last ? Math.min(64, now - last) : 16.7) / 1000;
     last = now;
     const target = goal();

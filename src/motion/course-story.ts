@@ -5,7 +5,7 @@ import { goldTrack } from './gold-track';
 import { all } from './reveal';
 import { bandLoading } from './site-orbit';
 import type { Enhancer } from './setup';
-import { clamp01, fullMotion, pinned, progress, smooth } from './tokens';
+import { FILM_MS, clamp01, due, fullMotion, pinned, progress, smooth } from './tokens';
 
 // The courses story (SPEC section 5.1.3; Maasoom, 6 Oct 2026). [data-cbg-story] holds (sticky, under the
 // 56px navbar) for 0.6 of a screen of scroll per course card; each stretch is a chapter: that card shows (the
@@ -61,7 +61,7 @@ function run(section: HTMLElement, fail: () => void): (() => void) | undefined {
   const dir = win.innerWidth < 768 ? 's' : 'l';
   const N = lis.length;
   const ch: Chapter[] = lis.map((li) => ({ li, base: li.dataset.film, n: Number(li.dataset.frames) || N_DEFAULT }));
-  let raf = 0, last = 0, cur = 0, vel = 0, span = 1, near = false, active = -1, filmSeen = false;
+  let raf = 0, drawn = 0, last = 0, cur = 0, vel = 0, span = 1, near = false, active = -1, filmSeen = false;
   let rest = 0, aim = 0; // the chapter the story last settled on, and the one a settle is gliding to
   let from = -1, fromAt = 0, fadeT0 = 0, painted = '', barAt = -1;
 
@@ -195,6 +195,8 @@ function run(section: HTMLElement, fail: () => void): (() => void) | undefined {
   };
   const tick = (now: number) => {
     raf = 0;
+    if (!due(now, drawn, FILM_MS)) return void (raf = win.requestAnimationFrame(tick));
+    drawn = now;
     const dt = (last ? Math.min(64, now - last) : 16.7) / 1000;
     last = now;
     const target = goal();

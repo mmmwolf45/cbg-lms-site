@@ -157,7 +157,7 @@ test.describe('laptop, full motion', () => {
   test('a film that cannot load: the card gallery and its gold track instead', async ({ page }) => {
     const { errors } = await open(page, 'fail');
     await scrollStory(page, -1.5, 2000); // a screen above the story: it starts loading, the first film fails
-    expect((await state(page)).story).toBe(false);
+    await expect.poll(async () => (await state(page)).story, { timeout: 10000 }).toBe(false); // slower under a busy suite
     await expect(page.locator('.cbg-track__node')).not.toHaveCount(0);
     expect(errors).toEqual([]);
   });

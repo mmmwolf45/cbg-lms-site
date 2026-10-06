@@ -24,3 +24,23 @@ manifest, Maasoom saves). Every build changes the home block HTML, so every swit
 ## Image weight per build (laptop, all lazy below the hero)
 - A: hero frames ~2.5 MB + site orbit frames + six course films (~1-1.4 MB each, loaded per chapter).
 - B and C: hero frames ~2.5 MB + band desk photo and cut-outs.
+
+## Scroll smoothness on an Intel UHD laptop (6 Oct 2026)
+Measured with `node lab/scroll-perf.mjs` in a real Chrome window (headful, i7-11800H with Intel UHD, Chrome on
+D3D11, 2560x1600 at 165 Hz, 1440x900 viewport at 1.5x): wheel-scroll top to bottom after one warm-up pass, frame
+interval p50 / p95 in ms over the whole page (6 ms = the panel's 165 Hz). Headless numbers are not comparable.
+
+| Build | 1x CPU before | 1x after | 4x CPU before | 4x after |
+|---|---|---|---|---|
+| C (live) | 30 / 200 | 36 / 170 | 36 / 170 | 30 / 170 |
+| B (lite) | 97 / 303 | 6 / 67 | 109 / 321 | 12 / 103 |
+| A (full) | 91 / 285 | 6 / 79 | 97 / 309 | 6 / 85 |
+
+What it showed: the GPU, not the CPU, is the limit, and on this machine any canvas frame drawn while the page
+scrolls (the sky, a film) holds that scroll frame for 40-90 ms whatever the canvas's size, while transform and
+opacity changes are cheap. The fixes: one opaque background canvas (waves + sky, Milky Way baked once), redraw caps,
+and on a device whose scroll frames run slow (`html.cbg-slow`, set by src/motion/sky.ts) a background that holds
+still during a scroll and a navbar without backdrop blur; the cursor and the Talk-to-us card light leave the page
+while it scrolls. Still slow there, as on C: the hero while its film plays (p50 ~55 ms; C ~100), the course gallery's
+pan (raster of new cards), and in A the band and course films. For an in-session A/B of a change use
+`node lab/ab-perf.mjs` (the laptop's GPU clock drifts between runs).

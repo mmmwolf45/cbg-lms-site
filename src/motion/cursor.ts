@@ -7,7 +7,10 @@ import { capStep, damp, finePointer, frameDt } from './glide';
 // off-white disc in difference blend trails it (so it inverts what is under it), shown only over the big text
 // outside the hero and faded out everywhere else. Over a link in those places the disc fades to a small ring, so
 // the link is never covered. Heavy damping (time constant 0.24 s) and a 1500 px/s cap: it never darts.
-// It lives on <body> (like the flow canvas) so it is fixed to the screen whatever course.link wraps us in.
+// It lives on <body> (like the sky canvas) so it is fixed to the screen whatever course.link wraps us in.
+// While the page scrolls it steps aside (quickly) until the mouse moves again: a difference blend over a moving
+// page made the Intel UHD laptop recomposite the whole screen through it every scroll frame (6 Oct 2026: 40 to
+// 80 ms frames over the big text), and with the mouse still there is nothing for it to follow.
 
 const REGIONS = [
   '[data-cbg-section="disciplines"]',
@@ -41,7 +44,7 @@ function follow(doc: Document) {
   el.dataset.state = 'off';
   el.innerHTML = '<i class="cbg-cursor__disc"></i><i class="cbg-cursor__ring"></i>';
   doc.body.append(el);
-  const r = el.offsetWidth / 2;
+  const r = 64; // half its 128px (night.css); measured, it would read 0 while it is display: none
   const range = doc.createRange();
   let tx = 0, ty = 0, x = 0, y = 0, raf = 0, last = 0, dirty = false, seen = false;
 
@@ -91,7 +94,7 @@ function follow(doc: Document) {
     }
     wake();
   }, opts);
-  win.addEventListener('scroll', () => seen && wake(), opts);
+  win.addEventListener('scroll', () => { if (el.dataset.state !== 'off') el.dataset.state = 'hide'; }, opts);
   doc.documentElement.addEventListener('pointerleave', () => (el.dataset.state = 'off'), opts);
 
   return () => {

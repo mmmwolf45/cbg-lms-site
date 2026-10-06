@@ -1,6 +1,6 @@
 import { frameSet, type Frames } from './frames';
 import type { Enhancer } from './setup';
-import { clamp01, frameDir, fullMotion, loadOrder, progress, smooth } from './tokens';
+import { FILM_MS, clamp01, due, frameDir, fullMotion, loadOrder, progress, smooth } from './tokens';
 
 // The home hero's exploding building (SPEC section 5.1.1; approved prototype "effect A", 3 Oct 2026).
 // [data-cbg-explode] carries the frames' base URL and count. While the page scrolls through the tall
@@ -47,7 +47,7 @@ function run(section: HTMLElement): () => void {
   const n = Number(section.dataset.cbgFrames) || N_DEFAULT;
   const base = section.dataset.cbgExplode ?? '';
   let set: Frames | undefined;
-  let raf = 0;
+  let raf = 0, drawn = 0, edge: CanvasGradient | undefined;
   let cur = 0; // eased frame position
   let painted = -1;
   let tx = 0, ty = 0, gx = 0, gy = 0; // tilt: current and goal, -1..1
@@ -67,6 +67,18 @@ function run(section: HTMLElement): () => void {
       ctx.drawImage(next, 0, 0, canvas.width, canvas.height);
       ctx.globalAlpha = 1;
     }
+    // The soft round edge, drawn into the frame (home.css's radial-gradient(closest-side, #000 72%, transparent)):
+    // as a CSS mask it was one more offscreen pass on every scroll frame (6 Oct 2026, Intel UHD laptop).
+    if (!edge) {
+      const r = canvas.width / 2; // set once, before the first frame
+      edge = ctx.createRadialGradient(r, r, 0, r, r, r);
+      edge.addColorStop(0.72, '#000');
+      edge.addColorStop(1, 'transparent');
+    }
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.fillStyle = edge;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalCompositeOperation = 'source-over';
     painted = j === a ? f : -1;
     canvas.dataset.frame = String(j); // the frame on show (tests read it: cross-origin pixels can't be read)
     canvas.classList.add('is-on'); // fades in over the poster
@@ -134,8 +146,10 @@ function run(section: HTMLElement): () => void {
   };
 
   // ---- Loop: runs only while something is still moving --------------------------------------------
-  const tick = () => {
+  const tick = (now: number) => {
     raf = 0;
+    if (!due(now, drawn, FILM_MS)) return void (raf = win.requestAnimationFrame(tick));
+    drawn = now;
     const p = progress(pin.getBoundingClientRect().top, STICKY_TOP, pin.offsetHeight - stage.offsetHeight);
     const target = p * (n - 1);
     cur += (target - cur) * EASE;

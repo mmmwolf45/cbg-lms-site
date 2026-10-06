@@ -158,22 +158,7 @@ html:is(.cbg-route-home, .cbg-route-course) body::before {
 html:is(.cbg-route-home, .cbg-route-course) [data-cbg] {
   background: transparent;
 }
-/* The moving version (src/motion/flow.ts): same layer as body::before, later in the page so above it.
-   It fades in after its first frame; on other routes it is hidden and never drawn. */
-.cbg-flow {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100vh;
-  height: 100lvh;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.8s var(--cbg-ease);
-}
-.cbg-flow.is-on { opacity: 1; }
-html:not(.cbg-route-home):not(.cbg-route-course) .cbg-flow { display: none; }
+/* The moving version, the waves under the night sky, is one canvas: src/styles/sky.css. */
 
 html:is(.cbg-route-home, .cbg-route-course) #navbar {
   background: rgba(8, 18, 38, 0.72); /* --cbg-bg at 72% */
@@ -189,6 +174,14 @@ html:is(.cbg-route-home, .cbg-route-course) #navbar {
   --input: var(--cbg-line);
   --accent: var(--cbg-surface);
   --accent-foreground: var(--cbg-text-1);
+}
+
+/* A device whose scroll frames run slow (src/motion/sky.ts adds .cbg-slow): no backdrop blur, which re-blurs on every
+   scroll frame (6 Oct 2026, Intel UHD laptop: about 12 ms a frame), a near-solid bar instead. */
+html.cbg-slow:is(.cbg-route-home, .cbg-route-course) #navbar {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: rgba(8, 18, 38, 0.94);
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {

@@ -34,18 +34,23 @@
 /* ---------- the support card (src/motion/support.ts) ---------- */
 /* Laptop mouse: the photo tilts (the text stays flat), a gold spotlight and a faint glare sit between the two. */
 .cbg-plate.is-fine { perspective: 1400px; }
-.cbg-plate.is-fine .cbg-plate__bg { transform: scale(1.07); will-change: transform; }
+.cbg-plate.is-fine .cbg-plate__bg { inset: -3.5%; } /* 7% larger, so a tilt never shows its edge: by layout, not a standing scaled layer */
+.cbg-plate.is-lit .cbg-plate__bg { will-change: transform; } /* while it tilts: one raster, not one per tilt step */
 .cbg-plate__spot, .cbg-plate__glare {
-  position: absolute; left: 0; top: 0; pointer-events: none; opacity: 0;
-  transition: opacity 1.4s var(--cbg-ease); will-change: transform;
+  position: absolute; left: 0; top: 0; pointer-events: none; opacity: 0; visibility: hidden;
+  transition: opacity 1.4s var(--cbg-ease), visibility 0s 1.4s;
 }
-.cbg-plate.is-lit .cbg-plate__spot, .cbg-plate.is-lit .cbg-plate__glare { opacity: 1; }
+/* The light layers and their screen blend (which isolates the whole card) exist only while lit and fading out: the
+   Intel UHD laptop recomposited the card through them on every scroll frame even fully transparent (6 Oct 2026). */
+.cbg-plate.is-lit .cbg-plate__spot, .cbg-plate.is-lit .cbg-plate__glare {
+  opacity: 1; visibility: visible; transition-delay: 0s; will-change: transform; mix-blend-mode: screen;
+}
 .cbg-plate__spot {
-  width: 680px; aspect-ratio: 1; mix-blend-mode: screen;
+  width: 680px; aspect-ratio: 1;
   background: radial-gradient(closest-side, rgba(214, 177, 96, 0.2), rgba(214, 177, 96, 0.07) 50%, transparent);
 }
 .cbg-plate__glare {
-  inset: 0 -40%; mix-blend-mode: screen;
+  inset: 0 -40%;
   background: linear-gradient(112deg, transparent 38%, rgba(243, 245, 249, 0.05) 47%, rgba(243, 245, 249, 0.07) 50%, transparent 60%);
 }
 /* Full motion, every screen: a faint gold light goes round the border once every 22 s, only while the card is
@@ -60,9 +65,27 @@
   position: absolute; width: 220px; aspect-ratio: 1; opacity: 0.6;
   background: linear-gradient(to left, rgba(214, 177, 96, 0.95), rgba(214, 177, 96, 0.35) 40%, transparent);
   offset-path: rect(0 auto auto 0 round 24px);
-  animation: cbg-beam 22s linear infinite paused;
+  animation: cbg-beam 22s steps(660) infinite paused; /* 30 moves a second: each one repaints the masked ring */
 }
 .cbg-plate.is-on .cbg-plate__beam > i { animation-play-state: running; }
+/* While the page scrolls (support.ts) the border light leaves the page (display: none: even transparent, its masked ring
+   cost the Intel UHD laptop every scroll frame), and fades back once the page has been still a moment. */
+.cbg-plate__beam { transition: opacity 0.6s linear; }
+@supports (offset-path: rect(0 auto auto 0)) {
+  @media (prefers-reduced-motion: no-preference) {
+    .cbg-plate.is-moving .cbg-plate__beam { display: none; }
+    @starting-style { .cbg-plate__beam { opacity: 0; } }
+  }
+}
+/* So does the pointer's light: the card scrolling under a still mouse would light it, blends and all. */
+@media (prefers-reduced-motion: no-preference) {
+  .cbg-plate.is-moving :is(.cbg-plate__spot, .cbg-plate__glare) { display: none; }
+  @starting-style { .cbg-plate.is-lit :is(.cbg-plate__spot, .cbg-plate__glare) { opacity: 0; } }
+}
+@supports (offset-path: rect(0 auto auto 0)) {
+  @media (prefers-reduced-motion: no-preference) {
+  }
+}
 @keyframes cbg-beam { from { offset-distance: 0%; } to { offset-distance: 100%; } }
 @supports (offset-path: rect(0 auto auto 0)) {
   @media (prefers-reduced-motion: no-preference) { .cbg-plate__beam { display: block; } }
@@ -74,9 +97,13 @@
 .cbg-cursor {
   position: fixed; left: 0; top: 0; z-index: 2147482000; width: 128px; height: 128px;
   pointer-events: none; will-change: transform; mix-blend-mode: difference;
-  opacity: 0; transition: opacity 1.1s var(--cbg-ease);
+  display: none; opacity: 0; transition: opacity 1.1s var(--cbg-ease), display 1.1s allow-discrete;
 }
-.cbg-cursor[data-state="on"], .cbg-cursor[data-state="link"] { opacity: 1; }
+/* Off, it leaves the page once faded (display: none): even transparent, its blend cost the Intel UHD laptop every
+   scroll frame (6 Oct 2026). While the page scrolls it fades quickly (cursor.ts). */
+.cbg-cursor[data-state="on"], .cbg-cursor[data-state="link"] { display: block; opacity: 1; }
+@starting-style { .cbg-cursor[data-state="on"], .cbg-cursor[data-state="link"] { opacity: 0; } }
+.cbg-cursor[data-state="hide"] { transition-duration: 0.15s; }
 .cbg-cursor > * {
   position: absolute; inset: 0; border-radius: 50%;
   transition: transform 1.2s var(--cbg-ease), opacity 1s var(--cbg-ease);

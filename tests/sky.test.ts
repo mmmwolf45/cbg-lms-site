@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { LAT, LST0, decode, lens, tint, turn, view } from '../src/motion/sky';
+import { LAT, LST0, decode, lens, sluggish, tint, turn, view } from '../src/motion/sky';
 
 const DEG = Math.PI / 180;
 const eq = (raDeg: number, decDeg: number) => [
@@ -48,6 +48,13 @@ describe('night sky', () => {
     for (let i = 0; i < 60; i++) a = turn(a, 0.01, 1 / 60);
     for (let i = 0; i < 30; i++) b = turn(b, 0.01, 1 / 30);
     expect(a).toBeCloseTo(b, 6);
+  });
+
+  it('calls a device sluggish only on a run of slow scroll frames', () => {
+    expect(sluggish(Array(23).fill(90))).toBe(false); // too few to judge
+    expect(sluggish(Array(24).fill(16.7))).toBe(false); // 60 Hz
+    expect(sluggish([...Array(12).fill(6), ...Array(12).fill(90)])).toBe(true); // half the frames held
+    expect(sluggish([...Array(13).fill(6), ...Array(11).fill(90)])).toBe(false); // a few hitches
   });
 
   it('colours stars by B-V: blue-white hot stars, orange cool ones', () => {

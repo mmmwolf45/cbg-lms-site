@@ -1,6 +1,7 @@
-/* The night sky (src/motion/sky.ts): one canvas with a still dim over the flow waves and the stars, on the
-   page-background layer (z-index -1, later in the page than the flow canvas, so above it and below all
-   content). It fades in slowly once the stars have arrived; on other routes it is hidden. */
+/* The page background (src/motion/sky.ts): one opaque canvas with the flow waves, the still dim and the stars,
+   on the page-background layer (z-index -1, later in the page than body::before, so above that still gradient
+   and below all content). It fades in over the gradient after its first frame (the stars then fade in inside
+   it); on other routes it is hidden and never drawn. */
 .cbg-sky {
   position: fixed;
   left: 0;
@@ -11,7 +12,7 @@
   z-index: -1;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 1.8s var(--cbg-ease);
+  transition: opacity 0.8s var(--cbg-ease);
 }
 .cbg-sky.is-on { opacity: 1; }
 html:not(.cbg-route-home):not(.cbg-route-course) .cbg-sky { display: none; }
