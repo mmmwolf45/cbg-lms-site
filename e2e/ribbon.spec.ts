@@ -79,6 +79,15 @@ test.describe('laptop, full motion', () => {
     expect(errors).toEqual([]);
   });
 
+  test('the pin turning the grid into one row rebuilds the ribbon, even when the boxes keep their size', async ({ page }) => {
+    // At 1409x897 the track and gallery boxes are the same size in the grid and in the pinned row, so only the
+    // class change tells the ribbon (found in the app's preview pane, 6 Oct 2026).
+    await page.setViewportSize({ width: 1409, height: 897 });
+    await openHome(page);
+    await expect(page.locator('[data-cbg-gallery]')).toHaveClass(/\bis-pan\b/);
+    await expect.poll(async () => (await track(page)).rows).toBe(1);
+  });
+
   test('a live card shows its border beam on hover only', async ({ page }) => {
     await openHome(page);
     const card = page.locator('.cbg-course--live').first();

@@ -171,12 +171,16 @@ function mount(section: HTMLElement, reduced: boolean): () => void {
     draw(reduced ? total : v);
   };
 
-  // Also catches the pin switching the grid to one row, a late font and a resize (the gallery: the phone row's
+  // A late font and a resize (the gallery: the phone row's
   // scroll range changes with the screen even when the cards don't).
   const sizes = new ResizeObserver(layout);
   sizes.observe(track);
   sizes.observe(gallery);
   off.push(() => sizes.disconnect());
+  // The pin switching the grid to one row (.is-pan, gallery.ts) can leave both boxes the same size, so watch for it too.
+  const pin = new MutationObserver(layout);
+  pin.observe(section, { attributes: true, attributeFilter: ['class'] });
+  off.push(() => pin.disconnect());
   layout();
   if (reduced) return () => off.forEach((f) => f());
 
