@@ -1,21 +1,13 @@
-/* The light ribbon under the course cards (src/motion/ribbon.ts). The row leaves 44px under the cards for it (and
-   56px between grid rows); on the pinned laptop pan the photos give that room back (home.css), so the panel's
-   height and the pin are unchanged. The gallery and track are positioned so the ribbons and the card offsets share
-   one origin. Each ribbon is two layers moved only by transforms (the clip and the art inside it): the strands
-   are rasterised once and a frame of the pan repaints nothing. */
+/* The light ribbon behind the course cards (src/motion/ribbon.ts): one per row, as tall as the cards and right behind
+   them, so it glows through their frosted glass and shows in the gaps. The gallery and track are positioned so the
+   ribbons and the card offsets share one origin. */
 .cbg-courses .cbg-gallery { position: relative; }
-.cbg-courses .cbg-gallery__track { position: relative; padding-bottom: 44px; row-gap: 56px; }
+.cbg-courses .cbg-gallery__track { position: relative; }
 
-.cbg-ribbons { pointer-events: none; will-change: transform; } /* placed inline (ribbon.ts) */
-.cbg-ribbon { position: absolute; left: 0; top: 0; }
-.cbg-ribbon__clip { height: 100%; overflow: hidden; will-change: transform; }
-.cbg-ribbon__art { display: block; will-change: transform; } /* its ends fade inside the SVG (ribbon.ts) */
-/* the front light and the drifting one: warm white into gold, faint */
-.cbg-ribbon__head, .cbg-ribbon__spark {
-  position: absolute; left: 0; top: 0; width: 56px; height: 56px; border-radius: 50%; opacity: 0; will-change: transform, opacity;
-  background: radial-gradient(closest-side, rgba(255, 243, 214, 0.75), rgba(214, 177, 96, 0.28) 45%, rgba(214, 177, 96, 0));
-}
-.cbg-ribbon__spark { width: 40px; height: 40px; background: radial-gradient(closest-side, rgba(255, 243, 214, 0.5), rgba(169, 193, 238, 0.16) 50%, rgba(169, 193, 238, 0)); }
+/* placed inline (ribbon.ts); before the cards in the gallery, so behind them, and softened so it never competes with
+   them. Each row's canvas is painted once and only moved. */
+.cbg-ribbons { pointer-events: none; will-change: transform; opacity: 0.5; }
+.cbg-ribbon { position: absolute; left: 0; top: 0; display: block; will-change: transform; }
 
 /* Border beam on live cards: a short gold gradient riding the card's edge (offset-path), seen only through a
    hairline ring mask. Hover or keyboard focus, faint, one lap per 18 s. Browsers without offset-path rect()

@@ -22,13 +22,17 @@ async function openHome(page: Page) {
   await expect(page.locator('.cbg-ribbon')).not.toHaveCount(0);
 }
 
-// How much of the ribbon is drawn (0..1, all rows end to end), read from each row's clip transform.
+// How much of the ribbon is drawn (0..1, all rows end to end): each row's canvas slides in from the left, so its
+// leading end (its left edge plus its width) against the row's own start, the first card at that height.
 const track = (page: Page) =>
   page.evaluate(() => {
-    const rows = [...document.querySelectorAll<HTMLElement>('.cbg-ribbon')].map((r) => {
+    const track = document.querySelector<HTMLElement>('.cbg-gallery__track')!;
+    const lis = [...track.children] as HTMLElement[];
+    const rows = [...document.querySelectorAll<HTMLCanvasElement>('.cbg-ribbon')].map((r) => {
       const w = r.offsetWidth;
-      const t = new DOMMatrix(getComputedStyle(r.querySelector('.cbg-ribbon__clip')!).transform).m41;
-      return { w, d: w + t };
+      const m = new DOMMatrix(getComputedStyle(r).transform);
+      const first = lis.find((li) => Math.abs(track.offsetTop + li.offsetTop - m.m42) < 2)!;
+      return { w, d: Math.max(0, Math.min(w, m.m41 + w - (track.offsetLeft + first.offsetLeft))) };
     });
     const total = rows.reduce((n, r) => n + r.w, 0);
     return { drawn: rows.reduce((n, r) => n + r.d, 0) / total, rows: rows.length };
@@ -56,18 +60,18 @@ test.describe('laptop, full motion', () => {
     await page.evaluate((y) => scrollTo(0, y), range.top + range.length * 0.5);
     await expect.poll(async () => (await track(page)).drawn, { timeout: 6000 }).toBeGreaterThan(0.4);
     expect((await track(page)).drawn).toBeLessThan(0.65);
-    // The ribbons move with the row, and the art holds still inside its moving clip (the strands never slide).
+    // The ribbons move with the row, behind the cards and as tall as them.
     const moved = await page.evaluate(() => {
-      const t = document.querySelector('.cbg-gallery__track')!.getBoundingClientRect().left;
+      const t = document.querySelector('.cbg-gallery__track')!.getBoundingClientRect();
       const s = document.querySelector('.cbg-ribbons')!.getBoundingClientRect().left;
-      const art = document.querySelector('.cbg-ribbon__art')!.getBoundingClientRect().left;
-      const row = document.querySelector('.cbg-ribbon')!.getBoundingClientRect().left;
-      return { shift: Math.abs(t - s), art: Math.abs(art - row) };
+      const card = document.querySelector('.cbg-gallery__track > li')!.getBoundingClientRect();
+      const r = document.querySelector('.cbg-ribbon')!.getBoundingClientRect();
+      // Behind: the ribbons come before the track in the gallery and neither sets a z-index (ribbon.css).
+      const before = !!(document.querySelector('.cbg-ribbons')!.compareDocumentPosition(document.querySelector('.cbg-gallery__track')!) & Node.DOCUMENT_POSITION_FOLLOWING);
+      return { shift: Math.abs(t.left - s), top: Math.abs(r.top - card.top), h: Math.abs(r.height - card.height), before };
     });
     expect(moved.shift).toBeLessThan(120); // the track's own offset in the gallery plus the damped lag
-    expect(moved.art).toBeLessThan(1);
-    // The front light shows while the ribbon draws.
-    expect(await page.locator('.cbg-ribbon__head').evaluate((h) => Number(getComputedStyle(h).opacity))).toBeGreaterThan(0.5);
+    expect([moved.top < 1, moved.h < 1, moved.before]).toEqual([true, true, true]);
 
     await page.evaluate((y) => scrollTo(0, y), range.top + range.length + 10);
     await expect.poll(async () => (await track(page)).drawn, { timeout: 8000 }).toBeGreaterThan(0.99);
@@ -130,12 +134,11 @@ test.describe('tablet grid', () => {
 
 test.describe('reduced motion', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
-  test('still: the ribbon whole, no lights, no beam', async ({ page }) => {
+  test('still: the ribbon whole, no beam', async ({ page }) => {
     const errors = watchErrors(page);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await openHome(page);
     expect((await track(page)).drawn).toBeGreaterThan(0.99);
-    expect(await page.locator('.cbg-ribbon__head').first().evaluate((h) => getComputedStyle(h).opacity)).toBe('0');
     expect(await page.locator('.cbg-beam').first().evaluate((b) => getComputedStyle(b).display)).toBe('none');
     // Still: nothing changes over time.
     await page.locator('.cbg-gallery').scrollIntoViewIfNeeded();

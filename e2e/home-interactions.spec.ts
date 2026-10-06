@@ -112,8 +112,13 @@ test.describe('laptop, full motion', () => {
           x: new DOMMatrix(getComputedStyle(document.querySelector('.cbg-gallery__track')!).transform).e,
           first: cards[0],
           last: cards[cards.length - 1],
-          // how far the light ribbon has drawn (ribbon.ts; the pan is one row)
-          bar: 1 + new DOMMatrix(getComputedStyle(document.querySelector('.cbg-ribbon__clip')!).transform).m41 / (document.querySelector('.cbg-ribbon') as HTMLElement).offsetWidth,
+          // how far the light ribbon has slid in (ribbon.ts; the pan is one row, its leading end against the first card)
+          bar: (() => {
+            const r = document.querySelector<HTMLElement>('.cbg-ribbon')!;
+            const t = document.querySelector<HTMLElement>('.cbg-gallery__track')!;
+            const lead = new DOMMatrix(getComputedStyle(r).transform).m41 + r.offsetWidth;
+            return (lead - t.offsetLeft - (t.firstElementChild as HTMLElement).offsetLeft) / r.offsetWidth;
+          })(),
         };
       });
 

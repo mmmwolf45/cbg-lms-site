@@ -204,8 +204,7 @@ picture.cbg-band__media img { width: 100%; height: 100%; object-fit: cover; }
 .is-pan .cbg-section-head { margin-bottom: var(--cbg-s5); }
 .is-pan .cbg-gallery__track { position: relative; display: flex; }
 .is-pan .cbg-gallery__track > li { flex: none; width: clamp(300px, 27vw, 360px); }
-/* 44px lower than the panel alone needs: the room under the cards for the light ribbon (ribbon.css) */
-.is-pan .cbg-course__media { max-height: max(96px, calc(100vh - 704px)); }
+.is-pan .cbg-course__media { max-height: max(96px, calc(100vh - 660px)); }
 
 /* The card: photo on top, then status, title, line, chips and (live courses) the button */
 .cbg-course.cbg-card { display: flex; flex-direction: column; height: 100%; padding: 0; overflow: hidden; }
