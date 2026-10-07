@@ -176,7 +176,9 @@ The home page has no `h1` today. The hero headline becomes the page's `h1`.
 
 Course Content stays native and collapsed, so it stays short. course.link opens its first section on every load; the course enhancers close that untouched default once per page view (src/motion/start-here.ts), never a section the reader opened. Opening or closing sections changes the page height, so all scroll-linked motion re-measures (src/motion/setup.ts) or works from the live layout (src/motion/seen.ts).
 
-**Page order:** native header → **top** (`hero`) → native Course Content accordion → **main** (`included` → `units` → `how-classes-run` → `assessment` → `trainers` → `bonus` → `field-guides` → `payments` → `faq` → `help`).
+**Page order:** native header → **top** (`hero`) → native Course Content accordion → **main** (`bowtie` → `included` → `units` → `how-classes-run` → `assessment` → `trainers` → `bonus` → `field-guides` → `payments` → `faq` → `help`).
+
+**Bow-tie (7 Oct 2026):** the first section of the main block, so a new visitor meets it straight after Course Content, without pushing Course Content down for returning students. A 3D bow-tie: the hazard and top event at the knot, causes converging from the left through prevention barriers, consequences fanning out through recovery barriers. On a wide column it lies on a tilted plane with the barriers standing off it; the build-up plays with the scroll (CSS scroll-driven animation, only while our script runs) and the plane leans slowly toward the mouse (src/motion/bowtie.ts). Phones read it top to bottom; reduced motion, no JS and browsers without scroll-driven animations show it finished. Its copy is new safety copy and needs a trainer's sign-off.
 
 Course pages don't get an extra `h1`. The native course title stays an `h2`, as the brief allows.
 

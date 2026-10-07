@@ -105,6 +105,15 @@ const courseShape = {
       layers: [{ name: s, hole: s, 'fix?': s }],
     },
   },
+  // Bow-tie (the first section below Course Content): one hazard and its top event at the knot, the causes
+  // on the left each stopped by a prevention barrier, the consequences on the right each limited by a
+  // recovery barrier. `labels` names the four columns: causes, prevention, recovery, consequences.
+  'bowtie?': {
+    heading: s, intro: s, hazard: s, event: s,
+    labels: { causes: s, prevention: s, recovery: s, consequences: s },
+    causes: [{ cause: s, barrier: s }],
+    consequences: [{ outcome: s, barrier: s }],
+  },
   'included?': { heading: s, intro: s, cards: [{ ...titled, 'featured?': 'boolean' }] },
   'units?': {
     heading: s, intro: s,
@@ -341,6 +350,11 @@ export function validateCourse(data: unknown, file = 'content/courses/(course).y
   checkCard(c.card, file, true);
   checkHero(c, file);
   checkShelf(c, file);
+  if (c.bowtie) {
+    const { causes, consequences } = c.bowtie;
+    if (!(causes.length >= 2 && causes.length <= 4)) throw new Error(`${file}: bowtie.causes: list 2 to 4 causes; got ${causes.length}`);
+    if (!(consequences.length >= 2 && consequences.length <= 4)) throw new Error(`${file}: bowtie.consequences: list 2 to 4 consequences; got ${consequences.length}`);
+  }
   if (c.help?.image) checkImage(c.help.image, 'help.image', file);
   if (c.xray) {
     checkImage(c.xray.image, 'xray.image', file);

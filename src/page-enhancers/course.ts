@@ -7,5 +7,6 @@ import { scrub } from '../motion/scrub';
 import { xray } from '../motion/xray';
 import { qsSections } from '../motion/qs-sections';
 import { heroOptions } from '../motion/hero-options';
+import { bowtieTilt } from '../motion/bowtie';
 
-export const enhancers = [closeDefaultSection, hazardScan, heroOptions, scrub, build80, xray, qsSections, courseExtras, startHere];
+export const enhancers = [closeDefaultSection, hazardScan, heroOptions, bowtieTilt, scrub, build80, xray, qsSections, courseExtras, startHere];

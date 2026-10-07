@@ -1,0 +1,82 @@
+/* The 3D bow-tie (templates/sections/course-bowtie.ts, src/motion/bowtie.ts). The finished state is the
+   default: no JS, reduced motion and browsers without scroll-driven animations show it whole. Layout
+   switches on the column's width (container cbgc, course.css). */
+.cbg-bowtie { margin: var(--cbg-s6) 0 0; --bt-safe: #7CCB9A; --bt-risk: #E58A6B; }
+.cbg-bowtie__label { margin: 0; font: 700 0.6875rem / 1.25 var(--cbg-font-display); letter-spacing: 0.06em; text-transform: uppercase; color: var(--cbg-text-3); }
+.cbg-bowtie__side { display: grid; gap: var(--cbg-s2); margin: 0; }
+.cbg-bt-end { font: 600 var(--cbg-fs-small) / 1.35 var(--cbg-font-display); color: var(--cbg-text-1); }
+.cbg-bowtie__side--r .cbg-bt-end { color: var(--bt-risk); }
+.cbg-bt-barrier {
+  display: block; padding: 8px 12px; border: 1px solid var(--cbg-gold-line); border-left: 3px solid var(--cbg-gold);
+  border-radius: 10px; background: rgb(15 27 51 / 0.92); font: 400 0.875rem / 1.35 var(--cbg-font-body); color: var(--cbg-text-1);
+}
+.cbg-bowtie__side--r .cbg-bt-barrier { border-left-color: var(--bt-safe); border-color: rgb(124 203 154 / 0.45); border-left-width: 3px; }
+.cbg-bowtie__knot {
+  display: grid; place-content: center; gap: 4px; margin: 0; padding: 18px 16px; border-radius: 999px; text-align: center;
+  background: radial-gradient(circle at 50% 35%, rgb(214 177 96 / 0.32), rgb(15 27 51 / 0.96) 70%);
+  border: 1px solid var(--cbg-gold-line); box-shadow: 0 0 40px 4px rgb(214 177 96 / 0.18);
+}
+.cbg-bowtie__knot span { font: 700 0.6875rem / 1.2 var(--cbg-font-display); letter-spacing: 0.06em; text-transform: uppercase; color: var(--cbg-gold); }
+.cbg-bowtie__knot strong { font: 800 0.9375rem / 1.25 var(--cbg-font-display); color: var(--cbg-text-1); }
+.cbg-bowtie__lines { display: none; }
+
+/* ---------- narrow column: top to bottom ---------- */
+@container cbgc (max-width: 639.98px) {
+  .cbg-bowtie__labels { display: none; }
+  .cbg-bowtie__body { display: grid; gap: var(--cbg-s4); }
+  .cbg-bowtie__side li { display: grid; gap: 6px; padding-left: 14px; border-left: 1px solid var(--cbg-line-strong); }
+  .cbg-bowtie__side--l::before, .cbg-bowtie__side--r::before {
+    content: attr(aria-label); font: 700 0.6875rem / 1.25 var(--cbg-font-display); letter-spacing: 0.06em; text-transform: uppercase; color: var(--cbg-text-3);
+  }
+  .cbg-bowtie__knot { justify-self: center; width: min(100%, 260px); }
+  .cbg-bowtie__side--r .cbg-bt-end { order: -1; }
+}
+
+/* ---------- wide column: the bow-tie on a tilted plane, barriers standing up off it ---------- */
+@container cbgc (min-width: 640px) {
+  .cbg-bowtie { perspective: 1600px; perspective-origin: 50% 0; }
+  .cbg-bowtie__tilt, .cbg-bowtie__stage { transform-style: preserve-3d; }
+  .cbg-bowtie__stage {
+    padding: var(--cbg-s5); border: 1px solid var(--cbg-line); border-radius: var(--cbg-r-media);
+    background: linear-gradient(180deg, rgb(15 27 51 / 0.9), rgb(8 18 38 / 0.9));
+    transform: rotateX(14deg); transform-origin: 50% 100%;
+  }
+  .cbg-bowtie__labels, .cbg-bowtie__body {
+    display: grid; grid-template-columns: 1fr 1.15fr minmax(118px, 0.95fr) 1.15fr 1fr; column-gap: var(--cbg-s3);
+  }
+  .cbg-bowtie__labels { margin-bottom: var(--cbg-s3); }
+  .cbg-bowtie__label--recovery, .cbg-bowtie__label--consequences { text-align: right; }
+  .cbg-bowtie__body { position: relative; min-height: 260px; transform-style: preserve-3d; }
+  .cbg-bowtie__lines { display: block; position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .cbg-bowtie__lines path { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; stroke: rgb(229 138 107 / 0.75); }
+  .cbg-bowtie__side { grid-template-rows: repeat(var(--n), 1fr); gap: 0; transform-style: preserve-3d; }
+  .cbg-bowtie__side--l { grid-column: 1 / 3; }
+  .cbg-bowtie__side--r { grid-column: 4 / 6; }
+  .cbg-bowtie__side li { display: grid; grid-template-columns: subgrid; grid-column: 1 / 3; align-items: center; padding: 6px 0; transform-style: preserve-3d; }
+  .cbg-bowtie__side--l .cbg-bt-end { padding-right: 8px; }
+  .cbg-bowtie__side--r .cbg-bt-end { padding-left: 8px; text-align: right; }
+  /* The barriers stand off the plane, the knot above them */
+  .cbg-bt-barrier { position: relative; transform: translateZ(26px); box-shadow: 0 18px 22px -14px rgb(0 0 0 / 0.7); }
+  .cbg-bowtie__knot { grid-column: 3; align-self: center; aspect-ratio: 1; transform: translateZ(40px); }
+}
+
+/* ---------- the build-up, played by the scroll (full motion, where supported) ----------
+   Only while our script runs (html.cbg-js, the motion.css rule): if the bundle fails, the bow-tie is whole. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    @container cbgc (min-width: 640px) {
+      html.cbg-js .cbg-bowtie { view-timeline: --cbg-bt block; }
+      /* All done by the time the bow-tie is about centred (cover 40%) */
+      html.cbg-js .cbg-bowtie__stage { animation: cbg-bt-land ease-out both; animation-timeline: --cbg-bt; animation-range: entry 0% cover 30%; }
+      html.cbg-js .cbg-bowtie__lines { animation: cbg-bt-draw linear both; animation-timeline: --cbg-bt; animation-range: cover 12% cover 40%; }
+      html.cbg-js .cbg-bowtie__knot { animation: cbg-bt-knot ease-out both; animation-timeline: --cbg-bt; animation-range: cover 10% cover 26%; }
+      html.cbg-js .cbg-bowtie__side--l li .cbg-bt-barrier { animation: cbg-bt-rise ease-out both; animation-timeline: --cbg-bt; animation-range: cover calc(12% + var(--i) * 4%) cover calc(22% + var(--i) * 4%); }
+      html.cbg-js .cbg-bowtie__side--r li .cbg-bt-barrier { animation: cbg-bt-rise ease-out both; animation-timeline: --cbg-bt; animation-range: cover calc(22% + var(--i) * 4%) cover calc(32% + var(--i) * 4%); }
+    }
+  }
+}
+@keyframes cbg-bt-land { from { transform: rotateX(32deg); opacity: 0.4; } to { transform: rotateX(14deg); opacity: 1; } }
+/* The lines are drawn by a wipe, left to right: causes into the knot, then out to the consequences */
+@keyframes cbg-bt-draw { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes cbg-bt-knot { from { transform: translateZ(0) scale(0.86); opacity: 0; } to { transform: translateZ(40px) scale(1); opacity: 1; } }
+@keyframes cbg-bt-rise { from { transform: translateZ(0); opacity: 0; } to { transform: translateZ(26px); opacity: 1; } }
