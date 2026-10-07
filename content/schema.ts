@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { parse } from 'yaml';
 
 // A shape says what each YAML key must hold:
@@ -60,7 +60,9 @@ const courseShape = {
   hero: {
     eyebrow: s, heading: s, subhead: s,
     // The picture under the CTA (checkHero): 'hazard-scan' (needs `image`, `imageAlt`, `hazards`, `tour`),
-    // 'photo' (needs `image`, `imageAlt`) or 'none'. `image` is a name from src/images.json.
+    // 'photo' (needs `image`, `imageAlt`), 'build-scrub' (`scrub`), 'make-it-safe' (`image`, `imageAlt`,
+    // `safe`), 'risk-matrix' (`matrix`), 'hierarchy' (`hierarchy`), 'swiss-cheese' (`cheese`) or 'none'.
+    // `image` is a name from src/images.json.
     visual: s, 'image?': s, 'imageAlt?': s,
     facts: [{ value: s, 'label?': s, 'count?': 'number', 'prefix?': s }],
     cta,
@@ -77,6 +79,40 @@ const courseShape = {
       takeoff: [{ item: s, qty: 'number', unit: s, at: 'number' }],
       'total?': s,
     },
+    // Make it safe (visual: 'make-it-safe'): `image` is the site as found, `safe.image` the same shot made
+    // safe (same size). A slow wipe turns one into the other; each fix's label flips from its hazard to its
+    // control as the wipe passes `at` (source pixels of the photos). `slider` names the compare control;
+    // `before` and `after` label the two sides.
+    'safe?': {
+      image: s, imageAlt: s, before: s, after: s, slider: s,
+      fixes: [{ hazard: s, control: s, at: ['number'] }],
+    },
+    // Risk matrix (visual: 'risk-matrix', no photo): a 5x5 grid of likelihood (rows) by severity (columns).
+    // Each risk sits at `from` [likelihood, severity], 1..5, then moves to `to` once its `control` is in.
+    // `levels` names the four bands (low, medium, high, very high) by score = likelihood x severity.
+    'matrix?': {
+      label: s, likelihood: s, severity: s, before: s, after: s, levels: [s],
+      risks: [{ hazard: s, control: s, from: ['number'], to: ['number'] }],
+    },
+    // Hierarchy of control (visual: 'hierarchy', no photo): the tiers from most to least effective, each
+    // with an example from the site. `most` and `least` label the two ends.
+    'hierarchy?': { label: s, most: s, least: s, tiers: [{ name: s, example: s }] },
+    // Swiss cheese model (visual: 'swiss-cheese', no photo): layers of defence, each with a hole. The
+    // hazard passes through every hole to the incident, then the one layer with a `fix` closes its hole
+    // and stops it there.
+    'cheese?': {
+      label: s, hazard: s, incident: s, stopped: s,
+      layers: [{ name: s, hole: s, 'fix?': s }],
+    },
+  },
+  // Bow-tie (the first section below Course Content): one hazard and its top event at the knot, the causes
+  // on the left each stopped by a prevention barrier, the consequences on the right each limited by a
+  // recovery barrier. `labels` names the four columns: causes, prevention, recovery, consequences.
+  'bowtie?': {
+    heading: s, intro: s, hazard: s, event: s,
+    labels: { causes: s, prevention: s, recovery: s, consequences: s },
+    causes: [{ cause: s, barrier: s }],
+    consequences: [{ outcome: s, barrier: s }],
   },
   'included?': { heading: s, intro: s, cards: [{ ...titled, 'featured?': 'boolean' }] },
   'units?': {
@@ -143,7 +179,9 @@ const courseShape = {
   'help?': { heading: s, 'image?': s, whatsapp, email, logos },
 } as const;
 
-export const HERO_VISUALS = ['hazard-scan', 'photo', 'build-scrub', 'none'] as const;
+export const HERO_VISUALS = ['hazard-scan', 'photo', 'build-scrub', 'make-it-safe', 'risk-matrix', 'hierarchy', 'swiss-cheese', 'none'] as const;
+// The visuals drawn from data alone, with no hero photo.
+export const DIAGRAM_VISUALS = ['risk-matrix', 'hierarchy', 'swiss-cheese'] as const;
 export const CARD_STATUSES = ['live now', 'coming soon'] as const;
 export type Home = Infer<typeof homeShape>;
 export type Card = Infer<typeof cardShape>;
@@ -222,7 +260,11 @@ function checkHero({ hero: h }: Course, file: string) {
   const fail = (msg: string): never => { throw new Error(`${file}: hero.${msg}`); };
   if (!HERO_VISUALS.includes(h.visual)) fail(`visual: must be ${HERO_VISUALS.join(', ')}; got ${JSON.stringify(h.visual)}`);
   const scan = h.visual === 'hazard-scan';
-  const needs = { image: h.visual !== 'none', imageAlt: h.visual !== 'none', hazards: scan, tour: scan, scrub: h.visual === 'build-scrub' };
+  const photo = h.visual !== 'none' && !(DIAGRAM_VISUALS as readonly string[]).includes(h.visual);
+  const needs = {
+    image: photo, imageAlt: photo, hazards: scan, tour: scan, scrub: h.visual === 'build-scrub',
+    safe: h.visual === 'make-it-safe', matrix: h.visual === 'risk-matrix', hierarchy: h.visual === 'hierarchy', cheese: h.visual === 'swiss-cheese',
+  };
   for (const [key, needed] of Object.entries(needs)) {
     const has = h[key as keyof typeof needs] !== undefined;
     if (needed && !has) fail(`${key}: missing field (visual: ${h.visual} needs it)`);
@@ -236,6 +278,14 @@ function checkHero({ hero: h }: Course, file: string) {
     });
   }
   if (h.image) checkImage(h.image, 'hero.image', file);
+  if (h.safe && h.image) checkSafe(h.safe, h.image, fail);
+  if (h.matrix) checkMatrix(h.matrix, fail);
+  if (h.hierarchy && !(h.hierarchy.tiers.length >= 3 && h.hierarchy.tiers.length <= 6)) fail(`hierarchy.tiers: list 3 to 6 tiers; got ${h.hierarchy.tiers.length}`);
+  if (h.cheese) {
+    const { layers } = h.cheese;
+    if (!(layers.length >= 2 && layers.length <= 5)) fail(`cheese.layers: list 2 to 5 layers; got ${layers.length}`);
+    if (layers.filter((l) => l.fix).length !== 1) fail('cheese.layers: give exactly one layer a `fix` (the hole that gets closed)');
+  }
   if (!h.image || !h.hazards) return;
   if (!h.hazards.length) fail('hazards: list at least one hazard (or use visual: photo)');
   const { width: W, height: H } = images[h.image];
@@ -244,6 +294,32 @@ function checkHero({ hero: h }: Course, file: string) {
     const [x, y, w, ht] = zoom;
     if (at.length !== 2 || !(at[0] >= 0 && at[0] <= W && at[1] >= 0 && at[1] <= H)) fail(`hazards[${i}].at: must be [x, y] inside ${W}x${H}`);
     if (zoom.length !== 4 || !(x >= 0 && y >= 0 && w > 0 && ht > 0 && x + w <= W && y + ht <= H)) fail(`hazards[${i}].zoom: must be [x, y, w, h] inside ${W}x${H}`);
+  });
+}
+
+type Fail = (msg: string) => never;
+
+// Make it safe: the made-safe photo is a built image the same size as the hero photo (the wipe lays one
+// exactly over the other), and every fix point is inside it.
+function checkSafe(safe: NonNullable<Course['hero']['safe']>, image: string, fail: Fail) {
+  if (!safe.fixes.length) fail('safe.fixes: list at least one fix');
+  if (!(safe.image in images)) fail(`safe.image: no image "${safe.image}" in src/images.json (add it to scripts/images.ts, then npm run images)`);
+  const { width: W, height: H } = images[image];
+  const { width, height } = images[safe.image];
+  if (width !== W || height !== H) fail(`safe.image: "${safe.image}" is ${width}x${height}; it must be the same size as "${image}" (${W}x${H})`);
+  safe.fixes.forEach(({ at }, i) => {
+    if (at.length !== 2 || !(at[0] >= 0 && at[0] <= W && at[1] >= 0 && at[1] <= H)) fail(`safe.fixes[${i}].at: must be [x, y] inside ${W}x${H}`);
+  });
+}
+
+// Risk matrix: four band names, and every rating a [likelihood, severity] pair of whole numbers 1..5.
+function checkMatrix(m: NonNullable<Course['hero']['matrix']>, fail: Fail) {
+  if (m.levels.length !== 4) fail(`matrix.levels: name the 4 bands (low, medium, high, very high); got ${m.levels.length}`);
+  if (!m.risks.length) fail('matrix.risks: list at least one risk');
+  const ok = (r: number[]) => r.length === 2 && r.every((n) => Number.isInteger(n) && n >= 1 && n <= 5);
+  m.risks.forEach(({ from, to }, i) => {
+    if (!ok(from)) fail(`matrix.risks[${i}].from: must be [likelihood, severity], each 1 to 5`);
+    if (!ok(to)) fail(`matrix.risks[${i}].to: must be [likelihood, severity], each 1 to 5`);
   });
 }
 
@@ -274,6 +350,11 @@ export function validateCourse(data: unknown, file = 'content/courses/(course).y
   checkCard(c.card, file, true);
   checkHero(c, file);
   checkShelf(c, file);
+  if (c.bowtie) {
+    const { causes, consequences } = c.bowtie;
+    if (!(causes.length >= 2 && causes.length <= 4)) throw new Error(`${file}: bowtie.causes: list 2 to 4 causes; got ${causes.length}`);
+    if (!(consequences.length >= 2 && consequences.length <= 4)) throw new Error(`${file}: bowtie.consequences: list 2 to 4 consequences; got ${consequences.length}`);
+  }
   if (c.help?.image) checkImage(c.help.image, 'help.image', file);
   if (c.xray) {
     checkImage(c.xray.image, 'xray.image', file);
@@ -327,3 +408,32 @@ export function loadCourseFiles(): CourseFile[] {
 
 // The courses that have a page (built into <slug>-top and <slug>-main blocks).
 export const loadCourses = (): Course[] => loadCourseFiles().filter(hasPage);
+
+// Hero options to try before one goes live: content/hero-options/<slug>.yaml maps a visual name to that
+// visual's own hero fields (e.g. `risk-matrix: { matrix: ... }`). Each option is the course with its hero
+// switched to that visual: the shared fields (eyebrow, heading, subhead, facts, cta) stay, the live visual's
+// own fields go. Checked like a live hero. An option whose photo is not built yet is listed in `waiting`
+// (scripts/build-preview.ts skips it) rather than failing the build.
+const VISUAL_FIELDS = ['image', 'imageAlt', 'hazards', 'tour', 'scrub', 'safe', 'matrix', 'hierarchy', 'cheese'] as const;
+export type HeroOption = { visual: Course['hero']['visual']; course: Course };
+
+export function loadHeroOptions(c: Course): { options: HeroOption[]; waiting: string[] } {
+  const file = `content/hero-options/${c.slug}.yaml`;
+  if (!existsSync(new URL(`./hero-options/${c.slug}.yaml`, import.meta.url))) return { options: [], waiting: [] };
+  const data = read(`./hero-options/${c.slug}.yaml`, file);
+  if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error(`${file}: expected a set of visual names`);
+  const options: HeroOption[] = [];
+  const waiting: string[] = [];
+  for (const [visual, fields] of Object.entries(data as Record<string, object>)) {
+    const hero: Record<string, unknown> = { ...c.hero };
+    for (const k of VISUAL_FIELDS) delete hero[k];
+    const course = { ...c, hero: { ...hero, ...fields, visual } };
+    try {
+      options.push({ visual: visual as HeroOption['visual'], course: validateCourse(course, `${file} (${visual})`) });
+    } catch (e) {
+      if (/no image "/.test((e as Error).message)) waiting.push(visual);
+      else throw e;
+    }
+  }
+  return { options, waiting };
+}

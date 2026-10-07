@@ -3,6 +3,7 @@ import images from '../../src/images.json';
 import type { Course, Section } from '../../content/schema';
 import { decimals, fmtQty } from '../../src/motion/scrub';
 import { counted, courseSection } from './course-shared';
+import { hierarchy, makeItSafe, riskMatrix, swissCheese } from './course-hero-options';
 
 type Hero = Section<'hero'>;
 type Scrub = NonNullable<Hero['scrub']>;
@@ -55,11 +56,16 @@ function buildScrub(h: Hero, s: NonNullable<Hero['scrub']>) {
     + `${s.total ? `<p class="cbg-takeoff__total">${esc(s.total)}</p>` : ''}</div></div>`;
 }
 
-// hero.visual: the Hazard Scan, the build scrub, a plain photo in the same 3:2 frame (no motion hook), or nothing.
+// hero.visual: the Hazard Scan, the build scrub, a plain photo in the same 3:2 frame (no motion hook), one of the
+// hero options (course-hero-options.ts), or nothing.
 function visual(h: Hero) {
   if (h.visual === 'hazard-scan' && h.hazards && h.tour) return hazardScan(h, h.hazards, h.tour);
   if (h.visual === 'build-scrub' && h.scrub && h.image) return buildScrub(h, h.scrub);
   if (h.visual === 'photo') return `<div class="cbg-hazard"><div class="cbg-frame">${photo(h)}</div></div>`;
+  if (h.visual === 'make-it-safe' && h.safe && h.image) return makeItSafe(h, h.safe);
+  if (h.visual === 'risk-matrix' && h.matrix) return riskMatrix(h.matrix);
+  if (h.visual === 'hierarchy' && h.hierarchy) return hierarchy(h.hierarchy);
+  if (h.visual === 'swiss-cheese' && h.cheese) return swissCheese(h.cheese);
   return '';
 }
 

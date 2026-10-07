@@ -1,0 +1,119 @@
+# Hero options for the IOSH Level 3 page, to try before one goes live. Not built into the blocks:
+# `npm run build` makes a mock page for each one (dist/preview/course-<visual>.html), served by
+# `npm run dev` at http://localhost:4173/course/preview-101-<visual>. The live hero stays the one in
+# content/courses/iosh-level-3.yaml (`hero.visual`).
+#
+# To put one live: copy its fields into the hero in content/courses/iosh-level-3.yaml, set
+# `visual:` to its name, and remove the old visual's fields (`hazards`, `tour`; also `image` and
+# `imageAlt` for a visual without a photo). HOW_TO_ADD_A_COURSE.md has the full list.
+#
+# APPROVED: a CBG trainer signed off the control labels, risk ratings, examples and layers below as
+# written (relayed by Maasoom, 7 Oct 2026), the same as the hazard labels (docs/hazard-labels.md).
+# Changing any of them needs a new sign-off.
+#
+# The made-safe photo (brand/assets/photos/hazard-worksite-safe.png) is a Higgsfield edit of
+# hazard-worksite (7 Oct 2026), lined up with it pixel for pixel so the wipe shows only the six fixes.
+
+# A slow wipe turns the site as found into the same site made safe. `at` is in source pixels of the
+# 1536 x 1024 photos (the same points as the Hazard Scan markers).
+make-it-safe:
+  image: hazard-worksite
+  imageAlt: "A concrete building site at dusk: an open trench, stacked cement bags, a ladder against the frame, an orange cable across the ground and a worker grinding steel"
+  safe:
+    image: hazard-worksite-safe
+    imageAlt: "The same building site made safe: a guardrail along the upper edge, the ladder tied, the cable covered, the bags stacked low, the trench fenced and the worker in eye protection"
+    before: As found
+    after: Made safe
+    slider: Compare the site as found and made safe
+    fixes:
+      - hazard: Open edge, no guardrail
+        control: Guardrail and toe board fitted
+        at: [346, 140]
+      - hazard: Ladder not secured
+        control: Ladder tied at the top
+        at: [1185, 400]
+      - hazard: Trailing cable across a walkway
+        control: Cable covered by a cable protector
+        at: [760, 690]
+      - hazard: Unstable stack
+        control: Bags stacked low on a pallet
+        at: [190, 610]
+      - hazard: Unprotected excavation
+        control: Trench fenced off with a barrier
+        at: [800, 860]
+      - hazard: No eye protection
+        control: Safety glasses and face shield worn
+        at: [1385, 560]
+
+# The six site hazards on a 5x5 risk matrix: each moves from its rating before controls (`from`) to its
+# rating after them (`to`), as [likelihood, severity], each 1 to 5. Score = likelihood x severity.
+risk-matrix:
+  matrix:
+    label: Risk rating, before and after controls
+    likelihood: Likelihood
+    severity: Severity
+    before: Before controls
+    after: After controls
+    levels: [Low, Medium, High, Very high]
+    risks:
+      - hazard: Open edge, no guardrail
+        control: Guardrail and toe board fitted
+        from: [4, 5]
+        to: [1, 5]
+      - hazard: Ladder not secured
+        control: Ladder tied at the top
+        from: [3, 4]
+        to: [1, 4]
+      - hazard: Trailing cable across a walkway
+        control: Cable covered by a cable protector
+        from: [4, 2]
+        to: [1, 2]
+      - hazard: Unstable stack
+        control: Bags stacked low on a pallet
+        from: [3, 3]
+        to: [1, 3]
+      - hazard: Unprotected excavation
+        control: Trench fenced off with a barrier
+        from: [3, 5]
+        to: [1, 5]
+      - hazard: No eye protection
+        control: Safety glasses and face shield worn
+        from: [4, 3]
+        to: [1, 3]
+
+# The hierarchy of control, most effective first, each tier with an example from the same site.
+hierarchy:
+  hierarchy:
+    label: The hierarchy of control, on this site
+    most: Most effective
+    least: Least effective
+    tiers:
+      - name: Elimination
+        example: Cut the steel to size off site, so there is no grinding on site at all.
+      - name: Substitution
+        example: Use a cordless tool, so no cable crosses the walkway.
+      - name: Engineering controls
+        example: Fit guardrails at the open edge and fence off the trench.
+      - name: Administrative controls
+        example: A permit to dig, daily ladder checks and warning signs.
+      - name: Personal protective equipment
+        example: Safety glasses and a face shield for the grinder. The last line of defence.
+
+# Layers of defence, each with a hole. The hazard passes through every hole to the incident, then the
+# layer with a `fix` closes its hole and stops it.
+swiss-cheese:
+  cheese:
+    label: How layers of defence stop an incident
+    hazard: Work next to an open edge
+    incident: Fall from height
+    stopped: Stopped by the guardrail
+    layers:
+      - name: Planning
+        hole: No plan for work at height
+      - name: Edge protection
+        hole: No guardrail fitted
+        fix: Guardrail fitted before work starts
+      - name: Supervision
+        hole: No daily site check
+      - name: Training
+        hole: Worker not briefed on the risk

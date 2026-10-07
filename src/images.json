@@ -98,6 +98,63 @@
       ]
     }
   },
+  "hazard-worksite-safe": {
+    "width": 1536,
+    "height": 1024,
+    "variants": {
+      "avif": [
+        {
+          "w": 1536,
+          "file": "img/hazard-worksite-safe-1536.avif",
+          "bytes": 88653
+        },
+        {
+          "w": 1024,
+          "file": "img/hazard-worksite-safe-1024.avif",
+          "bytes": 50481
+        },
+        {
+          "w": 768,
+          "file": "img/hazard-worksite-safe-768.avif",
+          "bytes": 31955
+        }
+      ],
+      "webp": [
+        {
+          "w": 1536,
+          "file": "img/hazard-worksite-safe-1536.webp",
+          "bytes": 140696
+        },
+        {
+          "w": 1024,
+          "file": "img/hazard-worksite-safe-1024.webp",
+          "bytes": 87416
+        },
+        {
+          "w": 768,
+          "file": "img/hazard-worksite-safe-768.webp",
+          "bytes": 57636
+        }
+      ],
+      "jpg": [
+        {
+          "w": 1536,
+          "file": "img/hazard-worksite-safe-1536.jpg",
+          "bytes": 197806
+        },
+        {
+          "w": 1024,
+          "file": "img/hazard-worksite-safe-1024.jpg",
+          "bytes": 106443
+        },
+        {
+          "w": 768,
+          "file": "img/hazard-worksite-safe-768.jpg",
+          "bytes": 65984
+        }
+      ]
+    }
+  },
   "closing-plate": {
     "width": 1536,
     "height": 1024,

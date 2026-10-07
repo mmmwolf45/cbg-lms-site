@@ -1,6 +1,7 @@
 // Scroll smoothness of the home page in a REAL Chrome window (headful, vsync-paced, the GPU the laptop uses),
 // section by section, with a Chrome trace split into main thread / compositor / raster / GPU process time.
-//   node lab/scroll-perf.mjs [--port 4173] [--dist dist] [--cpu 1] [--off sky,cursor,...] [--label A] [--trace f.json]
+//   node lab/scroll-perf.mjs [--port 4173] [--dist dist] [--path /] [--cpu 1] [--off sky,cursor,...] [--label A] [--trace f.json]
+// --path measures another mock page, e.g. --path /course/preview-101-risk-matrix (a course hero option).
 // It drives the installed Google Chrome (channel 'chrome'; Playwright's own Chromium can't start a window on
 // the Intel UHD laptop) at a 1440x900 viewport and the screen's real pixel ratio, waits for the page to settle,
 // puts the mouse mid-screen and wheel-scrolls top to bottom at about 830 px/s (100 px notches every 120 ms),
@@ -8,7 +9,7 @@
 // Headless Chrome doesn't pace frames (rAF runs at 60 fps while the GPU falls behind), so its numbers lie.
 // --off switches features off to bisect costs: sky (the whole background: waves and stars, one canvas since
 // 6 Oct 2026) globe cursor support strip strip-anim blur shadow willchange anims hero band story stripmask masks.
-// --idle rests at each section instead (--sections a,b,c), --cold skips the warm-up pass, --fast skips the trace,
+// --idle rests at each section instead (--sections a,b,c; --rest ms at each, default 2000), --cold skips the warm-up pass, --fast skips the trace,
 // --quads adds viz render-pass events to the trace, --css/--init add a style or a script. For A/B in one session
 // (the GPU clock drifts with heat between runs) use lab/ab-perf.mjs.
 // Output: one row per section: frames, frame-interval p50 / p95 / worst (ms), long tasks (count, ms), and busy ms
@@ -87,7 +88,7 @@ await page.addInitScript(([off, css]) => {
 }, [[...OFF], CSS]);
 
 const cdp = await page.context().newCDPSession(page);
-await page.goto(`http://localhost:${PORT}/`);
+await page.goto(`http://localhost:${PORT}${arg('path', '/')}`);
 await page.waitForTimeout(5000); // the sky arrives after load; the hero frames decode
 const env = await page.evaluate(() => {
   const g = document.createElement('canvas').getContext('webgl'), x = g?.getExtension('WEBGL_debug_renderer_info');
@@ -122,7 +123,7 @@ if (process.argv.includes('--idle')) {
   // At rest: the mouse still, each section centred for 2 s (what runs when nobody scrolls).
   for (const sec of arg('sections', 'hero,facts,disciplines,how-it-works,band,courses,support,about').split(',')) {
     await page.evaluate((sec) => { const el = document.querySelector(`[data-cbg-section="${sec}"]`); el && el.scrollIntoView({ block: 'center' }); }, sec);
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(Number(arg('rest', '2000')));
   }
 } else await scrollDown();
 const perf = await page.evaluate(() => { window.__perf.on = false; return { frames: window.__perf.frames, long: window.__perf.long, secs: window.__perf.secs }; });

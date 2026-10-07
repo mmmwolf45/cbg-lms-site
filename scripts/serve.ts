@@ -15,6 +15,8 @@ const TYPES: Record<string, string> = {
 function fileFor(path: string): string | undefined {
   if (path === '/') return 'dist/preview/home.html';
   if (path === '/gallery') return 'preview/components.html';
+  const option = path.match(/^\/course\/preview-101-([a-z-]+?)\/?$/);
+  if (option) return `dist/preview/course-${option[1]}.html`;
   if (/^\/course\/(101-[^/]+|preview-101)\/?$/.test(path)) return 'dist/preview/course.html';
   if (/^\/course\/(102-[^/]+|preview-102)\/?$/.test(path)) return 'dist/preview/qs.html';
   if (path.startsWith(BASE)) {
@@ -34,4 +36,4 @@ createServer(async (req, res) => {
   } catch {
     res.writeHead(404).end('not found');
   }
-}).listen(PORT, () => console.log(`mock course.link on http://localhost:${PORT}/, /course/preview-101 and /gallery`));
+}).listen(PORT, () => console.log(`mock course.link on http://localhost:${PORT}/, /course/preview-101 (and /course/preview-101-<hero option>) and /gallery`));

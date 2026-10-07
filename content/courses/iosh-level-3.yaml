@@ -105,6 +105,33 @@ hero:
     previous: Previous
     next: Next
 
+# The 3D bow-tie, first below Course Content (templates/sections/course-bowtie.ts). New safety copy:
+# needs a CBG trainer's sign-off before the main block is re-pasted.
+bowtie:
+  heading: "One hazard, every barrier: the bow-tie"
+  intro: How a safety professional maps a risk. Causes on the left, consequences on the right, and the barriers that stop each one. You will build these in Unit 2.
+  hazard: Work at height
+  event: A fall from the open edge
+  labels:
+    causes: Causes
+    prevention: Prevention barriers
+    recovery: Recovery barriers
+    consequences: Consequences
+  causes:
+    - cause: No edge protection
+      barrier: Guardrails and toe boards
+    - cause: Ladder not secured
+      barrier: Ladder tied and checked
+    - cause: Rushing to finish the job
+      barrier: Planned work and supervision
+  consequences:
+    - outcome: Serious injury
+      barrier: Fall arrest harness
+    - outcome: A worker left hanging
+      barrier: Rescue plan and trained first aiders
+    - outcome: The same fall happens again
+      barrier: Report and investigate every incident
+
 included:
   heading: One course, five certificates and a toolkit
   intro: Your course fee covers everything below. Nothing more to pay for registration, assessments or materials.

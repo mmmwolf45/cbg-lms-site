@@ -261,10 +261,11 @@ describe('course schema: optional sections and hero visuals (T27)', () => {
     expect(() => validateCourse(c)).toThrow('card: missing section');
   });
 
-  it('accepts only the four hero visuals', () => {
+  it('accepts only the listed hero visuals', () => {
     const c = yaml();
     c.hero.visual = 'video';
-    expect(() => validateCourse(c)).toThrow('hero.visual: must be hazard-scan, photo, build-scrub, none; got "video"');
+    expect(HERO_VISUALS).toEqual(['hazard-scan', 'photo', 'build-scrub', 'make-it-safe', 'risk-matrix', 'hierarchy', 'swiss-cheese', 'none']);
+    expect(() => validateCourse(c)).toThrow(`hero.visual: must be ${HERO_VISUALS.join(', ')}; got "video"`);
     delete c.hero.visual;
     expect(() => validateCourse(c)).toThrow('hero.visual: missing field');
   });
