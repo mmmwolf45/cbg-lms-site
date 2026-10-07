@@ -7,8 +7,12 @@
 # `visual:` to its name, and remove the old visual's fields (`hazards`, `tour`; also `image` and
 # `imageAlt` for a visual without a photo). HOW_TO_ADD_A_COURSE.md has the full list.
 #
-# DRAFT COPY: the control labels, risk ratings, examples and layers below need a CBG trainer's
-# sign-off before going live, the same as the hazard labels (docs/hazard-labels.md).
+# APPROVED: a CBG trainer signed off the control labels, risk ratings, examples and layers below as
+# written (relayed by Maasoom, 7 Oct 2026), the same as the hazard labels (docs/hazard-labels.md).
+# Changing any of them needs a new sign-off.
+#
+# The made-safe photo (brand/assets/photos/hazard-worksite-safe.png) is a Higgsfield edit of
+# hazard-worksite (7 Oct 2026), lined up with it pixel for pixel so the wipe shows only the six fixes.
 
 # A slow wipe turns the site as found into the same site made safe. `at` is in source pixels of the
 # 1536 x 1024 photos (the same points as the Hazard Scan markers).
