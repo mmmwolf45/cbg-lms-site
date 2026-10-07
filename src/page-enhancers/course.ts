@@ -6,5 +6,6 @@ import { closeDefaultSection, startHere } from '../motion/start-here';
 import { scrub } from '../motion/scrub';
 import { xray } from '../motion/xray';
 import { qsSections } from '../motion/qs-sections';
+import { heroOptions } from '../motion/hero-options';
 
-export const enhancers = [closeDefaultSection, hazardScan, scrub, build80, xray, qsSections, courseExtras, startHere];
+export const enhancers = [closeDefaultSection, hazardScan, heroOptions, scrub, build80, xray, qsSections, courseExtras, startHere];

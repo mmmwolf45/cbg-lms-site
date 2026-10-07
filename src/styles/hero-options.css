@@ -1,0 +1,199 @@
+/* Hero options beyond the Hazard Scan (templates/sections/course-hero-options.ts, src/motion/hero-*.ts):
+   make-it-safe, risk-matrix, hierarchy, swiss-cheese. Each is written in its finished state, which is what
+   no JS and reduced motion show; the starting states at the end of this file apply only while the script
+   runs with full motion and the visual is not done yet (the motion.css rule). Layout switches on the
+   column's width (container cbgc, course.css). */
+.cbg-course-page {
+  --cbg-risk: #E58A6B;
+  --cbg-ok: #7CCB9A;
+}
+
+/* ---------- make-it-safe ---------- */
+/* The photo as found lies over the made-safe photo, in a layer slid --cut to the right (its picture slid
+   back by the same amount, so it stays put): the wipe is two transforms, no repaint of the photos. */
+.cbg-safe__view { position: relative; --cut: 100%; }
+.cbg-safe__before { position: absolute; inset: 0; overflow: hidden; transform: translateX(var(--cut)); }
+.cbg-safe__before picture { display: block; transform: translateX(calc(-1 * var(--cut))); }
+.cbg-safe__before::before {
+  content: ""; position: absolute; z-index: 1; top: 0; bottom: 0; left: 0; width: 2px; background: var(--cbg-gold);
+  box-shadow: 0 0 10px 2px rgba(214, 177, 96, 0.75), 0 0 32px 8px rgba(214, 177, 96, 0.3);
+}
+.cbg-safe__tag {
+  position: absolute; bottom: 12px; margin: 0; padding: 4px 10px; border-radius: var(--cbg-r-pill);
+  background: rgba(8, 18, 38, 0.82); font: 700 0.75rem / 1.3 var(--cbg-font-display); letter-spacing: 0.04em;
+  text-transform: uppercase; transition: opacity 400ms var(--cbg-ease);
+}
+.cbg-safe__tag--after { left: 12px; color: var(--cbg-ok); }
+.cbg-safe__tag--before { right: 12px; color: var(--cbg-risk); opacity: 0; }
+.cbg-safe__view.is-split .cbg-safe__tag--before { opacity: 1; }
+.cbg-safe__view.is-found .cbg-safe__tag--after { opacity: 0; }
+
+/* Pins: a numbered dot on each fix, and beside it (laptop) its control, or its hazard while the line has
+   not passed it yet (.is-risk). */
+.cbg-safe__pins { position: absolute; inset: 0; pointer-events: none; }
+.cbg-safe-pin { position: absolute; left: var(--x); top: var(--y); }
+.cbg-safe-pin b {
+  display: block; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%;
+  background: var(--cbg-ok); color: var(--cbg-bg); font: 800 0.8125rem / 26px var(--cbg-font-display); text-align: center;
+  box-shadow: 0 0 0 3px rgba(8, 18, 38, 0.6); transition: background-color 500ms var(--cbg-ease);
+}
+.cbg-safe-pin.is-risk b { background: var(--cbg-risk); }
+.cbg-safe-pin > span {
+  position: absolute; top: 0; left: 22px; translate: 0 -50%; padding: 4px 10px; white-space: nowrap;
+  border-radius: var(--cbg-r-pill); background: rgba(8, 18, 38, 0.86); font: 600 0.8125rem / 1.3 var(--cbg-font-display);
+  transition: opacity 500ms var(--cbg-ease);
+}
+.cbg-safe-pin--l > span { left: auto; right: 22px; }
+.cbg-safe-pin__hz { color: var(--cbg-risk); border: 1px solid rgba(229, 138, 107, 0.55); opacity: 0; }
+.cbg-safe-pin__ok { color: var(--cbg-ok); border: 1px solid rgba(124, 203, 154, 0.5); }
+.cbg-safe-pin.is-risk .cbg-safe-pin__hz { opacity: 1; }
+.cbg-safe-pin.is-risk .cbg-safe-pin__ok { opacity: 0; }
+@container cbgc (max-width: 539.98px) { .cbg-safe-pin > span { display: none; } }
+
+/* The compare slider (shown by the script): the whole photo, see-through, over everything; focus rings
+   the photo. */
+.cbg-safe__range {
+  position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize;
+  -webkit-appearance: none; appearance: none; touch-action: pan-y;
+}
+.cbg-safe__view:has(.cbg-safe__range:focus-visible) { outline: 2px solid var(--cbg-gold); outline-offset: 4px; }
+
+/* The fixes in words: under the photo on phones; for screen readers only on wider columns with the
+   script running (the pins say it there). */
+.cbg-safe-list, .cbg-matrix-list { display: grid; gap: var(--cbg-s2); margin: var(--cbg-s4) 0 0; }
+:is(.cbg-safe-list, .cbg-matrix-list) li { display: flex; gap: var(--cbg-s3); align-items: baseline; font: 400 var(--cbg-fs-small) / 1.45 var(--cbg-font-body); color: var(--cbg-text-2); }
+:is(.cbg-safe-list, .cbg-matrix-list) li > b {
+  flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--cbg-line-strong); color: var(--cbg-text-1);
+  font: 800 0.75rem / 22px var(--cbg-font-display); text-align: center;
+}
+.cbg-safe-list s { color: var(--cbg-text-3); }
+.cbg-safe-list strong, .cbg-matrix-list strong { color: var(--cbg-text-1); font-weight: 600; }
+@container cbgc (min-width: 540px) {
+  .cbg-safe.is-on .cbg-safe-list { position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+
+/* ---------- the diagram options: a glass card in the hero ---------- */
+.cbg-diagram {
+  margin: var(--cbg-s6) 0 0; padding: var(--cbg-s5); border: 1px solid var(--cbg-line); border-radius: var(--cbg-r-media);
+  background: rgb(15 27 51 / 0.82);
+}
+.cbg-diagram__label { margin-bottom: var(--cbg-s4); font: 700 var(--cbg-fs-label) / 1.35 var(--cbg-font-display); color: var(--cbg-text-3); letter-spacing: 0.02em; }
+@container cbgc (max-width: 479.98px) { .cbg-diagram { padding: var(--cbg-s4); } }
+
+/* ---------- risk-matrix ---------- */
+.cbg-matrix__plot { display: grid; grid-template-columns: auto 1fr; gap: var(--cbg-s2); }
+.cbg-matrix__axis { font: 600 0.75rem / 1 var(--cbg-font-display); color: var(--cbg-text-3); letter-spacing: 0.04em; text-transform: uppercase; text-align: center; }
+.cbg-matrix__axis--y { writing-mode: vertical-rl; rotate: 180deg; }
+.cbg-matrix__axis--x { grid-column: 2; }
+.cbg-matrix__plot { max-width: 620px; }
+/* A wide column: the matrix on the left, the ratings in words beside it */
+@container cbgc (min-width: 860px) {
+  .cbg-matrix { display: grid; grid-template-columns: minmax(0, 620px) 1fr; column-gap: var(--cbg-s6); align-items: start; }
+  .cbg-matrix > .cbg-diagram__label { grid-column: 1 / -1; }
+  .cbg-matrix-list { grid-column: 2; grid-row: 2 / span 2; margin-top: 0; }
+}
+.cbg-matrix__grid { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; aspect-ratio: 2 / 1; }
+.cbg-cell { border-radius: 6px; }
+.cbg-cell--0 { background: rgb(96 190 132 / 0.34); }
+.cbg-cell--1 { background: rgb(232 190 84 / 0.38); }
+.cbg-cell--2 { background: rgb(233 128 72 / 0.44); }
+.cbg-cell--3 { background: rgb(222 68 68 / 0.56); }
+.cbg-risk {
+  position: absolute; left: var(--x); top: var(--y); width: 28px; height: 28px; margin: -14px 0 0 -14px; border-radius: 50%;
+  background: var(--cbg-text-1); color: var(--cbg-bg); font: 800 0.8125rem / 28px var(--cbg-font-display); text-align: center;
+  box-shadow: 0 0 0 2px rgba(8, 18, 38, 0.55), 0 6px 16px -6px rgba(0, 0, 0, 0.6);
+}
+.cbg-risk--was { background: transparent; color: var(--cbg-text-2); box-shadow: none; outline: 1.5px dashed var(--cbg-text-3); outline-offset: -1.5px; }
+@container cbgc (max-width: 479.98px) {
+  .cbg-risk { width: 20px; height: 20px; margin: -10px 0 0 -10px; font-size: 0.6875rem; line-height: 20px; }
+}
+.cbg-matrix__key { display: flex; flex-wrap: wrap; gap: var(--cbg-s2) var(--cbg-s4); margin: var(--cbg-s4) 0 0; font: 600 0.75rem / 1.3 var(--cbg-font-display); color: var(--cbg-text-2); }
+.cbg-matrix__key span { display: inline-flex; align-items: center; gap: 6px; }
+.cbg-matrix__key i { width: 12px; height: 12px; border-radius: 3px; }
+.cbg-matrix__key .cbg-risk { position: static; width: 12px; height: 12px; margin: 0; }
+
+/* ---------- hierarchy ---------- */
+.cbg-tiers__body { display: grid; grid-template-columns: 72px 1fr; gap: var(--cbg-s4); }
+.cbg-tiers__scale { display: flex; flex-direction: column; align-items: center; gap: var(--cbg-s2); margin: 0; font: 700 0.6875rem / 1.25 var(--cbg-font-display); color: var(--cbg-text-3); text-align: center; text-transform: uppercase; letter-spacing: 0.04em; }
+.cbg-tiers__scale i { position: relative; flex: 1; width: 2px; background: linear-gradient(var(--cbg-gold), rgba(214, 177, 96, 0.15)); transform-origin: top; }
+.cbg-tiers__scale i::after { content: ""; position: absolute; bottom: -2px; left: -4px; border: 5px solid transparent; border-top-color: rgba(214, 177, 96, 0.4); border-bottom: 0; }
+.cbg-tiers__list { display: grid; gap: 6px; }
+.cbg-tier { display: grid; grid-template-columns: minmax(0, 46%) 1fr; gap: var(--cbg-s4); align-items: center; }
+/* The inverted triangle: each tier a little narrower than the one above, its sides slanting in */
+.cbg-tier__bar {
+  display: flex; align-items: center; justify-content: center; min-height: 52px; padding: 8px 12px;
+  margin-inline: calc(var(--i) * 4.5%); clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 10px 100%);
+  background: linear-gradient(180deg, rgb(214 177 96 / calc(0.5 - var(--i) * 0.07)), rgb(214 177 96 / calc(0.34 - var(--i) * 0.05)));
+  transform-origin: center;
+}
+.cbg-tier__bar strong { font: 700 0.875rem / 1.25 var(--cbg-font-display); color: var(--cbg-text-1); text-align: center; }
+.cbg-tier__ex { font: 400 var(--cbg-fs-small) / 1.4 var(--cbg-font-body); color: var(--cbg-text-2); }
+@container cbgc (max-width: 479.98px) {
+  .cbg-tiers__body { grid-template-columns: 1fr; }
+  .cbg-tiers__scale { display: none; }
+  .cbg-tier { grid-template-columns: minmax(0, 42%) 1fr; gap: var(--cbg-s3); }
+  .cbg-tier__bar { margin-inline: calc(var(--i) * 3%); padding: 8px; clip-path: polygon(0 0, 100% 0, calc(100% - 6px) 100%, 6px 100%); }
+  .cbg-tier__bar strong { font-size: 0.8125rem; }
+  .cbg-tier__ex { font-size: 0.875rem; }
+}
+
+/* ---------- swiss-cheese ---------- */
+/* The ray runs behind the slices; each slice's hole is a see-through ellipse (a mask, --h its size), so the
+   ray shows only through the holes. The fixed slice's hole is closed (--h: 0) in the finished state. */
+.cbg-cheese__stage { display: grid; grid-template-columns: minmax(64px, 17%) 1fr minmax(64px, 17%); gap: var(--cbg-s3); align-items: center; }
+.cbg-cheese__end { margin: 0; font: 700 0.8125rem / 1.3 var(--cbg-font-display); color: var(--cbg-text-1); }
+.cbg-cheese__end--from { padding-left: 10px; border-left: 2px solid var(--cbg-risk); }
+.cbg-cheese__end--to s { display: inline-block; color: var(--cbg-risk); text-decoration: none; opacity: 0.6;
+  background: linear-gradient(currentColor, currentColor) 0 55% / var(--strike, 100%) 1.5px no-repeat; }
+.cbg-cheese__end--to strong { display: block; margin-top: 6px; color: var(--cbg-ok); }
+.cbg-cheese__track { position: relative; display: grid; grid-template-columns: repeat(var(--n), 1fr); place-items: center; height: clamp(140px, 30cqi, 220px); }
+.cbg-cheese__ray { position: absolute; top: 50%; height: 3px; margin-top: -1.5px; border-radius: 2px; background: var(--cbg-risk); box-shadow: 0 0 12px 1px rgba(229, 138, 107, 0.6); transform-origin: left; }
+.cbg-cheese__ray--in { left: -12px; width: calc(var(--stop) + 12px); }
+.cbg-cheese__ray--out { left: var(--stop); right: 0; opacity: 0.18; }
+.cbg-slice {
+  --h: 1; position: relative; z-index: 1; width: clamp(26px, 7cqi, 52px); height: 100%; border-radius: 14px;
+  background: linear-gradient(170deg, #E9CD86, #C9A04A); transform: skewY(-8deg);
+  -webkit-mask: radial-gradient(ellipse calc(var(--h) * 34% + 0.1%) calc(var(--h) * 11% + 0.1%) at 50% 50%, transparent 96%, #000 100%);
+  mask: radial-gradient(ellipse calc(var(--h) * 34% + 0.1%) calc(var(--h) * 11% + 0.1%) at 50% 50%, transparent 96%, #000 100%);
+}
+.cbg-slice.is-fix { --h: 0; }
+.cbg-slice__hole { display: none; }
+.cbg-cheese__layers { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--cbg-s2); margin: var(--cbg-s5) 0 0; }
+.cbg-cheese__layers li { padding: 10px 12px; border: 1px solid var(--cbg-line); border-radius: 12px; font: 400 0.875rem / 1.4 var(--cbg-font-body); color: var(--cbg-text-2); }
+.cbg-cheese__layers strong { display: block; margin-bottom: 2px; font: 700 var(--cbg-fs-label) / 1.3 var(--cbg-font-display); color: var(--cbg-text-1); }
+.cbg-cheese__layers li { transition: border-color 900ms var(--cbg-ease); }
+.cbg-cheese__layers .is-fix { border-color: rgba(124, 203, 154, 0.5); }
+.cbg-cheese__layers .is-fix span { transition: opacity 900ms var(--cbg-ease); }
+.cbg-cheese__layers s { display: block; color: var(--cbg-text-3); }
+.cbg-cheese__layers .is-fix span { color: var(--cbg-ok); }
+@container cbgc (max-width: 479.98px) {
+  .cbg-cheese__stage { grid-template-columns: 1fr; }
+  .cbg-cheese__end--to { text-align: right; }
+}
+
+/* ---------- starting states (full motion, script running, not done yet) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  html.cbg-js .cbg-matrix:not(.cbg-done) .cbg-matrix__grid .cbg-risk { opacity: 0; }
+  html.cbg-js .cbg-tiers:not(.cbg-done) :is(.cbg-tier__bar, .cbg-tier__ex) { opacity: 0; }
+  html.cbg-js .cbg-tiers:not(.cbg-done) .cbg-tiers__scale i { transform: scaleY(0); }
+  html.cbg-js .cbg-cheese:not(.cbg-done) .cbg-slice { opacity: 0; }
+  html.cbg-js .cbg-cheese:not(.cbg-done) .cbg-slice.is-fix { --h: 1; }
+  html.cbg-js .cbg-cheese:not(.cbg-done) .cbg-cheese__ray { transform: scaleX(0); opacity: 1; }
+  html.cbg-js .cbg-cheese:not(.cbg-done) .cbg-cheese__end--to s { opacity: 0; --strike: 0%; }
+  html.cbg-js .cbg-cheese:not(.cbg-done) .cbg-cheese__end--to strong { opacity: 0; }
+  /* The fixed layer's card shows its hole until the hole closes */
+  html.cbg-js .cbg-cheese:not(.cbg-done) .cbg-cheese__layers .is-fix { border-color: var(--cbg-line); }
+  html.cbg-js .cbg-cheese:not(.cbg-done) .cbg-cheese__layers .is-fix s { text-decoration: none; color: inherit; }
+  html.cbg-js .cbg-cheese:not(.cbg-done) .cbg-cheese__layers .is-fix span { opacity: 0; }
+}
+
+/* Make it safe: until its script takes over (.is-on), a page with full motion holds the site as found, so
+   the wipe starts where the student first sees it (no flash of the finished state). */
+@media (prefers-reduced-motion: no-preference) {
+  html.cbg-js .cbg-safe:not(.cbg-done, .is-on) .cbg-safe__view { --cut: 0%; }
+  html.cbg-js .cbg-safe:not(.cbg-done, .is-on) .cbg-safe__tag--after { opacity: 0; }
+  html.cbg-js .cbg-safe:not(.cbg-done, .is-on) .cbg-safe__tag--before { opacity: 1; }
+  html.cbg-js .cbg-safe:not(.cbg-done, .is-on) .cbg-safe-pin b { background: var(--cbg-risk); }
+  html.cbg-js .cbg-safe:not(.cbg-done, .is-on) .cbg-safe-pin__hz { opacity: 1; }
+  html.cbg-js .cbg-safe:not(.cbg-done, .is-on) .cbg-safe-pin__ok { opacity: 0; }
+}

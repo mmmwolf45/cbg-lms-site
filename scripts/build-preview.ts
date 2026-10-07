@@ -5,6 +5,8 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { loaderSnippet } from '../src/loader/snippet';
 import { PAGES } from '../src/components/html';
+import { loadCourse, loadHeroOptions } from '../content/schema';
+import { courseTop } from '../templates/course';
 
 const ORIGIN = 'https://cbgtraininginstitute.course.link';
 const BASE = '/cbg-lms-site/';
@@ -64,4 +66,18 @@ writeFileSync(
       .replace('</head>', '<style>#overview,#learn,#faq{display:none!important}</style></head>')),
 );
 
-console.log('preview: dist/preview/home.html, dist/preview/course.html, dist/preview/qs.html');
+// The IOSH page with each hero option in content/hero-options/iosh-level-3.yaml instead of the live hero
+// (served at /course/preview-101-<visual>). The top block is rendered here, never written to dist/blocks,
+// so nothing of it can be pasted by mistake. Assets point at the local build: a new photo isn't deployed yet.
+const { options, waiting } = loadHeroOptions(loadCourse('iosh-level-3.yaml'));
+const optionPages = options.map(({ visual, course }) => {
+  const top = `<div id="custom-iosh-level-3-top">${courseTop(course).replace(/>\s*\n\s*</g, '><').replaceAll(PAGES, BASE)}</div>`;
+  writeFileSync(
+    `dist/preview/course-${visual}.html`,
+    mock('live-course.html', (p) => beforeId(beforeId(p, 'course_content', top), 'reviews', block('iosh-level-3-main', true))),
+  );
+  return `dist/preview/course-${visual}.html`;
+});
+
+console.log(`preview: dist/preview/home.html, dist/preview/course.html, dist/preview/qs.html${optionPages.map((f) => `, ${f}`).join('')}`);
+if (waiting.length) console.log(`  hero options waiting for their photo (not built): ${waiting.join(', ')}`);

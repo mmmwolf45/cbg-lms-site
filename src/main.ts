@@ -13,6 +13,7 @@ import './styles/course-motion.css';
 import './styles/qs.css';
 import './styles/scrub.css';
 import './styles/xray.css';
+import './styles/hero-options.css';
 import './styles/native-overrides.css';
 import './styles/sky.css';
 import { routeOf, type Route } from './pages';

@@ -208,7 +208,7 @@ Course pages don't get an extra `h1`. The native course title stays an `h2`, as 
 
 ### 5.3 Course template (Phase C)
 - `templates/course.ts` renders any `content/courses/<slug>.yaml`. Each section renders only if its data is present.
-- The hero visual is chosen per course: `hero.visual: hazard-scan | photo | none`. The data for each lives in the YAML.
+- The hero visual is chosen per course: `hero.visual: hazard-scan | photo | build-scrub | make-it-safe | risk-matrix | hierarchy | swiss-cheese | none`. The data for each lives in the YAML. Options being tried live in `content/hero-options/<slug>.yaml`, previewed on the mock only (7 Oct 2026). Each option's script is its own chunk, loaded only on a page that uses it.
 - `src/pages.ts` maps course.link `uniqueId` → slug.
 - `HOW_TO_ADD_A_COURSE.md` explains the steps.
 - A dummy second course renders correctly from content alone.

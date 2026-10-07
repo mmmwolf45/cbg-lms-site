@@ -50,6 +50,9 @@ const jobs: Job[] = [
   // the source). It is the hero's <picture>: what shows before the frames load, and without JS.
   { name: 'hero-explode-poster', src: 'brand/assets/hero-explode/poster.png', widths: [960, 640], q: photo, budgetKB: 80 },
   { name: 'hazard-worksite', src: `${PHOTOS}/hazard-worksite.png`, widths: [1536, 1024, 768], q: photo, budgetKB: 250 },
+  // The same site made safe, for the make-it-safe hero option (content/hero-options/iosh-level-3.yaml). Same
+  // 1536 x 1024 as hazard-worksite: the wipe lays one over the other. Optional until it is added.
+  { name: 'hazard-worksite-safe', src: `${PHOTOS}/hazard-worksite-safe.png`, widths: [1536, 1024, 768], q: photo, budgetKB: 250, optional: true },
   { name: 'closing-plate', src: `${PHOTOS}/closing-plate.png`, widths: [1536, 800], q: gradient, budgetKB: 150 },
   // Home course cards (3:2 sources, shown cropped to 4:3) and the home band. Optional until supplied.
   ...['course-iosh', 'course-qs', 'course-mep', 'course-structural', 'course-bim', 'course-interior'].map((name) => ({
