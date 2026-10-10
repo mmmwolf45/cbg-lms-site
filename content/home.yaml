@@ -56,9 +56,9 @@ how-it-works:
       body: Once your enrolment is confirmed, CBG gives you access to your course. Your login details are shared about one week before your batch starts.
     - title: Log in and open your course.
       body: >-
-        Everything for your course sits on its course page: welcome guide, class links, slides and more.
+        Everything for your course sits on its course page: welcome guide, class links, unit workbooks, practice materials and more.
     - title: Join your live classes and keep going.
-      body: Classes run live on Google Meet. After each class, the slides and new study materials are waiting for you here.
+      body: Classes run live on Google Meet. After each class, the session's study notes tell you which workbook pages to read and which questions to try.
 
 # A full-width photo between the steps and the course cards: the floating desk (4 Oct 2026). `image`
 # is the empty-desk photo (brand/assets/photos/band-desk.png, built by `npm run images`); the plans,

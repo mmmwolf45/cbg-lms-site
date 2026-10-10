@@ -116,14 +116,14 @@ included:
       body: IBM SkillsBuild Project Management Fundamentals, Six Sigma Yellow Belt, Scrum Fundamentals Certified and HP LIFE AI for Business Professionals. Studied online at your own pace, with a CBG guide for each.
     - title: Eight CBG Field Guides.
       body: Practical workbooks for daily HSE work, yours from day 1.
-    - title: Study materials for every session.
-      body: Slides for each live class, with study notes, practice questions and mock exams added as the course goes on.
+    - title: CBG study materials.
+      body: A workbook for each unit with Check yourself questions, a Practice Pack of 24 OSH in Practice tasks with blank IOSH templates, an Exam Skills guide, a Key Words list and mock exams for both assessments. Your trainers present the slides live in class.
     - title: IOSH registration and both assessments.
       body: CBG registers you with IOSH as a learner, and both externally set assessments are covered.
 
 units:
   heading: "Your learning path: 4 units, 16 sessions"
-  intro: Each unit is taught in live sessions. Every session has its own class link and slides on this page, in teaching order.
+  intro: Each unit is taught in live sessions. Every unit starts with its workbook, and every session has its own class link and study notes on this page, in teaching order.
   units:
     - code: L3C01
       title: Fundamentals of OSH principles and management systems
@@ -179,12 +179,12 @@ how-classes-run:
   heading: How your classes run
   items:
     - title: Live online classes on Google Meet.
-      body: Each session's Meet link is on this page, just before that session's slides.
+      body: Each session's Meet link is on this page, just before that session's study notes.
     - title: About two months.
       body: >-
         All four units are covered in about two months: 36 hours of live online tuition, with guided self-study making up the rest of the 80 guided learning hours.
     - title: Independent study.
-      body: On top of the 80 guided hours, IOSH expects about 42 hours of your own study (122 hours in total). Use it to review slides, read study notes, try practice questions and work on your bonus certificates.
+      body: On top of the 80 guided hours, IOSH expects about 42 hours of your own study (122 hours in total). Use it to read your workbook, answer the Check yourself questions, try the Practice Pack tasks and mock exams, and work on your bonus certificates.
     - title: Trainer support.
       body: Your trainers answer questions between classes and give revision guidance before each assessment.
     - title: What you need.
@@ -293,11 +293,11 @@ faq:
   heading: Student FAQ
   items:
     - q: Where do I find the link for my live class?
-      a: In the unit sections of this course, each session has a "Live Class" lesson with the Google Meet link, just before that session's slides.
+      a: In the unit sections of this course, each session has a "Live Class" lesson with the Google Meet link, just before that session's study notes.
     - q: What do I need for the classes?
       a: A laptop or PC with a webcam and a stable internet connection. Join a few minutes early.
     - q: I missed a class. What should I do?
-      a: Download that session's slides from this page, go through them, and message your trainer or CBG with any questions.
+      a: Open that session's study notes on this page, read the workbook pages listed and try the Check yourself questions, then message your trainer or CBG with any questions.
     - q: How much self-study is expected?
       a: Besides the live classes and guided study (80 guided hours), IOSH expects about 42 hours of your own study across the course.
     - q: When do I take the IOSH assessments?
@@ -317,6 +317,12 @@ faq:
       a: It meets the academic requirement. IOSH also asks for at least one year's relevant experience and mandatory CPD when you apply.
     - q: Who do I contact for help?
       a: WhatsApp +974 7048 5638 or email safety.training@carbonblueglobal.com.
+    - q: Do you guarantee a job?
+      a: No. No honest course can. What we do is give you a stronger CV, a better LinkedIn profile, a steady list of openings and conversations with experienced people in the industry. The rest depends on your skills, effort and how you present yourself.
+    - q: When does Career Launch Support start and end?
+      a: It starts when you enrol and runs until one month after you receive your IOSH Level 3 certificate.
+    - q: Does it cost extra?
+      a: No. It is included in your course fee.
 
 help:
   heading: Stuck on anything? Message us.
