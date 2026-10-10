@@ -33,6 +33,7 @@ card:
     - About 2 months
     - 4 bonus certificates
     - 8 Field Guides
+  note: "Career Launch Support: included in your course. Career support, not a job guarantee."
   languages: [English]
   image: course-iosh
   order: 1
@@ -281,6 +282,35 @@ field-guides:
   unnamedUpcoming: 2
   # Shown on the covers of guides that are not out yet.
   comingSoonLabel: Coming soon
+
+# Career Launch Support (copy deck, 10 Oct 2026; master copy claude/IOSH_Career_Launch_Support.md on Drive).
+# Left out on purpose: the deck's "Visual idea" note.
+career-launch:
+  heading: Career Launch Support
+  intro: Career Launch Support included, from day one until a month after your certificate. It is included in your course fee, at no extra cost.
+  stages:
+    - name: Get Ready
+      parts:
+        - title: CV session.
+          body: Learn what safety employers look for and how to write a CV that gets past screening.
+        - title: AI CV builder.
+          body: Build a clean, ATS-friendly CV with our own online CV builder.
+          link:
+            label: CBG AI CV Builder
+            href: https://cvbuilder.carbonblueglobal.com
+        - title: CV review.
+          body: Our team reviews your CV and tells you exactly what to improve.
+    - name: Get Seen
+      parts:
+        - title: LinkedIn optimisation.
+          body: Set up your LinkedIn profile so the right people find you, and learn how to connect and follow up.
+    - name: Get Connected
+      parts:
+        - title: Safety Jobs Board.
+          body: Fresh safety openings added every week, including roles shared in LinkedIn posts that you won't find on job sites. The board is shared with enrolled students and updated every week.
+        - title: Industry mentor circles.
+          body: Talk with experienced professionals from construction, oil and gas, facility management and safety. Find your gap areas and learn how to grow your profile.
+  note: "We give you every tool and introduction we can. Getting the job depends on you: your skills, your effort and how you present yourself. We do not guarantee a job."
 
 payments:
   heading: A gentle note on your certificate

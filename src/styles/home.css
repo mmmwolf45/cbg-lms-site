@@ -209,8 +209,10 @@ picture.cbg-band__media img { width: 100%; height: 100%; object-fit: cover; }
 .is-pan .cbg-section-head { margin-bottom: var(--cbg-s5); }
 .is-pan .cbg-gallery__track { position: relative; display: flex; }
 .is-pan .cbg-gallery__track > li { flex: none; width: clamp(300px, 27vw, 360px); }
-/* 44px lower than the panel alone needs: the room under the cards for the light ribbon (ribbon.css) */
-.is-pan .cbg-course__media { max-height: max(96px, calc(100vh - 704px)); }
+/* The photos give the pinned panel its room: 724px is everything else in it, including 44px under the cards for
+   the light ribbon (ribbon.css) and the IOSH card's three-line Career Launch note (10 Oct 2026), so the panel
+   fits a 900px-tall screen. */
+.is-pan .cbg-course__media { max-height: max(96px, calc(100vh - 724px)); }
 
 /* The card: photo on top, then status, title, line, chips and (live courses) the button */
 .cbg-course.cbg-card { display: flex; flex-direction: column; height: 100%; padding: 0; overflow: hidden; }
@@ -235,6 +237,8 @@ picture.cbg-band__media img { width: 100%; height: 100%; object-fit: cover; }
 }
 .cbg-course .cbg-h3 { font-size: 1.3125rem; font-weight: 800; letter-spacing: -0.02em; }
 .cbg-course__body > p:not(.cbg-course__top) { font-size: 1rem; line-height: 1.55; }
+/* A short line under the chips (content: card.note), quieter than the description. */
+.cbg-course__body > p.cbg-course__note { font-size: var(--cbg-fs-small); line-height: 1.45; color: var(--cbg-text-3); }
 .cbg-course .cbg-chip { min-height: 28px; padding: 2px 10px; font-size: 0.8125rem; }
 .cbg-course__link { margin-top: auto; }
 /* A live card is one link: its button's hit area covers the whole card */

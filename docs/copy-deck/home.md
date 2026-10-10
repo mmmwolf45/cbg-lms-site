@@ -20,8 +20,8 @@
 ## [how-it-works] How this site works
 Three steps, numbered:
 1. **We set up your access.** Once your enrolment is confirmed, CBG gives you access to your course. Your login details are shared about one week before your batch starts.
-2. **Log in and open your course.** Everything for your course sits on its course page: welcome guide, class links, slides, bonus certificate guides and more.
-3. **Join your live classes and keep going.** Classes run live on Google Meet. After each class, the slides and new study materials are waiting for you here.
+2. **Log in and open your course.** Everything for your course sits on its course page: welcome guide, class links, unit workbooks, practice materials and more.
+3. **Join your live classes and keep going.** Classes run live on Google Meet. After each class, the session's study notes tell you which workbook pages to read and which questions to try.
 
 ## [courses] Your courses
 - **Heading:** Your courses
@@ -30,6 +30,7 @@ Three steps, numbered:
   - **Tag:** IOSH · Ofqual-regulated · Level 3
   - **Line:** The IOSH Level 3 Certificate in Occupational Safety and Health Principles and Practice, taught live online by CBG trainers.
   - **Meta:** Live online · About 2 months · 4 bonus certificates · 8 Field Guides
+  - **Career Launch Support:** included in your course. Career support, not a job guarantee.
   - **CTA:** Open course → `/course/101-iosh-level3-certificate`
 - **Template note:** more courses will follow (for example QS, MEP, BIM). Cards must be driven by data so new courses can be added from a content file.
 

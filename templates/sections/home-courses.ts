@@ -20,6 +20,7 @@ function card(c: Card) {
 <h3 class="cbg-h3">${esc(c.title)}</h3>
 ${c.line ? `<p>${esc(c.line)}</p>` : ''}
 ${c.meta?.length ? `<ul class="cbg-chips">${c.meta.map((m) => `<li class="cbg-chip">${esc(m)}</li>`).join('')}</ul>` : ''}
+${c.note ? `<p class="cbg-course__note">${esc(c.note)}</p>` : ''}
 ${cta ? `<a class="cbg-btn cbg-btn--primary cbg-course__link" href="${esc(cta.href)}">${esc(cta.label)}<span class="cbg-sr-only">: ${esc(c.title)}</span>${arrow}</a>` : ''}
 </div></article></li>`;
 }

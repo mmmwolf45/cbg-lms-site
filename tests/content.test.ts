@@ -157,7 +157,8 @@ function copyFragments(md: string): string[] {
       .replace(/^## \[[\w-]+\]\s*/, '')
       .replace(/\*\*[^*]+:\*\*/g, '') // bold labels such as **Heading:**
       .replaceAll('**', '')
-      .replaceAll('`', '');
+      .replaceAll('`', '')
+      .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1'); // a Markdown link counts as its text (the URL is checked as an href)
     if (EDITORIAL_PARA.test(line)) continue;
     for (const part of line.split(/(?<=[.?!])\s+|\s*[·→]\s+|:\s|\(|\)|;\s/)) {
       const f = part.replace(/\s+/g, ' ').replace(/^[\s"',.:]+|[\s"',.:]+$/g, '');
@@ -176,9 +177,12 @@ function strings(v: unknown): string[] {
 
 describe('copy deck coverage', () => {
   const haystack = strings([home(), course()]).join(' ').replace(/\s+/g, ' ');
-  // A list such as "a, b, c" may be split into separate YAML items, so each part is checked.
+  // A list such as "a, b, c" may be split into separate YAML items, so each part is checked; a listed name can
+  // become a capitalised title there ("industry mentor circles" -> "Industry mentor circles."), so parts are
+  // compared case-insensitively. Whole sentences stay exact.
+  const lower = haystack.toLowerCase();
   const found = (f: string) => haystack.includes(f)
-    || f.split(', ').every((p) => notCopy(p) || haystack.includes(p.replace(/^"|"$/g, '')));
+    || f.split(', ').every((p) => notCopy(p) || lower.includes(p.replace(/^"|"$/g, '').toLowerCase()));
 
   for (const md of ['docs/copy-deck/home.md', 'docs/copy-deck/courses/iosh-level-3.md']) {
     it(`every sentence in ${md} is in the YAML`, () => {

@@ -163,6 +163,20 @@
   border-left: 2px solid var(--cbg-gold); color: var(--cbg-text-1);
 }
 
+/* ---------- career launch: one column per stage, its parts as small cards (course-career-launch.ts) ---------- */
+.cbg-launch, .cbg-launch__parts { list-style: none; padding: 0; }
+.cbg-launch { display: grid; gap: var(--cbg-s6); }
+@container cbgc (min-width: 700px) { .cbg-launch { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--cbg-s4); align-items: start; } }
+.cbg-launch__name { display: flex; align-items: center; gap: var(--cbg-s3); margin: 0; font: 700 1.125rem / 1.3 var(--cbg-font-display); color: var(--cbg-text-1); }
+.cbg-launch__num {
+  display: grid; place-items: center; flex: none; width: 28px; height: 28px;
+  border: 1px solid var(--cbg-gold-line); border-radius: 50%; color: var(--cbg-gold); font: 600 0.875rem / 1 var(--cbg-font-display);
+}
+.cbg-launch__parts { display: grid; gap: var(--cbg-s3); margin-top: var(--cbg-s4); }
+.cbg-card.cbg-launch__part { padding: var(--cbg-s4); }
+.cbg-launch__title { margin: 0; font: 600 1rem / 1.35 var(--cbg-font-display); color: var(--cbg-text-1); }
+.cbg-launch__part p { font-size: var(--cbg-fs-small); line-height: 1.5; }
+
 /* ---------- trainers: navy duotone photos ---------- */
 .cbg-trainers { display: grid; gap: var(--cbg-s4); }
 .cbg-trainer { display: grid; gap: 20px; }

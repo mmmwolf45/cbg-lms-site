@@ -12,6 +12,7 @@
 - `reference/IOSH_Level3_Course_Design_Framework.md` (IOSH handbook figures)
 - `reference/IOSH_Level3_Enrolment_Letter.md`
 - `reference/IOSH_LMS_Course_Build.md` (what is already in the LMS)
+- `claude/IOSH_Career_Launch_Support.md` (Career Launch Support master copy)
 
 The course.link header (title, subtitle, stats, "Contact To Enroll" button) and the Course Content accordion stay native. Restyle them; don't rebuild them.
 
@@ -38,12 +39,12 @@ The native course.link header already shows the course title, subtitle and enrol
   1. **IOSH Level 3 Certificate.** The regulated qualification employers recognise. Awarded by IOSH, regulated by Ofqual, and your academic route to Technical Member (Tech IOSH).
   2. **Four bonus certificates.** IBM SkillsBuild Project Management Fundamentals, Six Sigma Yellow Belt, Scrum Fundamentals Certified and HP LIFE AI for Business Professionals. Studied online at your own pace, with a CBG guide for each.
   3. **Eight CBG Field Guides.** Practical workbooks for daily HSE work, yours from day 1.
-  4. **Study materials for every session.** Slides for each live class, with study notes, practice questions and mock exams added as the course goes on.
+  4. **CBG study materials.** A workbook for each unit with Check yourself questions, a Practice Pack of 24 OSH in Practice tasks with blank IOSH templates, an Exam Skills guide, a Key Words list and mock exams for both assessments. Your trainers present the slides live in class.
   5. **IOSH registration and both assessments.** CBG registers you with IOSH as a learner, and both externally set assessments are covered.
 
 ## [units] The four units
 - **Heading:** Your learning path: 4 units, 16 sessions
-- **Intro:** Each unit is taught in live sessions. Every session has its own class link and slides on this page, in teaching order.
+- **Intro:** Each unit is taught in live sessions. Every unit starts with its workbook, and every session has its own class link and study notes on this page, in teaching order.
 - **Unit 1, L3C01: Fundamentals of OSH principles and management systems** (21 GLH)
   - Understand OSH principles, the elements of a safety management system and the role they play in OSH performance
   - Understand management systems in relation to OSH
@@ -68,9 +69,9 @@ The native course.link header already shows the course title, subtitle and enrol
 - **Visual idea:** a pinned, scroll-driven timeline (GSAP ScrollTrigger) moving through the 4 units, with a GLH bar that fills up to 80.
 
 ## [how-classes-run] How your classes run
-- **Live online classes on Google Meet.** Each session's Meet link is on this page, just before that session's slides.
+- **Live online classes on Google Meet.** Each session's Meet link is on this page, just before that session's study notes.
 - **About two months.** All four units are covered in about two months: 36 hours of live online tuition, with guided self-study making up the rest of the 80 guided learning hours.
-- **Independent study.** On top of the 80 guided hours, IOSH expects about 42 hours of your own study (122 hours in total). Use it to review slides, read study notes, try practice questions and work on your bonus certificates.
+- **Independent study.** On top of the 80 guided hours, IOSH expects about 42 hours of your own study (122 hours in total). Use it to read your workbook, answer the Check yourself questions, try the Practice Pack tasks and mock exams, and work on your bonus certificates.
 - **Trainer support.** Your trainers answer questions between classes and give revision guidance before each assessment.
 - **What you need.** A laptop or PC with a webcam and a stable internet connection.
 - **Timetable:** class days and times are confirmed for each batch and shared in the "How the Course Works" lesson and at the introduction session.
@@ -128,13 +129,29 @@ The native course.link header already shows the course title, subtitle and enrol
   - plus two more
 - **Visual idea:** a shelf or fan of 8 guide covers; released ones are full colour, upcoming ones are outlined with "Coming soon".
 
+## [career-launch] Career Launch Support
+- **Heading:** Career Launch Support
+- **Intro:** Career Launch Support included, from day one until a month after your certificate. It is included in your course fee, at no extra cost.
+- **The three stages and six parts:**
+  - **Get Ready:** CV session, AI CV builder, CV review
+    - **CV session.** Learn what safety employers look for and how to write a CV that gets past screening.
+    - **AI CV builder.** Build a clean, ATS-friendly CV with our own online CV builder ([CBG AI CV Builder](https://cvbuilder.carbonblueglobal.com)).
+    - **CV review.** Our team reviews your CV and tells you exactly what to improve.
+  - **Get Seen:** LinkedIn optimisation
+    - **LinkedIn optimisation.** Set up your LinkedIn profile so the right people find you, and learn how to connect and follow up.
+  - **Get Connected:** Safety Jobs Board, industry mentor circles
+    - **Safety Jobs Board.** Fresh safety openings added every week, including roles shared in LinkedIn posts that you won't find on job sites. The board is shared with enrolled students and updated every week.
+    - **Industry mentor circles.** Talk with experienced professionals from construction, oil and gas, facility management and safety. Find your gap areas and learn how to grow your profile.
+- **No-guarantee line:** We give you every tool and introduction we can. Getting the job depends on you: your skills, your effort and how you present yourself. We do not guarantee a job.
+- **Visual idea:** three stage columns (Get Ready, Get Seen, Get Connected), each with its parts as small cards; the no-guarantee line as a callout underneath.
+
 ## [payments] A gentle note on your certificate
 Your IOSH certificate is released once the course fee has been paid in full. Keeping to your instalment dates means nothing stands between you and your certificate once you pass. If a payment date ever becomes difficult, just let us know early and we will be glad to talk it through with you.
 
 ## [faq] Student FAQ
-1. **Where do I find the link for my live class?** In the unit sections of this course, each session has a "Live Class" lesson with the Google Meet link, just before that session's slides.
+1. **Where do I find the link for my live class?** In the unit sections of this course, each session has a "Live Class" lesson with the Google Meet link, just before that session's study notes.
 2. **What do I need for the classes?** A laptop or PC with a webcam and a stable internet connection. Join a few minutes early.
-3. **I missed a class. What should I do?** Download that session's slides from this page, go through them, and message your trainer or CBG with any questions.
+3. **I missed a class. What should I do?** Open that session's study notes on this page, read the workbook pages listed and try the Check yourself questions, then message your trainer or CBG with any questions.
 4. **How much self-study is expected?** Besides the live classes and guided study (80 guided hours), IOSH expects about 42 hours of your own study across the course.
 5. **When do I take the IOSH assessments?** When your trainers confirm you are ready, CBG registers you and tells you the date and time.
 6. **What happens if I'm referred in an assessment?** You only retake the assessment you were referred in. IOSH charges a fee for a retake. Talk to us and we'll help you prepare.
@@ -144,6 +161,9 @@ Your IOSH certificate is released once the course fee has been paid in full. Kee
 10. **Which bonus certificate should I start with?** IBM SkillsBuild Project Management Fundamentals, then Six Sigma Yellow Belt, Scrum Fundamentals Certified and HP LIFE.
 11. **Does this make me Tech IOSH?** It meets the academic requirement. IOSH also asks for at least one year's relevant experience and mandatory CPD when you apply.
 12. **Who do I contact for help?** WhatsApp +974 7048 5638 or email safety.training@carbonblueglobal.com.
+13. **Do you guarantee a job?** No. No honest course can. What we do is give you a stronger CV, a better LinkedIn profile, a steady list of openings and conversations with experienced people in the industry. The rest depends on your skills, effort and how you present yourself.
+14. **When does Career Launch Support start and end?** It starts when you enrol and runs until one month after you receive your IOSH Level 3 certificate.
+15. **Does it cost extra?** No. It is included in your course fee.
 
 ## [help] Help and contacts (closing band)
 - **Heading:** Stuck on anything? Message us.

@@ -163,7 +163,22 @@ describe.each(courses.map((c) => [c.slug, c] as const))('course blocks: %s (T18,
     expect(main).toContain('<div class="cbg-faq" data-cbg-faq>');
     expect(count(main, /<details>/g)).toBe(c.faq!.items.length);
     expect(count(main, /<details open/g)).toBe(0);
-    if (slug === 'iosh-level-3') expect(c.faq!.items.length).toBe(12);
+    if (slug === 'iosh-level-3') expect(c.faq!.items.length).toBe(15);
+  });
+
+  it.runIf(c['career-launch'])('career launch: a column per stage, every part, safe external links, the callout', () => {
+    const cl = c['career-launch']!;
+    expect(main).toContain('<section id="cbg-career-launch"');
+    expect(count(main, /class="cbg-launch__stage"/g)).toBe(cl.stages.length);
+    expect(count(main, /class="cbg-card cbg-launch__part"/g)).toBe(cl.stages.reduce((n, st) => n + st.parts.length, 0));
+    for (const p of cl.stages.flatMap((st) => st.parts).filter((p) => p.link)) {
+      expect(main).toContain(`href="${p.link!.href}" target="_blank" rel="noopener"`);
+    }
+    expect(main).toContain(`<p class="cbg-callout" data-cbg-reveal>${cl.note.replaceAll("'", '&#39;')}</p>`);
+    // After the Field Guides and before the payments note, as in the copy deck.
+    const at = (id: string) => main.indexOf(`id="cbg-${id}"`);
+    if (c['field-guides']) expect(at('career-launch')).toBeGreaterThan(at('field-guides'));
+    if (c.payments) expect(at('career-launch')).toBeLessThan(at('payments'));
   });
 
   it.runIf(c.help)('help: WhatsApp, email, every logo and the band image', () => {

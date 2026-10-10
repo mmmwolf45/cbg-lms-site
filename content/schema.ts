@@ -46,8 +46,9 @@ const homeShape = {
 // and becomes a link; a coming-soon card has none. `line` is the course description, `meta` the chips,
 // `languages` the teaching languages (they feed the home page count). `image` is a name from
 // src/images.json (the photo box stays plain until it is built). Cards sort by `order`.
+// `note` is a short line under the chips (IOSH: Career Launch Support, 10 Oct 2026).
 const cardShape = {
-  title: s, status: s, 'tag?': s, 'line?': s, 'meta?': [s],
+  title: s, status: s, 'tag?': s, 'line?': s, 'meta?': [s], 'note?': s,
   'languages?': [s], 'image?': s, order: 'number', 'cta?': link,
 } as const;
 
@@ -136,6 +137,13 @@ const courseShape = {
     heading: s, body: s,
     releasedLabel: s, released: [{ label: s, title: s, 'subtitle?': s }],
     upcomingLabel: s, upcoming: [s], unnamedUpcoming: 'number', comingSoonLabel: s,
+  },
+  // Career Launch Support (IOSH copy deck, 10 Oct 2026): stages, each with its parts as small cards (a part
+  // may link out); `note` is the no-guarantee line, a callout under the stages.
+  'career-launch?': {
+    heading: s, intro: s,
+    stages: [{ name: s, parts: [{ title: s, body: s, 'link?': link }] }],
+    note: s,
   },
   'payments?': { heading: s, body: s },
   'faq?': { heading: s, items: [{ q: s, a: s }] },
