@@ -58,8 +58,8 @@ export function beam(s: Beam) {
 <g class="cbg-bmd__load" transform="translate(${loadX(START.a)} 0)"><path d="M0 34V88"/><path class="cbg-bmd__head" d="M-8 84l8 12 8-12z"/><text y="24">${esc(String(s.load))} kN</text></g>
 </svg>
 </div>
-<label class="cbg-bmd__slide" hidden><span>Load position</span><input type="range" min="0" max="100" step="1" value="${Math.round(START.a * 100)}" aria-valuetext="${atText(START.a, s.span)} from the left end"></label>
-<dl class="cbg-bmd__read">${read('at', 'Load at', atText(START.a, s.span))}${read('sag', 'Max sagging moment', `${r.sag} kN·m`)}${read('hog', 'Max hogging moment', `${r.hog} kN·m`)}${read('shear', 'Max shear', `${r.shear} kN`)}</dl>
+<label class="cbg-bmd__slide" hidden><span>Load position</span><input type="range" min="8" max="92" step="1" value="${Math.round(START.a * 100)}" aria-valuetext="${atText(START.a, s.span)} from the left end"></label>
+<dl class="cbg-bmd__read" aria-live="polite">${read('at', 'Load at', atText(START.a, s.span))}${read('sag', 'Max sagging moment', `${r.sag} kN·m`)}${read('hog', 'Max hogging moment', `${r.hog} kN·m`)}${read('shear', 'Max shear', `${r.shear} kN`)}</dl>
 ${s.caption ? `<figcaption class="cbg-bmd__caption">${esc(s.caption)}</figcaption>` : ''}
 </figure>`);
 }

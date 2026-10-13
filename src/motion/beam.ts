@@ -55,6 +55,7 @@ function run(fig: HTMLElement): () => void {
     set('sag', `${r.sag} kN·m`);
     set('hog', `${r.hog} kN·m`);
     set('shear', `${r.shear} kN`);
+    input.max = type === 'cantilever' ? '100' : '92'; // the load's range for these supports (clampA)
     input.value = String(Math.round(target * 100));
     input.setAttribute('aria-valuetext', `${atText(target, span)} from the left end`);
   };
@@ -65,7 +66,7 @@ function run(fig: HTMLElement): () => void {
     const goal = weightsOf(type);
     a += (target - a) * k;
     w = w.map((x, i) => x + (goal[i]! - x) * k);
-    const done = Math.abs(target - a) < 1e-3 && w.every((x, i) => Math.abs(x - goal[i]!) < 1e-3);
+    const done = Math.abs(target - a) < 3e-3 && w.every((x, i) => Math.abs(x - goal[i]!) < 3e-3);
     if (done) {
       a = target;
       w = [...goal];
@@ -87,21 +88,41 @@ function run(fig: HTMLElement): () => void {
     if (b && TYPES.includes(b.dataset.cbgType as Support)) setType(b.dataset.cbgType as Support);
   }, o);
   input.addEventListener('input', () => setA(Number(input.value) / 100), o);
-  // On the drawing: a mouse moves the load just by hovering; touch and pen move it while pressed
-  // (beam.css sets touch-action: pan-y, so a vertical swipe still scrolls the page).
+  // On the drawing: a mouse moves the load just by hovering. A finger or pen moves it only once the drag
+  // is clearly sideways, so a vertical swipe that starts on the drawing scrolls the page and leaves the
+  // load where it is (beam.css sets touch-action: pan-y); a tap with no drag places it.
   const toA = (e: PointerEvent) => {
     const r = svg.getBoundingClientRect();
     return (((e.clientX - r.left) / r.width) * 800 - G.X0) / (G.X1 - G.X0);
   };
-  svg.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse' || e.buttons) setA(toA(e)); }, o);
-  svg.addEventListener('pointerdown', (e) => setA(toA(e)), o);
+  let press: { x: number; y: number; id: number; drag: boolean } | undefined;
+  svg.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse') return setA(toA(e));
+    press = { x: e.clientX, y: e.clientY, id: e.pointerId, drag: false };
+  }, o);
+  svg.addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'mouse') return setA(toA(e));
+    if (!press || e.pointerId !== press.id) return;
+    const dx = Math.abs(e.clientX - press.x);
+    if (!press.drag && dx > 6 && dx > Math.abs(e.clientY - press.y)) {
+      press.drag = true;
+      svg.setPointerCapture?.(e.pointerId);
+    }
+    if (press.drag) setA(toA(e));
+  }, o);
+  svg.addEventListener('pointerup', (e) => {
+    if (press && e.pointerId === press.id && !press.drag) setA(toA(e));
+    press = undefined;
+  }, o);
+  svg.addEventListener('pointercancel', () => { press = undefined; }, o);
 
   types.hidden = false;
   slide.hidden = false;
   fig.classList.add('is-live');
   text();
-  // A first hint that it moves: the load starts a quarter along and glides to midspan once the beam is
-  // well in view. Reduced motion: it simply sits at midspan.
+  // A first hint that it moves: the load starts a quarter along and glides to midspan once the drawing
+  // itself is well in view (the drawing, not the whole figure, which can be taller than a landscape phone).
+  // Reduced motion: it simply sits at midspan.
   if (!still()) {
     a = 0.25;
     draw();
@@ -110,7 +131,7 @@ function run(fig: HTMLElement): () => void {
       io.disconnect();
       go();
     }, { threshold: 0.6 });
-    io.observe(fig);
+    io.observe($<HTMLElement>('.cbg-bmd__view'));
     off.signal.addEventListener('abort', () => io.disconnect());
   }
 
