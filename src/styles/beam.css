@@ -1,0 +1,58 @@
+/* Bending moment beam on the Structural page (templates/sections/course-beam.ts, src/motion/beam.ts).
+   A drawing-board panel: steel-blue linework, the moment diagram in gold, the shear in starlight blue, the
+   main steel as bright gold bars inside the beam. The script only rewrites path data, the load's transform
+   and the supports' opacity; nothing here animates on its own. */
+.cbg-bmd { margin: 0; display: grid; gap: var(--cbg-s4); container-type: inline-size; }
+.cbg-bmd__view { background: var(--cbg-surface); border: 1px solid var(--cbg-line); }
+.cbg-bmd__svg {
+  display: block; width: 100%; height: auto; aspect-ratio: 800 / 470;
+  background:
+    linear-gradient(rgba(91, 127, 196, 0.07) 1px, transparent 1px) 0 0 / 100% 5%,
+    linear-gradient(90deg, rgba(91, 127, 196, 0.07) 1px, transparent 1px) 0 0 / 2.5% 100%;
+  touch-action: pan-y; /* a finger dragged sideways moves the load; a vertical swipe still scrolls */
+}
+.cbg-bmd.is-live .cbg-bmd__svg { cursor: ew-resize; }
+.cbg-bmd__svg text { font: 600 15px var(--cbg-font-display); fill: var(--cbg-text-2); }
+.cbg-bmd__label { fill: var(--cbg-text-3) !important; font-size: 14px !important; letter-spacing: 0.04em; text-transform: uppercase; }
+
+.cbg-bmd__body { fill: #2A3A5C; stroke: #5B7FC4; stroke-width: 1.5; }
+.cbg-bmd__supports { fill: none; stroke: #A9C1EE; stroke-width: 2; }
+.cbg-bmd__supports [data-cbg-sup] { transition: none; }
+.cbg-bmd__hatch { stroke: rgba(169, 193, 238, 0.55); stroke-width: 2; }
+.cbg-bmd__dim path { stroke: var(--cbg-text-3); stroke-width: 1.2; fill: none; }
+.cbg-bmd__dim text { text-anchor: middle; fill: var(--cbg-text-3); }
+.cbg-bmd__base { stroke: rgba(169, 193, 238, 0.5); stroke-width: 1.2; }
+.cbg-bmd__m { fill: rgba(214, 177, 96, 0.2); stroke: var(--cbg-gold); stroke-width: 2.2; stroke-linejoin: round; }
+.cbg-bmd__v { fill: rgba(169, 193, 238, 0.14); stroke: #A9C1EE; stroke-width: 2; stroke-linejoin: round; }
+.cbg-bmd__bar { fill: none; stroke: #F3D891; stroke-width: 3.5; stroke-linecap: round; }
+.cbg-bmd__load path { stroke: var(--cbg-gold); stroke-width: 3; fill: none; }
+.cbg-bmd__load .cbg-bmd__head { fill: var(--cbg-gold); stroke: none; }
+.cbg-bmd__load text { text-anchor: middle; fill: var(--cbg-gold); }
+
+/* Controls: three support pills, then the load slider */
+.cbg-bmd__types { display: flex; flex-wrap: wrap; gap: var(--cbg-s2); }
+.cbg-bmd__types[hidden], .cbg-bmd__slide[hidden] { display: none; }
+.cbg-bmd__type {
+  padding: 8px 16px; border: 1px solid var(--cbg-line); border-radius: var(--cbg-r-pill); background: var(--cbg-glass);
+  font: 600 var(--cbg-fs-label) / 1.2 var(--cbg-font-display); color: var(--cbg-text-2); cursor: pointer;
+  transition: border-color var(--cbg-dur) var(--cbg-ease), color var(--cbg-dur) var(--cbg-ease), background-color var(--cbg-dur) var(--cbg-ease);
+}
+.cbg-bmd__type:hover { border-color: var(--cbg-gold-line); color: var(--cbg-text-1); }
+.cbg-bmd__type[aria-pressed="true"] { border-color: var(--cbg-gold); background: rgba(214, 177, 96, 0.12); color: var(--cbg-text-1); }
+.cbg-bmd__type:focus-visible, .cbg-bmd__slide input:focus-visible { outline: 2px solid var(--cbg-gold); outline-offset: 3px; }
+.cbg-bmd__slide { display: grid; gap: var(--cbg-s2); font: 600 var(--cbg-fs-label) / 1.2 var(--cbg-font-display); color: var(--cbg-text-3); }
+.cbg-bmd__slide input { width: 100%; accent-color: var(--cbg-gold); }
+
+/* Readout: four figures in a row (two by two on a phone) */
+.cbg-bmd__read { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--cbg-s3); margin: 0; }
+.cbg-bmd__read div { padding: var(--cbg-s3) var(--cbg-s4); border: 1px solid var(--cbg-line); border-radius: 14px; background: var(--cbg-glass); }
+.cbg-bmd__read dt { font: 600 0.8125rem / 1.3 var(--cbg-font-display); color: var(--cbg-text-3); }
+.cbg-bmd__read dd { margin: 4px 0 0; font: 700 1.25rem / 1.2 var(--cbg-font-display); color: var(--cbg-text-1); font-variant-numeric: tabular-nums; }
+.cbg-bmd__caption { font-size: var(--cbg-fs-small); color: var(--cbg-text-3); }
+/* Narrow (a phone): two by two, and the drawing's text set larger (it is in viewBox units, so it shrinks
+   with the drawing) */
+@container (max-width: 560px) {
+  .cbg-bmd__read { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cbg-bmd__svg text { font-size: 28px; }
+  .cbg-bmd__label { font-size: 24px !important; }
+}

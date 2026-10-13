@@ -72,6 +72,11 @@ const jobs: Job[] = [
   { name: 'qs-hero-poster', src: 'brand/assets/qs-hero/poster.png', widths: [1920, 1280, 768], q: photo, budgetKB: 180, optional: true },
   ...['qs-xray-concrete', 'qs-xray-steel'].map((name) => ({
     name, src: `${PHOTOS}/${name}.png`, widths: [1536, 1024, 768], q: photo, budgetKB: 200, optional: true,
+  })),  // Structural (14 Oct 2026): the load-path hero's poster (last frame, path baked in by scripts/sd-poster.cjs)
+  // and the below-ground X-ray pair (the soil, then the same cut with its foundations).
+  { name: 'sd-hero-poster', src: 'brand/assets/sd-hero/poster.png', widths: [1920, 1280, 768], q: photo, budgetKB: 180, optional: true },
+  ...['sd-ground-surface', 'sd-ground-section'].map((name) => ({
+    name, src: `${PHOTOS}/${name}.png`, widths: [1536, 1024, 768], q: photo, budgetKB: 200, optional: true,
   })),
 ];
 

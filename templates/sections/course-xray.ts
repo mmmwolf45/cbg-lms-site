@@ -31,9 +31,10 @@ export function checkXray(s: Xray, a: Size | undefined, b: Size | undefined) {
 
 // The markup from two ready <picture>s (tests pass their own) and the photos' size.
 export function xrayMarkup(s: Xray, concrete: string, steel: string, { width, height }: Size) {
-  const tag = ({ text, at: [x, y] }: Xray['labels'][number]) => {
+  const tag = ({ text, at: [x, y], side }: Xray['labels'][number]) => {
     const px = pct(x, width);
-    return `<li class="cbg-xray__tag${px < 50 ? ' cbg-xray__tag--l' : ''}" data-cbg-x="${px}" style="--lx:${px}%;--ly:${pct(y, height)}%">`
+    const left = side ? side === 'left' : px < 50;
+    return `<li class="cbg-xray__tag${left ? ' cbg-xray__tag--l' : ''}" data-cbg-x="${px}" style="--lx:${px}%;--ly:${pct(y, height)}%">`
       + `<span>${esc(text)}</span></li>`;
   };
   return courseSection('xray', `${head(s.heading, s.intro)}
@@ -42,7 +43,7 @@ export function xrayMarkup(s: Xray, concrete: string, steel: string, { width, he
 ${concrete}
 <div class="cbg-xray__band" aria-hidden="true"><div class="cbg-xray__steel">${steel}</div></div>
 <ul class="cbg-xray__tags" aria-hidden="true">${s.labels.map(tag).join('')}</ul>
-<div class="cbg-xray__hit" role="slider" tabindex="0" aria-label="X-ray scan: move to see the steel" aria-describedby="cbg-xray-labels" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" hidden></div>
+<div class="cbg-xray__hit" role="slider" tabindex="0" aria-label="${esc(s.scanLabel ?? 'X-ray scan: move to see the steel')}" aria-describedby="cbg-xray-labels" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" hidden></div>
 </div></div>
 <ol class="cbg-sr-only" id="cbg-xray-labels">${s.labels.map((l) => `<li>${esc(l.text)}</li>`).join('')}</ol>
 ${s.caption ? `<figcaption class="cbg-xray__caption">${esc(s.caption)}</figcaption>` : ''}

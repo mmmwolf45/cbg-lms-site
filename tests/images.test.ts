@@ -8,6 +8,7 @@ const OPTIONAL: Record<string, number> = {
   'band-classroom': 150,
   'band-desk': 260,
   'qs-hero-poster': 180, 'qs-xray-concrete': 200, 'qs-xray-steel': 200,
+  'sd-hero-poster': 180, 'sd-ground-surface': 200, 'sd-ground-section': 200,
 };
 // QS learner photos: one student-<slug> per .jpg in brand/assets/students.
 const STUDENTS = 'brand/assets/students';
@@ -21,7 +22,8 @@ const BUDGET: Record<string, number> = {
   'trainer-elman-aloysius': 20,
   'trainer-ramshad-kk': 20,
   ...Object.fromEntries(['shafeer-p-p', 'jubair-kv', 'rinsha-v', 'nidha-fazli', 'swapna-saji', 'mini-pramod',
-    'shuhaida-shamsudin', 'nadira-farhath', 'reenu-cherian', 'maneesh-vs'].map((s) => [`trainer-${s}`, 20])),
+    'shuhaida-shamsudin', 'nadira-farhath', 'reenu-cherian', 'maneesh-vs',
+    'naveen-george', 'kripanjith-v-p', 'abdul-s-moideen', 'muhammed-shahid-p-t'].map((s) => [`trainer-${s}`, 20])),
   ...Object.fromEntries(students.map((f) => [`student-${f.replace('.jpg', '')}`, 12])),
 };
 

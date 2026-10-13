@@ -77,6 +77,9 @@ const courseShape = {
       frames: s, count: 'number', label: s,
       takeoff: [{ item: s, qty: 'number', unit: s, at: 'number' }],
       'total?': s,
+      // The load path (the Structural hero): gold lines drawn over the footage as the scroll passes `from`
+      // (0..1), each a polyline [x1, y1, x2, y2, ...] in pixels of the 1600 x 900 laptop frames.
+      'path?': { from: 'number', lines: [['number']] },
     },
   },
   'included?': { heading: s, intro: s, cards: [{ ...titled, 'featured?': 'boolean' }] },
@@ -87,15 +90,20 @@ const courseShape = {
     'hoursLabel?': s, 'hoursShort?': s,
     units: [{ code: s, title: s, glh: 'number', outcomes: [s], sessions: [{ id: s, title: s }] }],
   },
+  // Bending moment beam (the Structural page, src/motion/beam.ts): a point load of `load` kN on a `span` m
+  // beam that the student slides along and supports three ways; the diagrams and the steel redraw.
+  'beam?': { heading: s, intro: s, load: 'number', span: 'number', 'caption?': s },
   // Rebar X-ray (the QS page): a concrete photo and the same shot with its steel showing (`image`, `xray`,
   // names from src/images.json, same size). A scan band follows the cursor (laptop) or the scroll (phone)
   // and shows the steel inside it. `labels` point at the steel, `at` in source pixels of the photos.
   'xray?': {
     heading: s, intro: s, image: s, xray: s, imageAlt: s,
-    labels: [{ text: s, at: ['number'] }],
+    'scanLabel?': s, // the slider's name for screen readers (default: the QS rebar wording)
+    // `side` puts a label's chip left or right of its point (default: outward, away from the photo's centre).
+    labels: [{ text: s, at: ['number'], 'side?': s }],
     'caption?': s,
   },
-  'how-classes-run?': { heading: s, items: [titled], timetable: { label: s, text: s } },
+  'how-classes-run?': { heading: s, items: [titled], 'timetable?': { label: s, text: s } }, // timetable: the batch days, when published
   'assessment?': {
     heading: s, intro: s,
     assessments: [{
@@ -242,6 +250,12 @@ function checkHero({ hero: h }: Course, file: string) {
     takeoff.forEach(({ at }, i) => {
       if (!(at >= 0 && at <= 1)) fail(`scrub.takeoff[${i}].at: must be 0..1 (of the scrub); got ${at}`);
     });
+    const path = h.scrub.path;
+    if (path && !(path.from >= 0 && path.from < 1)) fail(`scrub.path.from: must be 0..1 (of the scrub); got ${path.from}`);
+    path?.lines.forEach((l, i) => {
+      const inside = l.every((v, k) => v >= 0 && v <= (k % 2 ? 900 : 1600));
+      if (l.length < 4 || l.length % 2 || !inside) fail(`scrub.path.lines[${i}]: must be x, y pairs (2 or more) inside the 1600 x 900 frame`);
+    });
   }
   if (h.image) checkImage(h.image, 'hero.image', file);
   if (!h.image || !h.hazards) return;
@@ -283,9 +297,13 @@ export function validateCourse(data: unknown, file = 'content/courses/(course).y
   checkHero(c, file);
   checkShelf(c, file);
   if (c.help?.image) checkImage(c.help.image, 'help.image', file);
+  if (c.beam && !(c.beam.load > 0 && c.beam.span > 0)) throw new Error(`${file}: beam: load and span must be more than 0`);
   if (c.xray) {
     checkImage(c.xray.image, 'xray.image', file);
     checkImage(c.xray.xray, 'xray.xray', file);
+    c.xray.labels.forEach((l, i) => {
+      if (l.side && l.side !== 'left' && l.side !== 'right') throw new Error(`${file}: xray.labels[${i}].side: must be left or right`);
+    });
   }
   return c;
 }

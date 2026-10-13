@@ -44,6 +44,21 @@ export function fmtQty(n: number, dp = 0) {
 // The shown quantity at row progress t: counts up with an ease-out, to the row's own decimals.
 export const qtyAt = (qty: number, t: number) => fmtQty(qty * (1 - (1 - t) ** 3), decimals(qty));
 
+// The load path (Structural hero, hero.scrub.path): the first fraction t (0..1) of a polyline's length, as
+// the points to draw. Lines are flat [x1, y1, x2, y2, ...] lists.
+export function partial(line: number[], t: number): number[] {
+  const seg: number[] = [];
+  for (let i = 2; i < line.length; i += 2) seg.push(Math.hypot(line[i]! - line[i - 2]!, line[i + 1]! - line[i - 1]!));
+  let left = seg.reduce((a, b) => a + b, 0) * clamp01(t);
+  const out = line.slice(0, 2);
+  for (let k = 0; k < seg.length && left > 0; k++) {
+    const f = Math.min(1, left / seg[k]!);
+    out.push(line[2 * k]! + (line[2 * k + 2]! - line[2 * k]!) * f, line[2 * k + 1]! + (line[2 * k + 3]! - line[2 * k + 1]!) * f);
+    left -= seg[k]!;
+  }
+  return out;
+}
+
 const EASE = 0.24; // the frame position catches up quickly but glides when the scroll jumps
 const HYDRATION_WAIT = 5000; // ms: never insert into the band before React has hydrated it (see mount)
 
@@ -55,6 +70,9 @@ function mount(src: HTMLElement, band: HTMLElement, header: HTMLElement | null, 
   const opts = { passive: true, signal: off.signal } as const;
   const n = Number(src.dataset.cbgFrames); // the schema checks it is at least 2
   const base = src.dataset.cbgScrub ?? '';
+  let lines: { from: number; lines: number[][] } | undefined;
+  try { lines = JSON.parse(src.dataset.cbgPath ?? 'null') ?? undefined; } catch { /* no path: the footage alone */ }
+  let dx = 0; // the square phone frames are the 16:9 ones' centre crop (scripts/scrub-frames.ts)
   const frames: (HTMLImageElement | undefined)[] = new Array(n);
   let raf = 0;
   let cur = 0;
@@ -141,6 +159,22 @@ function mount(src: HTMLElement, band: HTMLElement, header: HTMLElement | null, 
       ctx.drawImage(frames[a + 1]!, 0, 0, canvas.width, canvas.height);
       ctx.globalAlpha = 1;
     }
+    if (lines) {
+      const t = (f / (n - 1) - lines.from) / (1 - lines.from);
+      if (t > 0) {
+        ctx.lineCap = ctx.lineJoin = 'round';
+        for (const [width, colour] of [[12, 'rgba(214,177,96,.28)'], [3.5, '#f3d891']] as const) {
+          ctx.lineWidth = width;
+          ctx.strokeStyle = colour;
+          ctx.beginPath();
+          for (const l of lines.lines) {
+            const q = partial(l, t);
+            for (let i = 0; i < q.length; i += 2) ctx[i ? 'lineTo' : 'moveTo'](q[i]! - dx, q[i + 1]!);
+          }
+          ctx.stroke();
+        }
+      }
+    }
     painted = j === a ? f : -1;
     canvas.dataset.frame = String(j); // the frame on show (tests read it: cross-origin pixels can't be read)
     canvas.classList.add('is-on');
@@ -149,6 +183,7 @@ function mount(src: HTMLElement, band: HTMLElement, header: HTMLElement | null, 
   if (base && ctx && !saveData) {
     const dir = scrubDir(win.innerWidth, win.devicePixelRatio || 1, win.matchMedia(LAYOUT_WIDE).matches);
     [canvas.width, canvas.height] = dir === 's' ? [900, 900] : [1600, 900]; // the frames' own size (scripts/scrub-frames.ts)
+    if (dir === 's') dx = 350;
     const load = (i: number) =>
       new Promise<void>((done) => {
         const img = new Image();

@@ -1,18 +1,323 @@
-# Card only: this course has no page on course.link yet, so its home page card shows "Coming soon" and
-# is not a link. Source: Maasoom's workbook "CBG - Course List for Web Development.xlsx" (all courses
-# are delivered online). To give it a page, add the page sections (see HOW_TO_ADD_A_COURSE.md), then
-# set status: live now and add a cta.
-slug: structural-design
+# Structural Design course page copy (course 103, RCC). Edit the wording here; the site is built from this file.
+# Rules: plain British English, no em-dashes, nothing invented. Section ids are stable.
+# Run `npm run content:check` after editing.
+#
+# Sources (in priority order):
+#   - the live course page /course/103-structural-design (Maasoom's own copy, 13 Oct 2026): the subtitle,
+#     "This Course Includes", the overview, "What You Will Learn", the lesson list and the 10 FAQ answers
+#   - Maasoom's Drive "Structural_LMS_Onboarding_Plan.md" (13 Oct 2026): 6 RCC modules, 31 sessions; steel
+#     follows later; no ductile detailing, drawings, live project or career module
+#   - the Entri course page, ONLY for faculty names, roles and photos and two learner reviews
+#   - the card's languages: Maasoom's workbook "CBG - Course List for Web Development.xlsx"
+#
+# Left out on purpose (not shown to students):
+#   - Steel design (Maasoom, 14 Oct 2026: RCC only on this page until the steel decks arrive; FAQ 6 says it
+#     will be added), and with it the workbook's "12 months" chip and Tekla (both counted the steel part)
+#   - Entri's 12-module syllabus, ratings, placement count, NSDC wording, live projects, ductile detailing and
+#     "12 months of mentorship" (the onboarding plan drops these topics)
+#   - an assessment section (the only assignment is the learner agreement in Start Here) and a timetable
+#     (no batch days are published for this course)
+#   - Najla Yas Valiyakath's review (it mentions Entri) and Sahana Hashim's (it promises a live project
+#     certificate the course no longer has)
+#
+# Illustrative, for Maasoom to approve: the hero's load take-down numbers and the beam's load and span
+# (examples, labelled so on the page).
 
+slug: structural-design
+uniqueId: "103"
+path: /course/103-structural-design
+
+# The card for this course on the home page ("Your courses").
 card:
   title: Structural Design
-  status: coming soon
-  line: Online structural analysis and design training in ETABS, STAAD.Pro, SAFE, Tekla and AutoCAD, covering RC frames, steel structures and foundations.
+  status: live now
+  tag: Live online · 6 RCC modules · IS, BS and ACI codes
+  line: A practical course in the analysis and design of RCC buildings for civil engineers, with ETABS, STAAD.Pro and SAFE on a real G+5 building.
   meta:
-    - 12 months
     - Malayalam
     - Telugu
     - Online
   languages: [Malayalam, Telugu]
   image: course-structural
   order: 4
+  cta:
+    label: Open course
+    href: /course/103-structural-design
+
+hero:
+  eyebrow: CBG Training Institute · Live online
+  # Not the course title and subtitle again: course.link's own header shows those right above this block.
+  # From the course page's "About the course".
+  heading: One real building, from loads to foundations
+  subhead: Structural engineers make sure buildings stand up safely and economically. You follow their workflow on a real multi-storey RCC building, from the framing plan and the loads to the ETABS model, then design every beam, slab, column, wall and foundation by hand, checking the software as a practising engineer would.
+  # The picture under the CTA: build-scrub (the scroll-played footage, finished building to bare frame).
+  visual: build-scrub
+  image: sd-hero-poster
+  imageAlt: A six-storey concrete building at dusk, shown as its bare frame of columns, beams and slabs, with gold lines tracing the loads down to the ground
+  facts:
+    - value: "6"
+      label: RCC modules
+      count: 6
+    - value: "31"
+      label: sessions
+      count: 31
+    - value: "3"
+      label: design codes
+      count: 3
+    - value: "4"
+      label: software tools
+      count: 4
+  cta:
+    label: Start here
+    action: start-here
+    href: "#course_content"
+  # The footage frames (public/sd-hero/, 48 frames) and the example load take-down beside it.
+  # ILLUSTRATIVE, for Maasoom to approve: an interior column of a G+5 residential RCC building, 5 m x 5 m
+  # panel (25 m2), 150 mm slab, IS 875 residential imposed load, six levels, factored at 1.5.
+  scrub:
+    frames: sd-hero
+    count: 48
+    label: Example take-down
+    takeoff:
+      - { item: Slab self-weight, qty: 3.75, unit: kN/m², at: 0.2 }
+      - { item: Floor finish, qty: 1.5, unit: kN/m², at: 0.34 }
+      - { item: Imposed load, qty: 2, unit: kN/m², at: 0.48 }
+      - { item: Load per floor, qty: 206, unit: kN, at: 0.62 }
+      - { item: "Column load, 6 levels", qty: 1450, unit: kN, at: 0.76 }
+      - { item: Factored load, qty: 2175, unit: kN, at: 0.9 }
+    total: Ready to size the column and its footing
+    # The load path drawn over the footage once the frame shows (from 0.55 of the scrub): from the roof slab
+    # into its beams, down three columns to a footing mark at the base. Pixels of the 1600 x 900 frames.
+    path:
+      from: 0.55
+      lines:
+        - [687, 165, 572, 203, 572, 804, 552, 804, 592, 804]
+        - [687, 165, 802, 128, 802, 806, 780, 806, 824, 806]
+        - [880, 126, 956, 134, 956, 804, 936, 804, 976, 804]
+
+included:
+  heading: One course, one real building, start to finish
+  intro: Everything below is part of your course, from your first class to your job search.
+  cards:
+    - title: Live online classes.
+      body: Taught live by CBG structural design engineers, with the slides for every session on this platform.
+      featured: true
+    - title: 6 RCC modules, 31 sessions.
+      body: From loads to foundations, in the order you meet them on a real project.
+    - title: Software on a real building.
+      body: ETABS, STAAD.Pro and SAFE in a real G+5 building workflow, plus AutoCAD.
+    - title: Three design codes.
+      body: Design to IS codes, with BS 8110 and ACI 318 versions of the key topics, since Gulf projects use all three.
+    - title: Worked examples.
+      body: Step-by-step worked examples for every structural element.
+    - title: CV and interview preparation.
+      body: CV sessions, a line-by-line CV review, interview preparation and mock interviews. CBG has supported 500+ global placements.
+
+units:
+  heading: "Your learning path: 6 modules, 31 sessions"
+  intro: After the Start Here orientation, the 6 modules follow the work on a real multi-storey building, from the framing plan and the loads to the model, the design of each element and the foundations.
+  # The building drawing labels each floor "<n> sessions": six modules, six floors, like the G+5 building.
+  hoursLabel: sessions
+  hoursShort: sessions
+  units:
+    - code: M01
+      title: Introduction to Structural Design
+      glh: 2
+      outcomes:
+        - Explain the structural engineer's role and the design process from architectural drawings to GFC drawings
+        - Prepare a framing plan and read a soil investigation report
+      sessions:
+        - { id: "1.1", title: Introduction to Structural Design }
+        - { id: "1.2", title: Framing Plan and Soil Investigation }
+    - code: M02
+      title: Structural Analysis Software
+      glh: 2
+      outcomes:
+        - Model, load and analyse a building in ETABS and STAAD.Pro
+      sessions:
+        - { id: "2.1", title: Introduction to ETABS }
+        - { id: "2.2", title: Introduction to STAAD.Pro }
+    - code: M03
+      title: Loads on Structures
+      glh: 6
+      outcomes:
+        - Calculate gravity, wind and seismic loads to IS 875 and IS 1893, with BS and ASCE 7 comparisons
+        - Set up load combinations and cracked-section stiffness modifiers
+      sessions:
+        - { id: "3.1", title: Gravity Loads }
+        - { id: "3.2", title: "Wind Loads Part 1: Concepts and IS 875-3" }
+        - { id: "3.3", title: "Wind Loads Part 2: BS and ASCE 7" }
+        - { id: "3.4", title: "Seismic Loads Part 1: Concepts and IS 1893" }
+        - { id: "3.5", title: "Seismic Loads Part 2: Eurocode 8 and ASCE 7" }
+        - { id: "3.6", title: Load Combinations and Stiffness Modifiers }
+    - code: M04
+      title: Modelling and Analysis in ETABS
+      glh: 5
+      outcomes:
+        - Run model checks for drift, displacement and irregularities, and static and dynamic analysis
+        - Verify software output with quick hand calculations
+      sessions:
+        - { id: "4.1", title: Modelling Definitions in ETABS }
+        - { id: "4.2", title: Wind and Seismic Load Assignments }
+        - { id: "4.3", title: Model Checks in ETABS }
+        - { id: "4.4", title: Static and Dynamic Analysis }
+        - { id: "4.5", title: Manual Verification of Software Output }
+    - code: M05
+      title: Design of RCC Superstructure
+      glh: 9
+      outcomes:
+        - Design RCC beams to IS 456, BS 8110 and ACI 318
+        - Design one-way, two-way and cantilever slabs
+        - Design columns, staircases and shear walls, with code-compliant detailing
+      sessions:
+        - { id: "5.1", title: RCC Beam Design to IS 456 }
+        - { id: "5.2", title: RCC Beam Design to BS 8110 }
+        - { id: "5.3", title: RCC Beam Design to ACI 318 }
+        - { id: "5.4", title: RCC Slab Design to IS 456 }
+        - { id: "5.5", title: RCC Slab Design to BS 8110 }
+        - { id: "5.6", title: Cantilever Slab Design }
+        - { id: "5.7", title: RCC Column Design }
+        - { id: "5.8", title: Staircase Design }
+        - { id: "5.9", title: Shear Wall Design }
+    - code: M06
+      title: Foundations and Special Structures
+      glh: 7
+      outcomes:
+        - Design isolated and combined footings, piles and pile caps
+        - Design cantilever retaining walls and rectangular water tanks
+      sessions:
+        - { id: "6.1", title: Isolated Footing Design }
+        - { id: "6.2", title: Combined Footing Design }
+        - { id: "6.3", title: Pile Foundations }
+        - { id: "6.4", title: RCC Pile Design }
+        - { id: "6.5", title: Pile Cap Design }
+        - { id: "6.6", title: Retaining Wall Design }
+        - { id: "6.7", title: Water Tank Design }
+
+# Bending moment beam (Module 5): one beam, three ways to support it. The load slides along the span and the
+# bending moment and shear diagrams redraw; the steel sits on the tension face. ILLUSTRATIVE numbers (a
+# 100 kN point load on a 6 m span), for Maasoom to approve.
+beam:
+  heading: Move the load. Watch the beam answer.
+  intro: Every beam you design in Module 5 starts here. Where the load sits sets the bending moment and the shear, and the bending moment decides where the steel goes. Slide the load and change the supports to see it.
+  load: 100
+  span: 6
+  caption: "Example: a 100 kN point load on a 6 m beam. Bending moment is drawn on the tension side; the gold bars show where the main steel goes."
+
+# Below the ground (Module 6): the X-ray band shows the foundations under the building. `at` is each label's
+# point [x, y] in source pixels of the photos as built (1536 x 1020) (14 Oct 2026); `side` keeps each chip on the photo.
+xray:
+  heading: Below the ground, where every load ends up
+  intro: Every load you calculate in Module 3 finishes its journey in the soil. In Module 6 you design what carries it there, from isolated and combined footings to piles and pile caps, and the retaining walls that hold the ground back, reading the soil report you met in Module 1.
+  image: sd-ground-surface
+  xray: sd-ground-section
+  imageAlt: A concrete building on its plot; where the scan passes, the ground is cut away to show its footings, piles, pile cap and retaining wall in the soil
+  scanLabel: "Ground scan: move to see the foundations"
+  labels:
+    - { text: Isolated footing, at: [174, 371], side: right }
+    - { text: Combined footing, at: [558, 377], side: right }
+    - { text: Pile cap, at: [929, 379], side: right }
+    - { text: Piles, at: [929, 665], side: right }
+    - { text: Retaining wall, at: [1331, 461], side: left }
+  caption: "Module 6: Foundations and Special Structures."
+
+how-classes-run:
+  heading: How your classes run
+  items:
+    - title: Live online classes.
+      body: Taught by CBG structural engineers. The slides for every session are on this platform.
+    - title: What you need to know first.
+      body: A degree or diploma in civil engineering, with the basics of strength of materials and structural analysis. You do not need prior experience with ETABS or STAAD.Pro.
+    - title: Software.
+      body: ETABS, STAAD.Pro, SAFE and AutoCAD. Install them before the software module starts.
+    - title: Questions during the course.
+      body: Your batch WhatsApp group is the official channel for announcements and questions.
+
+certificates:
+  heading: Your CBG certificate
+  intro: Earn a CBG Course Completion Certificate when you meet the attendance, assignment and course progress requirements.
+  certs:
+    - title: Course Completion Certificate
+      body: Your CBG certificate for completing the Structural Design course.
+
+trainers:
+  heading: "Your faculty: structural engineers who do the job"
+  intro: Practising structural engineers with 7 to 10+ years in structural design.
+  # Photos are files in brand/assets/trainers/ (from the Entri course page, named from the spelling there).
+  trainers:
+    - name: Naveen George
+      role: Structural Engineer
+      photo: naveen-george.jpg
+      bio: Structural engineer with 7.5 years in structural engineering.
+    - name: Kripanjith V P
+      role: Senior Structural Engineer
+      photo: kripanjith-v-p.jpg
+      bio: Senior structural engineer with 10+ years in structural design.
+    - name: Abdul S Moideen
+      role: Senior Structural Engineer
+      photo: abdul-s-moideen.jpg
+      bio: Senior structural engineer with 8 years in structural design.
+    - name: Muhammed Shahid P T
+      role: Senior Structural Engineer
+      photo: muhammed-shahid-p-t.jpg
+      bio: Senior structural engineer with 7+ years in structural design.
+
+# Written learner reviews, quoted WORD FOR WORD (never edit a quote). Only reviews that do not mention Entri.
+testimonials:
+  heading: "In their words: learners on the course"
+  intro: What learners say about the classes and the faculty.
+  quotes:
+    - name: Pooja
+      photo: pooja.jpg
+      text: I am thoroughly enjoying the Structural Design course, as it’s highly relevant and practical from a job perspective, which I believe is its biggest strength. The course content is well-structured, focusing on real-world applications that prepare us for industry challenges. This emphasis on job-oriented skills is exactly what I was looking for. Naveen Sir is exceptional in his teaching approach. He is incredibly friendly and approachable, creating an environment where I feel comfortable asking questions, no matter how trivial they may seem. His openness encourages us to fully engage and clear any doubts without hesitation, which significantly enhances the learning experience.
+    - name: Shameem Shamsudheen
+      photo: shameem-shamsudheen.jpg
+      text: The classroom environment is clear and supportive. Lessons are explained in an easy-to-understand way, and any doubts are promptly addressed. This makes learning a positive and confident experience for everyone.
+  smallPrint: Quoted word for word, as the learners wrote them.
+
+careers:
+  heading: Where it can take you
+  intro: The course prepares you for structural design roles such as these.
+  roles:
+    - Structural Design Engineer in a consultancy
+    - Structural Engineer with a contractor
+    - In-house Structural Engineer with a builder
+    - Junior Design Engineer
+
+faq:
+  heading: Student FAQ
+  items:
+    - q: Who is this course for?
+      a: Civil engineering graduates, freshers and working professionals who want a career in structural design, in a consultancy, with a contractor or as an in-house structural engineer.
+    - q: What background do I need?
+      a: A degree or diploma in civil engineering, with the basics of strength of materials and structural analysis. You do not need prior experience with ETABS or STAAD.Pro.
+    - q: Which software will I use?
+      a: ETABS, STAAD.Pro, SAFE and AutoCAD. Install them before the software module starts.
+    - q: Which design codes are covered?
+      a: Mainly the Indian Standards (IS 456, IS 875, IS 1893, IS 13920, IS 2911, IS 3370), with British Standard and American (ACI 318, ASCE 7) versions of the key topics, since Gulf projects use all three.
+    - q: How are classes delivered?
+      a: Through live online classes with CBG structural engineers. The slides for every session are on this platform.
+    - q: Does the course cover steel design?
+      a: Steel design modules will be added to this course.
+    - q: Will I get a certificate?
+      a: Yes. You can earn a CBG Course Completion Certificate when you meet the attendance, assignment and course progress requirements.
+    - q: Do you help with jobs?
+      a: CBG runs CV sessions, a line-by-line CV review, interview preparation and mock interviews, and has supported 500+ global placements.
+    - q: How do I enrol?
+      a: Enrolment is by invitation. Use the Contact To Enroll button to message CBG on WhatsApp, and the team will guide you through enrolment and payment.
+    - q: Who do I contact with questions during the course?
+      a: Your batch WhatsApp group is the official channel for announcements and questions.
+
+help:
+  heading: Stuck on anything? Message us.
+  whatsapp:
+    label: WhatsApp
+    number: "+974 7048 5638"
+    href: https://wa.me/97470485638
+  email:
+    label: Email
+    address: info@carbonblueglobal.com
+    href: mailto:info@carbonblueglobal.com
+  logos:
+    - file: cbg-mark-512.png
+      alt: CBG Training Institute

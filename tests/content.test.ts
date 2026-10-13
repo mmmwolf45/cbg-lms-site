@@ -11,7 +11,7 @@ const course = () => yaml('content/courses/iosh-level-3.yaml');
 describe('content schema', () => {
   it('accepts both YAML files', () => {
     expect(Object.keys(loadHome())).toEqual(['hero', 'facts', 'disciplines', 'how-it-works', 'band', 'courses', 'support', 'about', 'footer-note']);
-    expect(loadCourses().map((c) => c.slug)).toEqual(['iosh-level-3', 'quantity-surveying']);
+    expect(loadCourses().map((c) => c.slug)).toEqual(['iosh-level-3', 'quantity-surveying', 'structural-design']);
     expect(loadCourseFiles().map((c) => c.slug)).toEqual(['bim', 'interior-design', 'iosh-level-3', 'mep-design', 'quantity-surveying', 'structural-design']);
   });
 

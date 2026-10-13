@@ -261,7 +261,7 @@ test('coming-soon cards are not links; each live card is one link over its whole
   await page.setViewportSize(LAPTOP);
   await page.emulateMedia({ reducedMotion: 'reduce' }); // a still grid, so points are stable
   await openHome(page);
-  expect(await page.locator('.cbg-course--soon').count()).toBe(4);
+  expect(await page.locator('.cbg-course--soon').count()).toBe(3);
   expect(await page.locator('.cbg-course--soon a, .cbg-course--soon button').count()).toBe(0);
   const hrefs = [];
   for (const live of await page.locator('.cbg-course--live').all()) {
@@ -271,7 +271,7 @@ test('coming-soon cards are not links; each live card is one link over its whole
       return document.elementFromPoint(r.left + 10, r.top + r.height / 2)?.closest('a')?.getAttribute('href');
     }));
   }
-  expect(hrefs).toEqual(['/course/101-iosh-level3-certificate', '/course/102-quantity-surveying']);
+  expect(hrefs).toEqual(['/course/101-iosh-level3-certificate', '/course/102-quantity-surveying', '/course/103-structural-design']);
 });
 
 test('reduced motion: no pin, no zoom, no tilt; the strip stands still', async ({ page }) => {

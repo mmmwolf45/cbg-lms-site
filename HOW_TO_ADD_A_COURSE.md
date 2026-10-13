@@ -46,6 +46,10 @@ At the top, set:
   - `hazard-scan`: a photo with hazard markers. Needs `image`, `imageAlt`, `hazards` and `tour`. The photo must be 3:2, and new hazard labels need a CBG trainer's sign-off.
   - `photo`: a plain photo. Needs `image` and `imageAlt`.
   - `none`: no picture.
+  - `build-scrub`: a full-width film played by the scroll, with a table that counts up beside it (QS: the take-off; Structural: the load take-down). Needs `image` (the poster), `imageAlt` and `scrub` (frames from `npm run scrub-frames`). `scrub.path` (Structural) draws gold lines over the film near its end: points in pixels of the 1600 x 900 frames; bake the same lines into the poster with `node scripts/sd-poster.cjs` (it reads the Structural YAML).
+- `beam` (Structural): the bending moment beam, an interactive drawing with three supports and a sliding point load. Needs `heading`, `intro`, `load` (kN) and `span` (m); `caption` is optional. Its script loads only on a page that has one.
+- `xray`: a photo pair with a scan band (QS: concrete and its steel; Structural: the soil and its foundations). `labels[].at` is in pixels of the photos as built (`src/images.json`, 1536 wide); `labels[].side` (`left` or `right`) keeps a label's chip on the photo; `scanLabel` names the slider for screen readers.
+- `how-classes-run.timetable` is optional: leave it out when no batch days are published.
 - `image` is a photo name from `src/images.json` (for example `hazard-worksite` or `closing-plate`). `help.image` sets the closing band's photo; if you leave it out, it uses `closing-plate`.
 - `units`: from 1 to 6 units works well. If the course does not use guided learning hours, set `hoursLabel` (for example `hours of study`) and `hoursShort` (for example `h`).
 - `field-guides`: the shelf holds about 8 covers. The check in step 4 tells you if there are too many.

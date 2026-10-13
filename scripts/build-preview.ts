@@ -64,4 +64,13 @@ writeFileSync(
       .replace('</head>', '<style>#overview,#learn,#faq{display:none!important}</style></head>')),
 );
 
-console.log('preview: dist/preview/home.html, dist/preview/course.html, dist/preview/qs.html');
+// The Structural page (course 103, snapshot 14 Oct 2026), set up like QS: native Overview, Learn and FAQ hidden
+// (they are switched off when its blocks are pasted); main goes where the native FAQ sits.
+writeFileSync(
+  'dist/preview/sd.html',
+  mock('live-course-sd.html', (p) =>
+    beforeId(beforeId(p, 'course_content', block('structural-design-top', true)), 'faq', block('structural-design-main', true))
+      .replace('</head>', '<style>#overview,#learn,#faq{display:none!important}</style></head>')),
+);
+
+console.log('preview: dist/preview/home.html, dist/preview/course.html, dist/preview/qs.html, dist/preview/sd.html');

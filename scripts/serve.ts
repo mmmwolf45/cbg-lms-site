@@ -17,6 +17,7 @@ function fileFor(path: string): string | undefined {
   if (path === '/gallery') return 'preview/components.html';
   if (/^\/course\/(101-[^/]+|preview-101)\/?$/.test(path)) return 'dist/preview/course.html';
   if (/^\/course\/(102-[^/]+|preview-102)\/?$/.test(path)) return 'dist/preview/qs.html';
+  if (/^\/course\/(103-[^/]+|preview-103)\/?$/.test(path)) return 'dist/preview/sd.html';
   if (path.startsWith(BASE)) {
     const rel = normalize(path.slice(BASE.length)).replace(/^(\.\.[/\\])+/, '');
     return join('dist', rel, path.endsWith('/') ? 'index.html' : '');

@@ -8,4 +8,4 @@ const ICON_ORDER = [ICONS.video, ICONS.calendar, ICONS.book, ICONS.chat, ICONS.l
 export const howClassesRun = (s: Section<'how-classes-run'>) => courseSection('how-classes-run', `${head(s.heading)}
 <ul class="cbg-ways" data-cbg-reveal="stagger">${s.items.map((it, i) =>
   `<li><span class="cbg-ways__icon">${icon(nth(ICON_ORDER, i))}</span><h3 class="cbg-h3">${esc(it.title)}</h3><p>${esc(it.body)}</p></li>`).join('')}</ul>
-<p class="cbg-note" data-cbg-reveal><strong>${esc(s.timetable.label)}:</strong> ${esc(s.timetable.text)}</p>`);
+${s.timetable ? `<p class="cbg-note" data-cbg-reveal><strong>${esc(s.timetable.label)}:</strong> ${esc(s.timetable.text)}</p>` : ''}`);

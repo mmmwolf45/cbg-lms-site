@@ -536,6 +536,48 @@
       ]
     }
   },
+  "trainer-abdul-s-moideen": {
+    "width": 224,
+    "height": 224,
+    "variants": {
+      "avif": [
+        {
+          "w": 224,
+          "file": "img/trainer-abdul-s-moideen-224.avif",
+          "bytes": 3621
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-abdul-s-moideen-112.avif",
+          "bytes": 1566
+        }
+      ],
+      "webp": [
+        {
+          "w": 224,
+          "file": "img/trainer-abdul-s-moideen-224.webp",
+          "bytes": 4812
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-abdul-s-moideen-112.webp",
+          "bytes": 2034
+        }
+      ],
+      "jpg": [
+        {
+          "w": 224,
+          "file": "img/trainer-abdul-s-moideen-224.jpg",
+          "bytes": 6379
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-abdul-s-moideen-112.jpg",
+          "bytes": 2534
+        }
+      ]
+    }
+  },
   "trainer-ali-orkkatteri": {
     "width": 224,
     "height": 224,
@@ -662,6 +704,48 @@
       ]
     }
   },
+  "trainer-kripanjith-v-p": {
+    "width": 224,
+    "height": 224,
+    "variants": {
+      "avif": [
+        {
+          "w": 224,
+          "file": "img/trainer-kripanjith-v-p-224.avif",
+          "bytes": 2721
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-kripanjith-v-p-112.avif",
+          "bytes": 1413
+        }
+      ],
+      "webp": [
+        {
+          "w": 224,
+          "file": "img/trainer-kripanjith-v-p-224.webp",
+          "bytes": 3210
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-kripanjith-v-p-112.webp",
+          "bytes": 1640
+        }
+      ],
+      "jpg": [
+        {
+          "w": 224,
+          "file": "img/trainer-kripanjith-v-p-224.jpg",
+          "bytes": 4940
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-kripanjith-v-p-112.jpg",
+          "bytes": 2249
+        }
+      ]
+    }
+  },
   "trainer-maneesh-vs": {
     "width": 200,
     "height": 200,
@@ -746,6 +830,48 @@
       ]
     }
   },
+  "trainer-muhammed-shahid-p-t": {
+    "width": 224,
+    "height": 224,
+    "variants": {
+      "avif": [
+        {
+          "w": 224,
+          "file": "img/trainer-muhammed-shahid-p-t-224.avif",
+          "bytes": 3237
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-muhammed-shahid-p-t-112.avif",
+          "bytes": 1472
+        }
+      ],
+      "webp": [
+        {
+          "w": 224,
+          "file": "img/trainer-muhammed-shahid-p-t-224.webp",
+          "bytes": 4340
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-muhammed-shahid-p-t-112.webp",
+          "bytes": 1916
+        }
+      ],
+      "jpg": [
+        {
+          "w": 224,
+          "file": "img/trainer-muhammed-shahid-p-t-224.jpg",
+          "bytes": 6136
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-muhammed-shahid-p-t-112.jpg",
+          "bytes": 2547
+        }
+      ]
+    }
+  },
   "trainer-nadira-farhath": {
     "width": 200,
     "height": 200,
@@ -784,6 +910,48 @@
           "w": 112,
           "file": "img/trainer-nadira-farhath-112.jpg",
           "bytes": 2429
+        }
+      ]
+    }
+  },
+  "trainer-naveen-george": {
+    "width": 224,
+    "height": 224,
+    "variants": {
+      "avif": [
+        {
+          "w": 224,
+          "file": "img/trainer-naveen-george-224.avif",
+          "bytes": 3898
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-naveen-george-112.avif",
+          "bytes": 1503
+        }
+      ],
+      "webp": [
+        {
+          "w": 224,
+          "file": "img/trainer-naveen-george-224.webp",
+          "bytes": 5138
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-naveen-george-112.webp",
+          "bytes": 2062
+        }
+      ],
+      "jpg": [
+        {
+          "w": 224,
+          "file": "img/trainer-naveen-george-224.jpg",
+          "bytes": 6816
+        },
+        {
+          "w": 112,
+          "file": "img/trainer-naveen-george-112.jpg",
+          "bytes": 2606
         }
       ]
     }
@@ -2201,6 +2369,33 @@
       ]
     }
   },
+  "student-pooja": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-pooja-80.avif",
+          "bytes": 978
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-pooja-80.webp",
+          "bytes": 1206
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-pooja-80.jpg",
+          "bytes": 1665
+        }
+      ]
+    }
+  },
   "student-pranav-yadav": {
     "width": 80,
     "height": 80,
@@ -2521,6 +2716,33 @@
           "w": 80,
           "file": "img/student-shaiju-shaji-80.jpg",
           "bytes": 1620
+        }
+      ]
+    }
+  },
+  "student-shameem-shamsudheen": {
+    "width": 80,
+    "height": 80,
+    "variants": {
+      "avif": [
+        {
+          "w": 80,
+          "file": "img/student-shameem-shamsudheen-80.avif",
+          "bytes": 976
+        }
+      ],
+      "webp": [
+        {
+          "w": 80,
+          "file": "img/student-shameem-shamsudheen-80.webp",
+          "bytes": 1276
+        }
+      ],
+      "jpg": [
+        {
+          "w": 80,
+          "file": "img/student-shameem-shamsudheen-80.jpg",
+          "bytes": 1512
         }
       ]
     }
@@ -2908,6 +3130,177 @@
           "w": 768,
           "file": "img/qs-xray-steel-768.jpg",
           "bytes": 49817
+        }
+      ]
+    }
+  },
+  "sd-hero-poster": {
+    "width": 1920,
+    "height": 1099,
+    "variants": {
+      "avif": [
+        {
+          "w": 1920,
+          "file": "img/sd-hero-poster-1920.avif",
+          "bytes": 45653
+        },
+        {
+          "w": 1280,
+          "file": "img/sd-hero-poster-1280.avif",
+          "bytes": 24217
+        },
+        {
+          "w": 768,
+          "file": "img/sd-hero-poster-768.avif",
+          "bytes": 11420
+        }
+      ],
+      "webp": [
+        {
+          "w": 1920,
+          "file": "img/sd-hero-poster-1920.webp",
+          "bytes": 63446
+        },
+        {
+          "w": 1280,
+          "file": "img/sd-hero-poster-1280.webp",
+          "bytes": 35634
+        },
+        {
+          "w": 768,
+          "file": "img/sd-hero-poster-768.webp",
+          "bytes": 17630
+        }
+      ],
+      "jpg": [
+        {
+          "w": 1920,
+          "file": "img/sd-hero-poster-1920.jpg",
+          "bytes": 113361
+        },
+        {
+          "w": 1280,
+          "file": "img/sd-hero-poster-1280.jpg",
+          "bytes": 60188
+        },
+        {
+          "w": 768,
+          "file": "img/sd-hero-poster-768.jpg",
+          "bytes": 27003
+        }
+      ]
+    }
+  },
+  "sd-ground-surface": {
+    "width": 1536,
+    "height": 1020,
+    "variants": {
+      "avif": [
+        {
+          "w": 1536,
+          "file": "img/sd-ground-surface-1536.avif",
+          "bytes": 176168
+        },
+        {
+          "w": 1024,
+          "file": "img/sd-ground-surface-1024.avif",
+          "bytes": 85852
+        },
+        {
+          "w": 768,
+          "file": "img/sd-ground-surface-768.avif",
+          "bytes": 49590
+        }
+      ],
+      "webp": [
+        {
+          "w": 1536,
+          "file": "img/sd-ground-surface-1536.webp",
+          "bytes": 291028
+        },
+        {
+          "w": 1024,
+          "file": "img/sd-ground-surface-1024.webp",
+          "bytes": 146532
+        },
+        {
+          "w": 768,
+          "file": "img/sd-ground-surface-768.webp",
+          "bytes": 83726
+        }
+      ],
+      "jpg": [
+        {
+          "w": 1536,
+          "file": "img/sd-ground-surface-1536.jpg",
+          "bytes": 290698
+        },
+        {
+          "w": 1024,
+          "file": "img/sd-ground-surface-1024.jpg",
+          "bytes": 133676
+        },
+        {
+          "w": 768,
+          "file": "img/sd-ground-surface-768.jpg",
+          "bytes": 75587
+        }
+      ]
+    }
+  },
+  "sd-ground-section": {
+    "width": 1536,
+    "height": 1020,
+    "variants": {
+      "avif": [
+        {
+          "w": 1536,
+          "file": "img/sd-ground-section-1536.avif",
+          "bytes": 162982
+        },
+        {
+          "w": 1024,
+          "file": "img/sd-ground-section-1024.avif",
+          "bytes": 75389
+        },
+        {
+          "w": 768,
+          "file": "img/sd-ground-section-768.avif",
+          "bytes": 42403
+        }
+      ],
+      "webp": [
+        {
+          "w": 1536,
+          "file": "img/sd-ground-section-1536.webp",
+          "bytes": 268858
+        },
+        {
+          "w": 1024,
+          "file": "img/sd-ground-section-1024.webp",
+          "bytes": 128284
+        },
+        {
+          "w": 768,
+          "file": "img/sd-ground-section-768.webp",
+          "bytes": 71430
+        }
+      ],
+      "jpg": [
+        {
+          "w": 1536,
+          "file": "img/sd-ground-section-1536.jpg",
+          "bytes": 272473
+        },
+        {
+          "w": 1024,
+          "file": "img/sd-ground-section-1024.jpg",
+          "bytes": 123052
+        },
+        {
+          "w": 768,
+          "file": "img/sd-ground-section-768.jpg",
+          "bytes": 70203
         }
       ]
     }

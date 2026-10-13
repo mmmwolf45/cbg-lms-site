@@ -6,5 +6,15 @@ import { closeDefaultSection, startHere } from '../motion/start-here';
 import { scrub } from '../motion/scrub';
 import { xray } from '../motion/xray';
 import { qsSections } from '../motion/qs-sections';
+import type { Enhancer } from '../motion/setup';
 
-export const enhancers = [closeDefaultSection, hazardScan, scrub, build80, xray, qsSections, courseExtras, startHere];
+// The bending moment beam (Structural page) is its own chunk (cbg-bmd), fetched only when the page has one.
+const beamLazy: Enhancer = (roots) => {
+  if (!roots.some((r) => r.querySelector('[data-cbg-bmd]'))) return;
+  let undo: (() => void) | void;
+  let dead = false;
+  import('../motion/beam').then((m) => { if (!dead) undo = m.beam(roots); }).catch((err) => console.warn('[cbg]', err));
+  return () => { dead = true; undo?.(); };
+};
+
+export const enhancers = [closeDefaultSection, hazardScan, scrub, build80, xray, qsSections, beamLazy, courseExtras, startHere];

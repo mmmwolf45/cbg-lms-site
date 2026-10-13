@@ -49,7 +49,9 @@ function buildScrub(h: Hero, s: NonNullable<Hero['scrub']>) {
     return `<li class="cbg-takeoff__row" data-cbg-at="${at}"><span class="cbg-takeoff__item">${esc(item)}</span>`
       + ` <span class="cbg-takeoff__qty"><b aria-hidden="true" data-cbg-qty="${qty}">${q}</b><span class="cbg-sr-only">${q}</span> ${esc(unit)}</span></li>`;
   };
-  return `<div class="cbg-scrub" data-cbg-scrub="${PAGES}${esc(s.frames)}/" data-cbg-frames="${s.count}">`
+  // The load path (Structural): its lines as JSON for src/motion/scrub.ts; the poster already shows it drawn.
+  const path = s.path ? ` data-cbg-path="${esc(JSON.stringify(s.path))}"` : '';
+  return `<div class="cbg-scrub" data-cbg-scrub="${PAGES}${esc(s.frames)}/" data-cbg-frames="${s.count}"${path}>`
     + `<div class="cbg-frame cbg-scrub__film">${picture(h.image as ImageName, { cls: 'cbg-scrub__poster', alt: h.imageAlt ?? '', eager: true, sizes: '100vw' })}</div>`
     + `<div class="cbg-takeoff"><p class="cbg-takeoff__label">${esc(s.label)}</p><ul class="cbg-takeoff__rows">${s.takeoff.map(row).join('')}</ul>`
     + `${s.total ? `<p class="cbg-takeoff__total">${esc(s.total)}</p>` : ''}</div></div>`;
