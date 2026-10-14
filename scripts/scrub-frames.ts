@@ -14,10 +14,13 @@
 //   --out DIR     frames folder (public/qs-hero: the YAML's scrub.frames names it), written as l/ and s/
 //   --poster PNG  poster source, the LAST frame at full size (brand/assets/qs-hero/poster.png)
 //   --phone-x F   centre of the phone's square crop, 0..1 of the width (0.5: the building is centred)
+//   --sky R,G,B   grade every frame so its sky (the top corners) lands on this colour, the page's background
+//                 (the Structural hero: 8,18,38), so the footage melts into the page. Only dark tones move
+//                 (see liftDark); the lit building and the gold stay as they are.
 //
 // Laptops get 16:9 frames (SIZES.l), phones a centred square crop (SIZES.s). Over budget exits 1.
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readdirSync, rmSync, statSync, copyFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readdirSync, renameSync, rmSync, statSync, copyFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { parseArgs } from 'node:util';
@@ -47,6 +50,39 @@ export function pick(total: number, count: number): number[] {
   return Array.from({ length: count }, (_, i) => Math.round((i * (total - 1)) / (count - 1)));
 }
 
+// Lifts a dark channel value by `delta` (the sky's distance from the target colour), fading to nothing by
+// LIFT_END, so the sky and the shadows shift and everything lit stays put.
+export const LIFT_END = 96;
+export const liftDark = (v: number, delta: number) =>
+  Math.max(0, Math.min(255, Math.round(v + delta * Math.max(0, 1 - v / LIFT_END))));
+
+// Mean RGB of the two top corners (10% wide, rows 2% to 10%): the sky, clear of the building.
+async function skyMean(file: string) {
+  const { data, info } = await sharp(file).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const sum = [0, 0, 0];
+  let n = 0;
+  const w = Math.round(info.width * 0.1);
+  for (let y = Math.round(info.height * 0.02); y < Math.round(info.height * 0.1); y++) {
+    for (const x0 of [0, info.width - w]) {
+      for (let x = x0; x < x0 + w; x++) {
+        const i = (y * info.width + x) * 3;
+        sum[0]! += data[i]!; sum[1]! += data[i + 1]!; sum[2]! += data[i + 2]!;
+        n++;
+      }
+    }
+  }
+  return { mean: sum.map((s) => s / n), data, info };
+}
+
+// Grades one frame in place so its sky lands on `target`.
+async function gradeSky(file: string, target: number[]) {
+  const { mean, data, info } = await skyMean(file);
+  const delta = target.map((t, c) => t - mean[c]!);
+  for (let i = 0; i < data.length; i += 3) for (let c = 0; c < 3; c++) data[i + c] = liftDark(data[i + c]!, delta[c]!);
+  await sharp(data, { raw: { width: info.width, height: info.height, channels: 3 } }).png().toFile(`${file}.graded.png`);
+  renameSync(`${file}.graded.png`, file);
+}
+
 // The phone's square crop of a w x h frame, centred on fraction x of the width and kept inside the frame.
 export function squareCrop(w: number, h: number, x: number) {
   const side = Math.min(w, h);
@@ -66,7 +102,7 @@ async function main() {
     allowPositionals: true,
     options: {
       start: { type: 'string' }, seconds: { type: 'string' }, count: { type: 'string' },
-      out: { type: 'string' }, poster: { type: 'string' }, 'phone-x': { type: 'string' },
+      out: { type: 'string' }, poster: { type: 'string' }, 'phone-x': { type: 'string' }, sky: { type: 'string' },
     },
   });
   const clip = positionals[0] ?? DEFAULTS.clip;
@@ -88,6 +124,12 @@ async function main() {
       '-vf', select, '-fps_mode', 'passthrough', join(tmp, 'f%03d.png')], { stdio: 'inherit' });
     const pngs = readdirSync(tmp).filter((f) => f.endsWith('.png')).sort();
     if (pngs.length !== count) throw new Error(`expected ${count} frames, ffmpeg wrote ${pngs.length}`);
+    if (values.sky) {
+      const target = values.sky.split(',').map(Number);
+      if (target.length !== 3 || target.some((v) => !(v >= 0 && v <= 255))) throw new Error(`--sky must be R,G,B; got ${values.sky}`);
+      for (const f of pngs) await gradeSky(join(tmp, f), target);
+      console.log(`sky graded to ${target.join(',')}`);
+    }
     mkdirSync(dirname(poster), { recursive: true });
     copyFileSync(join(tmp, pngs[count - 1]!), poster); // the finished building: what reduced motion and no-JS show
 

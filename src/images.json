@@ -3142,51 +3142,51 @@
         {
           "w": 1920,
           "file": "img/sd-hero-poster-1920.avif",
-          "bytes": 45653
+          "bytes": 37491
         },
         {
           "w": 1280,
           "file": "img/sd-hero-poster-1280.avif",
-          "bytes": 24217
+          "bytes": 21129
         },
         {
           "w": 768,
           "file": "img/sd-hero-poster-768.avif",
-          "bytes": 11420
+          "bytes": 9953
         }
       ],
       "webp": [
         {
           "w": 1920,
           "file": "img/sd-hero-poster-1920.webp",
-          "bytes": 63446
+          "bytes": 50664
         },
         {
           "w": 1280,
           "file": "img/sd-hero-poster-1280.webp",
-          "bytes": 35634
+          "bytes": 29490
         },
         {
           "w": 768,
           "file": "img/sd-hero-poster-768.webp",
-          "bytes": 17630
+          "bytes": 14826
         }
       ],
       "jpg": [
         {
           "w": 1920,
           "file": "img/sd-hero-poster-1920.jpg",
-          "bytes": 113361
+          "bytes": 98098
         },
         {
           "w": 1280,
           "file": "img/sd-hero-poster-1280.jpg",
-          "bytes": 60188
+          "bytes": 53144
         },
         {
           "w": 768,
           "file": "img/sd-hero-poster-768.jpg",
-          "bytes": 27003
+          "bytes": 24363
         }
       ]
     }
