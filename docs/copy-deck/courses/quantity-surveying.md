@@ -31,7 +31,7 @@ The course.link header (title, subtitle, stats, "Contact To Enroll" button) and 
 - **Eyebrow:** CBG Training Institute · Live online
 - **Line (h2):** Quantity Surveying
 - **Subhead:** An 8-month live online course for civil engineers. Learn to measure, price and manage construction costs on real Middle East projects, with CV support and placement assistance.
-- **Key facts (counters):** 8 months · 8 modules · 55 technical hours · 11 assignments · 3 certificates
+- **Key facts (counters):** 8 months · 8 modules · 55 technical hours · 12 assignments · 3 certificates
 - **CTA for students:** "Start here". It scrolls to `#course_content` and opens its first accordion item (Start Here).
 - **Visual:** build scrub. Full-width footage played by the scroll: a gold line drawing of a building plan that rises into a finished, lit building at dusk (frames in `public/qs-hero/`, 48 frames; poster `qs-hero-poster`).
 - **Example take-off (beside the footage, labelled as an example).** ILLUSTRATIVE numbers for a small two-storey villa, for Maasoom to approve:
@@ -49,56 +49,61 @@ The course.link header (title, subtitle, stats, "Contact To Enroll" button) and 
 - **Heading:** One course, live projects and career support
 - **Intro:** Everything below is part of your course, from your first class to your job search.
 - **Cards** (the first is featured: the live projects are what set this course apart, and they lead to two of the three certificates, which have their own section):
-  1. **Live projects from the Middle East.** Real project work from CBG's engineering services division, including a full civil and fit-out BOQ.
-  2. **11 practical assignments.** From AutoCAD takeoffs to BOQs, BBS, rate analysis, estimates, RA bills, variations, cash flow and scheduling, each reviewed by CBG faculty, plus two CV submissions.
+  1. **Live projects from the Middle East.** Two live projects from CBG's engineering services division. First a full civil and fit-out BOQ, then a second project in the discipline you want to grow in.
+  2. **12 practical assignments.** From AutoCAD takeoffs to BOQs, BBS, rate analysis, estimates, RA bills, variations, cash flow, scheduling and both live projects, each reviewed by CBG faculty, plus two CV submissions.
   3. **Software skills.** Excel, AutoCAD, PlanSwift and Primavera P6.
   4. **Industry interaction.** A session with experienced quantity surveyors on how the industry works day to day.
   5. **Personal mentorship.** A mentor to guide you and take up anything you need with CBG.
   6. **CV and interview preparation.** Two CV sessions, line-by-line CV reviews until your CV is final, CBG's AI CV builder (cvbuilder.carbonblueglobal.com), HR interview preparation and mock interviews.
-  7. **Placement assistance.** Relevant job openings and interview support for eligible learners. CBG has supported 500+ placements across Saudi Arabia, the UAE, India, the Maldives and Africa.
+  7. **Your path to RICS.** The AssocRICS and MRICS routes and the APC, where this course helps, and a 3, 6 and 12 month action plan for your first years in the Gulf.
+  8. **Placement assistance.** Relevant job openings and interview support for eligible learners. CBG has supported 500+ placements across Saudi Arabia, the UAE, India, the Maldives and Africa.
 
 ## [units] The eight modules
-- **Heading:** Your learning path: 8 modules, 39 sessions
+- **Heading:** Your learning path: 8 modules, 45 sessions
 - **Intro:** After the Start Here orientation, the 8 modules run in the order you meet the work on a real project, starting with the basics and building step by step, with assignments along the way.
 - **Hours wording:** each module shows its number of sessions (from the syllabus roadmap table), not guided learning hours.
 - **Module 1, M01: QS Foundations** (5 sessions)
   - Understand the QS role, the main construction components and the project workflow
   - Use Excel and AutoCAD for QS tasks
   - **Sessions:** 1.1 Introduction to QS · 1.2 Basics of Civil Engineering · 1.3 Construction Workflow · 1.4 Excel for QS · 1.5 AutoCAD for QS
-- **Module 2, M02: Measurement and BOQ** (11 sessions)
+- **Module 2, M02: Measurement and BOQ** (14 sessions)
   - Measure works to POMI
   - Take off quantities manually and in PlanSwift
-  - Prepare complete BOQs and bar bending schedules
-  - **Sessions:** 2.1 POMI Part 1 · 2.2 POMI Part 2 · 2.3 BOQ Preparation Part 1 · 2.4 BOQ Preparation Part 2 · 2.5 BOQ Preparation Part 3: Specifications · 2.6 BOQ Preparation Part 4 · 2.7 PlanSwift Part 1 · 2.8 PlanSwift Part 2 · 2.9 Interior Fit-Out BOQ · 2.10 Roadworks BOQ · 2.11 Bar Bending Schedule (BBS)
+  - Prepare complete BOQs, and bar bending schedules for footings, columns, beams, slabs and staircases
+  - Measure infrastructure work by chainage, and compare CESMM4 with POMI
+  - **Sessions:** 2.1 POMI Part 1 · 2.2 POMI Part 2 · 2.3 BOQ Preparation Part 1 · 2.4 BOQ Preparation Part 2 · 2.5 BOQ Preparation Part 3: Specifications · 2.6 BOQ Preparation Part 4 · 2.7 PlanSwift Part 1 · 2.8 PlanSwift Part 2 · 2.9 Interior Fit-Out BOQ · 2.10 Roadworks BOQ · 2.11 Bar Bending Schedule (BBS) · 2.12 BBS for Beams and Slabs · 2.13 BBS for Staircases · 2.14 Infrastructure QS: An Introduction
 - **Module 3, M03: Estimating and Cost Planning** (3 sessions)
   - Build unit rates from first principles
   - Prepare estimates and detailed budgets
   - Apply value engineering
   - **Sessions:** 3.1 Rate Analysis · 3.2 Estimates · 3.3 Value Engineering
-- **Module 4, M04: Tendering and Contracts** (4 sessions)
+- **Module 4, M04: Tendering and Contracts** (5 sessions)
   - Explain the tender process
   - Compare contract types and FIDIC forms
   - Use contract conditions, work orders and purchase orders
-  - **Sessions:** 4.1 Tendering · 4.2 Contracts and FIDIC · 4.3 GCC and SCC · 4.4 Work Orders and Purchase Orders
+  - Prepare, float and evaluate a tender as a consultant QS
+  - **Sessions:** 4.1 Tendering · 4.2 Contracts and FIDIC · 4.3 GCC and SCC · 4.4 Work Orders and Purchase Orders · 4.5 The Consultant QS: Preparing and Floating a Tender
 - **Module 5, M05: Post-Contract Billing** (4 sessions)
   - Prepare RA bills, final bills and certificates of payment
   - Value and log variations
   - Adjust provisional sums and prime cost items
   - **Sessions:** 5.1 RA Bill Preparation · 5.2 Final Bill and COP · 5.3 Variations and Extra Items · 5.4 Provisional Sums and Prime Cost
-- **Module 6, M06: Cost Control and Planning** (7 sessions)
+- **Module 6, M06: Cost Control and Planning** (8 sessions)
   - Forecast cash flow and prepare cost reports
   - Schedule projects in Primavera P6
   - Manage manpower, materials and machinery
-  - **Sessions:** 6.1 Cash Flow · 6.2 Cost Reports · 6.3 Project Scheduling · 6.4 Primavera P6 Part 1 · 6.5 Primavera P6 Part 2 · 6.6 Primavera P6 Part 3 · 6.7 3M Management
+  - Grow into commercial work, from contract risk and negotiation to notices and the final account
+  - **Sessions:** 6.1 Cash Flow · 6.2 Cost Reports · 6.3 Project Scheduling · 6.4 Primavera P6 Part 1 · 6.5 Primavera P6 Part 2 · 6.6 Primavera P6 Part 3 · 6.7 3M Management · 6.8 The QS as a Commercial Facilitator
 - **Module 7, M07: Closeout and Live Project** (3 sessions)
   - Close out and hand over a project
-  - Apply the full QS workflow to a real Middle East live project
-  - **Sessions:** 7.1 Project Closeout and Handover · 7.2 Middle East Live Project · 7.3 Industry Interaction
-- **Module 8, M08: Career Launch** (2 sessions)
+  - Apply the full QS workflow to two real Middle East live projects, a core civil and fit-out BOQ and an elective package
+  - **Sessions:** 7.1 Project Closeout and Handover · 7.2 Middle East Live Projects · 7.3 Industry Interaction
+- **Module 8, M08: Career Launch** (3 sessions)
   - Prepare a high-impact QS CV and LinkedIn profile
   - Get ready for HR and technical interviews
   - Use CBG's placement assistance
-  - **Sessions:** 8.1 CV Session 1: CV and LinkedIn · 8.2 Interviews and Placement
+  - Plan your route to AssocRICS and MRICS
+  - **Sessions:** 8.1 CV Session 1: CV and LinkedIn · 8.2 Interviews and Placement · 8.3 Your Path to RICS: AssocRICS and MRICS
 
 ## [xray] Rebar X-ray (bar bending schedule, Module 2 session 2.11)
 - **Heading:** See the steel. Measure every bar.
@@ -110,15 +115,15 @@ The course.link header (title, subtitle, stats, "Contact To Enroll" button) and 
 ## [how-classes-run] How your classes run
 - **8 months, live online.** 55 hours of technical sessions plus 3 hours of HR and CV sessions, taught live by CBG faculty so you can ask questions as you go.
 - **Classes on alternate days.** Your batch timetable is shared when you join.
-- **Recorded sessions.** Revisit topics at your own pace. Live attendance still matters, as you need at least 75% to qualify for your certificates.
+- **Recorded sessions.** Recordings of key sessions are on this platform, so you can revisit topics at your own pace. Live attendance still matters, as you need at least 75% to qualify for your certificates.
 - **Help between classes.** A WhatsApp doubt-clearance line for each topic, and one-to-one sessions with faculty on request. Your mentor can take any unresolved issue to CBG for you.
 - **What you need.** A laptop or PC with a stable internet connection. You will use Excel, AutoCAD, PlanSwift and Primavera P6, so make sure you can run them before the topics that use them.
 - **Batch days:** Monday, Wednesday and Friday, or Tuesday, Thursday and Saturday.
 
 ## [assessment] How your work is assessed
 - **Intro:** You learn by doing. Each assignment and CV submission has its own deadline, and CBG faculty review your work and return feedback within 15 working days.
-- **A01 to A11: 11 practical assignments**
-  - From AutoCAD takeoffs to BOQs, BBS, rate analysis, estimates, RA bills, variations, cash flow and scheduling
+- **A01 to A12: 12 practical assignments**
+  - From AutoCAD takeoffs to BOQs, BBS, rate analysis, estimates, RA bills, variations, cash flow and scheduling, then your two live projects
   - Due 3 to 21 days after the class, in the format the brief asks for
   - XLSX for BOQs and billing, DWG plus PDF for AutoCAD, XER plus PDF for Primavera
   - Score 70% or above for quality on every assignment to earn your certificates
@@ -126,7 +131,7 @@ The course.link header (title, subtitle, stats, "Contact To Enroll" button) and 
   - CV1 within 7 days of CV Session 1, CV2 within 7 days of CV Session 2 (PDF or DOCX)
   - CBG reviews your CV line by line
   - The review and revision loop continues until your CV is final
-- **For reference (syllabus assignment summary, not shown as a table):** A01 AutoCAD Area and Perimeter (3 days, DWG + PDF) · A02 POMI Synopsis (3 days, PDF) · A03 Complete BOQ, Civil and Fit-Out (15 days, XLSX + PDF) · A04 BBS for Footing and Column (7 days, XLSX) · A05 Rate Analysis (5 days, XLSX) · A06 Detailed Budget Estimate (10 days, XLSX) · A07 RA Bill and COP (7 days, XLSX) · A08 Variations (7 days, XLSX + PDF) · A09 Cash Flow (10 days, XLSX) · A10 Planning and Scheduling (15 days, XER + PDF) · A11 Live Project BOQ (21 days, XLSX + PDF)
+- **For reference (syllabus assignment summary, not shown as a table):** A01 AutoCAD Area and Perimeter (3 days, DWG + PDF) · A02 POMI Synopsis (3 days, PDF) · A03 Complete BOQ, Civil and Fit-Out (15 days, XLSX + PDF) · A04 BBS for Footing and Column (7 days, XLSX) · A05 Rate Analysis (5 days, XLSX) · A06 Detailed Budget Estimate (10 days, XLSX) · A07 RA Bill and COP (7 days, XLSX) · A08 Variations (7 days, XLSX + PDF) · A09 Cash Flow (10 days, XLSX) · A10 Planning and Scheduling (15 days, XER + PDF) · A11 Live Project 1: Core BOQ, Civil and Fit-Out (21 days, XLSX + PDF) · A12 Live Project 2: Elective Package (14 days, to be confirmed by CBG, XLSX + PDF)
 
 ## [certificates] Your certificates
 - **4 Oct 2026 (Maasoom):** the page names the certificates but says nothing about how they are earned (to be added later), so the 75%, 70% and 80% rules below and in the FAQ and class notes were taken off the page. Our own drawn certificate cards, no sample images.
@@ -134,7 +139,7 @@ The course.link header (title, subtitle, stats, "Contact To Enroll" button) and 
 - **Intro:** Earn a Course Completion Certificate and two Live Project Certificates.
 - **No sample pictures:** the only samples (on the Entri page) carry Entri branding (logo, seal, "on entri app"), so none are shown.
 - **Course Completion Certificate.** Awarded when you complete the course and meet the rules below.
-- **Two Live Project Certificates.** Earned on your Middle East live project, where you prepare civil and fit-out BOQs from live project drawings, guided by CBG faculty.
+- **Two Live Project Certificates.** One for each Middle East live project, guided by CBG faculty: Live Project 1, a civil and fit-out BOQ from live project drawings, and Live Project 2, an elective in villa, industrial building, high-rise, roads and infrastructure, or interior fit-out.
 - **To qualify you need:**
   - at least 75% attendance in live classes
   - all assignments completed, scoring 70% or above for quality
@@ -239,21 +244,22 @@ The course.link header (title, subtitle, stats, "Contact To Enroll" button) and 
 - Quantity Surveyor · Estimation or Tendering Engineer · Billing Engineer · Cost Engineer · Contracts Engineer · Planning Engineer · Procurement Engineer
 
 ## [faq] Student FAQ
-All 14 from the Drive copy, word for word.
+The 14 from the Drive copy, word for word, plus 11 (RICS, added 2 Nov 2026 for the new Career Launch session).
 1. **Who is this course for?** Civil engineering graduates, freshers and working professionals, such as site engineers, who want a career in quantity surveying, estimation, billing or cost control. You need a background in civil engineering, good numeracy and basic computer skills.
 2. **What does a quantity surveyor do?** A quantity surveyor manages the cost and contract side of a construction project. That means measuring quantities, preparing BOQs and estimates, pricing work, preparing bills and payment certificates, valuing variations and keeping the project within budget, working closely with architects, engineers and contractors.
 3. **Can a civil engineer become a quantity surveyor?** Yes. Civil engineers already understand construction, materials and site execution, which makes the move into quantity surveying a natural one. This course adds the measurement, commercial and contract skills on top.
 4. **How long is the course and when are classes held?** The course runs for 8 months: 55 hours of technical sessions plus 3 hours of HR and CV sessions. Classes are on alternate days, in Monday, Wednesday and Friday or Tuesday, Thursday and Saturday batches. Your batch timetable is shared when you join.
 5. **How is the course structured?** After a Start Here orientation, the course runs through 8 modules in the order you meet the work on a real project: QS Foundations; Measurement and BOQ; Estimating and Cost Planning; Tendering and Contracts; Post-Contract Billing; Cost Control and Planning; Closeout and Live Project; and Career Launch. It starts with the basics, including Excel and AutoCAD, and builds step by step, with assignments along the way so you learn by doing.
-6. **Are the classes live or recorded?** Classes are taught live online by CBG faculty, so you can ask questions as you go. Recorded sessions let you revisit topics. Live attendance still matters: you need at least 75% to qualify for your certificates.
+6. **Are the classes live or recorded?** Classes are taught live online by CBG faculty, so you can ask questions as you go. Recordings of key sessions are on this platform, so you can revisit topics. Live attendance still matters: you need at least 75% to qualify for your certificates.
 7. **What software do I need?** A laptop or PC with a stable internet connection. You will use Excel, AutoCAD, PlanSwift and Primavera P6 during the course, so make sure you can run them before the topics that use them. Message CBG if you need help getting set up.
-8. **How are assignments submitted and evaluated?** There are 11 assignments plus 2 CV submissions, each with its own deadline (3 to 21 days after the class). Submit them in the format the brief asks for, for example XLSX for BOQs and billing, DWG plus PDF for AutoCAD and XER plus PDF for Primavera. CBG faculty review your work and return feedback within 15 working days.
+8. **How are assignments submitted and evaluated?** There are 12 assignments plus 2 CV submissions, each with its own deadline (3 to 21 days after the class). Submit them in the format the brief asks for, for example XLSX for BOQs and billing, DWG plus PDF for AutoCAD and XER plus PDF for Primavera. CBG faculty review your work and return feedback within 15 working days.
 9. **What certificates will I receive?** Three CBG certificates: a Course Completion Certificate and two Live Project Certificates. To qualify you need at least 75% live class attendance, all assignments completed with 70% or above for quality, and at least 80% of the course content completed.
-10. **What are the live projects?** Real project work from CBG's engineering services division in the Middle East. You prepare civil and fit-out BOQs from live project drawings, guided by CBG faculty, and earn two Live Project Certificates.
-11. **Do you offer placement assistance?** Yes. Learners who complete the course, keep at least 75% live attendance, finish their assignments and pass the mock interviews receive relevant job openings and interview support. CBG has supported 500+ placements across Saudi Arabia, the UAE, India, the Maldives and Africa. Placement assistance is not a job guarantee: results depend on your effort, interviews and the market.
-12. **How does the CV review work?** CV session 1 shows you how to build a high-impact CV and gives you access to CBG's AI CV builder (cvbuilder.carbonblueglobal.com). You submit your first CV within 7 days, attend CV session 2, then submit a revised CV within 7 days. CBG reviews it line by line, and the review and revision loop continues until your CV is final.
-13. **What if I get stuck between classes?** Each topic has a WhatsApp doubt-clearance line, and you can request a one-to-one session with faculty. Your mentor can take any unresolved issue to CBG for you.
-14. **How do I enrol?** Enrolment is by invitation. Message CBG on WhatsApp at +974 7048 5638 and our team will guide you through the next steps.
+10. **What are the live projects?** Real project work from CBG's engineering services division in the Middle East, guided by CBG faculty. Live Project 1 is a civil and fit-out BOQ from live project drawings, the same for every learner. Live Project 2 is a smaller package in the discipline you choose: villa, industrial building, high-rise, roads and infrastructure, or interior fit-out. Each one earns its own Live Project Certificate.
+11. **Does the course help me towards RICS?** Yes. The Career Launch module has a session on your path to RICS: the AssocRICS and MRICS routes, the APC, where this course helps and a 3, 6 and 12 month action plan.
+12. **Do you offer placement assistance?** Yes. Learners who complete the course, keep at least 75% live attendance, finish their assignments and pass the mock interviews receive relevant job openings and interview support. CBG has supported 500+ placements across Saudi Arabia, the UAE, India, the Maldives and Africa. Placement assistance is not a job guarantee: results depend on your effort, interviews and the market.
+13. **How does the CV review work?** CV session 1 shows you how to build a high-impact CV and gives you access to CBG's AI CV builder (cvbuilder.carbonblueglobal.com). You submit your first CV within 7 days, attend CV session 2, then submit a revised CV within 7 days. CBG reviews it line by line, and the review and revision loop continues until your CV is final.
+14. **What if I get stuck between classes?** Each topic has a WhatsApp doubt-clearance line, and you can request a one-to-one session with faculty. Your mentor can take any unresolved issue to CBG for you.
+15. **How do I enrol?** Enrolment is by invitation. Message CBG on WhatsApp at +974 7048 5638 and our team will guide you through the next steps.
 
 ## [help] Help and contacts (closing band)
 - **Heading:** Stuck on anything? Message us.

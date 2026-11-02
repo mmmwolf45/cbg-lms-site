@@ -6,6 +6,10 @@
 # Sources (in priority order):
 #   - Maasoom's Drive: "CBG_QS_LMS_Landing_Page_Copy" (the wording) and "CBG_QS_Syllabus_8-Modules"
 #     (modules, sessions, assignments, certificate rules; rebuilt into 8 modules on 3 Oct 2026)
+#   - the course page draft /course/preview-102 (2 Nov 2026) and the Drive deck CBG_QS_M00_01_Course-Orientation
+#     (1 Nov 2026): 8 modules, 45 sessions, A01 to A12, two live projects (LP1 Core BOQ, LP2 Elective) and
+#     the new sessions (BBS for beams, slabs and staircases, Infrastructure QS, the Consultant QS, the QS as
+#     a Commercial Facilitator, the RICS pathway); the new sessions' outcomes come from their decks
 #   - the live course page /course/102-quantity-surveying (same copy as the Drive doc)
 #   - the Entri course page, ONLY for learner reviews, placement stories and faculty photos
 #
@@ -15,6 +19,9 @@
 #   - "What You Will Learn" (the units section shows each module's aims and sessions instead)
 #   - Start Here and Course Completion as units (they stay in the native Course Content list)
 #   - CV Session 2 as a numbered session (the syllabus treats it as a tutoring session under M08_01)
+#   - the "(Recording)" lessons as sessions: they are recordings of sessions already listed (the
+#     how-classes-run and FAQ items say recordings are on the platform)
+#   - LP2's 14 days and the certificate naming your discipline (marked "proposed, to be confirmed by CBG")
 #   - bonus, field-guides and payments (IOSH-only sections)
 #   - Entri's ratings, placement counts, video testimonials and company logos; reviews that mention
 #     Entri; faculty employers (left out in the Drive copy too)
@@ -69,9 +76,9 @@ hero:
     - value: "55"
       label: technical hours
       count: 55
-    - value: "11"
+    - value: "12"
       label: assignments
-      count: 11
+      count: 12
     - value: "3"
       label: certificates
       count: 3
@@ -100,10 +107,10 @@ included:
   intro: Everything below is part of your course, from your first class to your job search.
   cards:
     - title: Live projects from the Middle East.
-      body: Real project work from CBG's engineering services division, including a full civil and fit-out BOQ.
+      body: Two live projects from CBG's engineering services division. First a full civil and fit-out BOQ, then a second project in the discipline you want to grow in.
       featured: true
-    - title: 11 practical assignments.
-      body: From AutoCAD takeoffs to BOQs, BBS, rate analysis, estimates, RA bills, variations, cash flow and scheduling, each reviewed by CBG faculty, plus two CV submissions.
+    - title: 12 practical assignments.
+      body: From AutoCAD takeoffs to BOQs, BBS, rate analysis, estimates, RA bills, variations, cash flow, scheduling and both live projects, each reviewed by CBG faculty, plus two CV submissions.
     - title: Software skills.
       body: Excel, AutoCAD, PlanSwift and Primavera P6.
     - title: Industry interaction.
@@ -112,11 +119,13 @@ included:
       body: A mentor to guide you and take up anything you need with CBG.
     - title: CV and interview preparation.
       body: Two CV sessions, line-by-line CV reviews until your CV is final, CBG's AI CV builder (cvbuilder.carbonblueglobal.com), HR interview preparation and mock interviews.
+    - title: Your path to RICS.
+      body: The AssocRICS and MRICS routes and the APC, where this course helps, and a 3, 6 and 12 month action plan for your first years in the Gulf.
     - title: Placement assistance.
       body: Relevant job openings and interview support for eligible learners. CBG has supported 500+ placements across Saudi Arabia, the UAE, India, the Maldives and Africa.
 
 units:
-  heading: "Your learning path: 8 modules, 39 sessions"
+  heading: "Your learning path: 8 modules, 45 sessions"
   intro: After the Start Here orientation, the 8 modules run in the order you meet the work on a real project, starting with the basics and building step by step, with assignments along the way.
   # The building drawing labels each floor "<n> sessions".
   hoursLabel: sessions
@@ -136,11 +145,12 @@ units:
         - { id: "1.5", title: AutoCAD for QS }
     - code: M02
       title: Measurement and BOQ
-      glh: 11
+      glh: 14
       outcomes:
         - Measure works to POMI
         - Take off quantities manually and in PlanSwift
-        - Prepare complete BOQs and bar bending schedules
+        - Prepare complete BOQs, and bar bending schedules for footings, columns, beams, slabs and staircases
+        - Measure infrastructure work by chainage, and compare CESMM4 with POMI
       sessions:
         - { id: "2.1", title: POMI Part 1 }
         - { id: "2.2", title: POMI Part 2 }
@@ -153,6 +163,9 @@ units:
         - { id: "2.9", title: Interior Fit-Out BOQ }
         - { id: "2.10", title: Roadworks BOQ }
         - { id: "2.11", title: Bar Bending Schedule (BBS) }
+        - { id: "2.12", title: BBS for Beams and Slabs }
+        - { id: "2.13", title: BBS for Staircases }
+        - { id: "2.14", title: "Infrastructure QS: An Introduction" }
     - code: M03
       title: Estimating and Cost Planning
       glh: 3
@@ -166,16 +179,18 @@ units:
         - { id: "3.3", title: Value Engineering }
     - code: M04
       title: Tendering and Contracts
-      glh: 4
+      glh: 5
       outcomes:
         - Explain the tender process
         - Compare contract types and FIDIC forms
         - Use contract conditions, work orders and purchase orders
+        - Prepare, float and evaluate a tender as a consultant QS
       sessions:
         - { id: "4.1", title: Tendering }
         - { id: "4.2", title: Contracts and FIDIC }
         - { id: "4.3", title: GCC and SCC }
         - { id: "4.4", title: Work Orders and Purchase Orders }
+        - { id: "4.5", title: "The Consultant QS: Preparing and Floating a Tender" }
     - code: M05
       title: Post-Contract Billing
       glh: 4
@@ -190,11 +205,12 @@ units:
         - { id: "5.4", title: Provisional Sums and Prime Cost }
     - code: M06
       title: Cost Control and Planning
-      glh: 7
+      glh: 8
       outcomes:
         - Forecast cash flow and prepare cost reports
         - Schedule projects in Primavera P6
         - Manage manpower, materials and machinery
+        - Grow into commercial work, from contract risk and negotiation to notices and the final account
       sessions:
         - { id: "6.1", title: Cash Flow }
         - { id: "6.2", title: Cost Reports }
@@ -203,26 +219,29 @@ units:
         - { id: "6.5", title: Primavera P6 Part 2 }
         - { id: "6.6", title: Primavera P6 Part 3 }
         - { id: "6.7", title: 3M Management }
+        - { id: "6.8", title: The QS as a Commercial Facilitator }
     - code: M07
       title: Closeout and Live Project
       glh: 3
       outcomes:
         - Close out and hand over a project
-        - Apply the full QS workflow to a real Middle East live project
+        - Apply the full QS workflow to two real Middle East live projects, a core civil and fit-out BOQ and an elective package
       sessions:
         - { id: "7.1", title: Project Closeout and Handover }
-        - { id: "7.2", title: Middle East Live Project }
+        - { id: "7.2", title: Middle East Live Projects }
         - { id: "7.3", title: Industry Interaction }
     - code: M08
       title: Career Launch
-      glh: 2
+      glh: 3
       outcomes:
         - Prepare a high-impact QS CV and LinkedIn profile
         - Get ready for HR and technical interviews
         - Use CBG's placement assistance
+        - Plan your route to AssocRICS and MRICS
       sessions:
         - { id: "8.1", title: "CV Session 1: CV and LinkedIn" }
         - { id: "8.2", title: Interviews and Placement }
+        - { id: "8.3", title: "Your Path to RICS: AssocRICS and MRICS" }
 
 # Rebar X-ray: the bar bending schedule topic (Module 2, session 2.11). `at` is each label's point
 # [x, y] in source pixels of the 1536 x 1024 photos, picked against the Higgsfield pair (4 Oct 2026).
@@ -248,7 +267,7 @@ how-classes-run:
     - title: Classes on alternate days.
       body: Your batch timetable is shared when you join.
     - title: Recorded sessions.
-      body: Revisit topics at your own pace.
+      body: Recordings of key sessions are on this platform, so you can revisit topics at your own pace.
     - title: Help between classes.
       body: A WhatsApp doubt-clearance line for each topic, and one-to-one sessions with faculty on request. Your mentor can take any unresolved issue to CBG for you.
     - title: What you need.
@@ -261,10 +280,10 @@ assessment:
   heading: How your work is assessed
   intro: You learn by doing. Each assignment and CV submission has its own deadline, and CBG faculty review your work and return feedback within 15 working days.
   assessments:
-    - label: A01 to A11
-      title: 11 practical assignments
+    - label: A01 to A12
+      title: 12 practical assignments
       points:
-        - From AutoCAD takeoffs to BOQs, BBS, rate analysis, estimates, RA bills, variations, cash flow and scheduling
+        - From AutoCAD takeoffs to BOQs, BBS, rate analysis, estimates, RA bills, variations, cash flow and scheduling, then your two live projects
         - Due 3 to 21 days after the class, in the format the brief asks for
         - XLSX for BOQs and billing, DWG plus PDF for AutoCAD, XER plus PDF for Primavera
     - label: CV1 and CV2
@@ -282,7 +301,7 @@ certificates:
     - title: Course Completion Certificate
       body: Your CBG certificate for completing the Quantity Surveying course.
     - title: Two Live Project Certificates
-      body: For your work on Middle East live projects, preparing civil and fit-out BOQs from live project drawings, guided by CBG faculty.
+      body: "One for each Middle East live project, guided by CBG faculty: Live Project 1, a civil and fit-out BOQ from live project drawings, and Live Project 2, an elective in villa, industrial building, high-rise, roads and infrastructure, or interior fit-out."
 
 trainers:
   heading: "Your faculty: people who do the job"
@@ -452,15 +471,17 @@ faq:
     - q: How is the course structured?
       a: "After a Start Here orientation, the course runs through 8 modules in the order you meet the work on a real project: QS Foundations; Measurement and BOQ; Estimating and Cost Planning; Tendering and Contracts; Post-Contract Billing; Cost Control and Planning; Closeout and Live Project; and Career Launch. It starts with the basics, including Excel and AutoCAD, and builds step by step, with assignments along the way so you learn by doing."
     - q: Are the classes live or recorded?
-      a: "Classes are taught live online by CBG faculty, so you can ask questions as you go. Recorded sessions let you revisit topics."
+      a: "Classes are taught live online by CBG faculty, so you can ask questions as you go. Recordings of key sessions are on this platform, so you can revisit topics."
     - q: What software do I need?
       a: A laptop or PC with a stable internet connection. You will use Excel, AutoCAD, PlanSwift and Primavera P6 during the course, so make sure you can run them before the topics that use them. Message CBG if you need help getting set up.
     - q: How are assignments submitted and evaluated?
-      a: There are 11 assignments plus 2 CV submissions, each with its own deadline (3 to 21 days after the class). Submit them in the format the brief asks for, for example XLSX for BOQs and billing, DWG plus PDF for AutoCAD and XER plus PDF for Primavera. CBG faculty review your work and return feedback within 15 working days.
+      a: There are 12 assignments plus 2 CV submissions, each with its own deadline (3 to 21 days after the class). Submit them in the format the brief asks for, for example XLSX for BOQs and billing, DWG plus PDF for AutoCAD and XER plus PDF for Primavera. CBG faculty review your work and return feedback within 15 working days.
     - q: What certificates will I receive?
       a: "Three CBG certificates: a Course Completion Certificate and two Live Project Certificates."
     - q: What are the live projects?
-      a: Real project work from CBG's engineering services division in the Middle East. You prepare civil and fit-out BOQs from live project drawings, guided by CBG faculty, and earn two Live Project Certificates.
+      a: "Real project work from CBG's engineering services division in the Middle East, guided by CBG faculty. Live Project 1 is a civil and fit-out BOQ from live project drawings, the same for every learner. Live Project 2 is a smaller package in the discipline you choose: villa, industrial building, high-rise, roads and infrastructure, or interior fit-out. Each one earns its own Live Project Certificate."
+    - q: Does the course help me towards RICS?
+      a: "Yes. The Career Launch module has a session on your path to RICS: the AssocRICS and MRICS routes, the APC, where this course helps and a 3, 6 and 12 month action plan."
     - q: Do you offer placement assistance?
       a: "Yes. Learners who complete the course, keep at least 75% live attendance, finish their assignments and pass the mock interviews receive relevant job openings and interview support. CBG has supported 500+ placements across Saudi Arabia, the UAE, India, the Maldives and Africa. Placement assistance is not a job guarantee: results depend on your effort, interviews and the market."
     - q: How does the CV review work?
